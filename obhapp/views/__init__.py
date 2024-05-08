@@ -1,0 +1,1 @@
+from obhapp.views.index import show_index
