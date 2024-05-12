@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for key in context.keys() %}
+    <h1>{{ key }}</h1>
+    {% for brother in context[key] %}
+        <div>
+            <a href="/brothers/{{ brother['name'] }}/">{{ brother['fullname'] }}</a>
+        </div>
+    {% endfor %}
+{% endfor %}
+{% endblock %}
