@@ -1,7 +1,8 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE brothers(
-  uniqname VARCHAR(20) NOT NULL,
+  name VARCHAR(20) NOT NULL,
+  uniqname VARCHAR(20) DEFAULT "N/A",
   fullname VARCHAR(40) NOT NULL,
   profile_picture VARCHAR(64) DEFAULT "jawad.jpeg",
   password VARCHAR(128),
@@ -11,8 +12,9 @@ CREATE TABLE brothers(
   contacts VARCHAR(64) DEFAULT "N/A",
   cross_time VARCHAR(40) DEFAULT "N/A",
   grad_time VARCHAR(40) DEFAULT "N/A",
-  line VARCHAR(40) NOT NULL,
-  PRIMARY KEY(uniqname)
+  line INTEGER NOT NULL,
+  line_num INTEGER NOT NULL,
+  PRIMARY KEY(name)
 );
 
 CREATE TABLE recruits(
