@@ -1,4 +1,5 @@
 import flask
+import datetime
 import obhapp
 from obhapp.utils import line_int_to_line
 
@@ -35,3 +36,31 @@ def show_brother(name):
     bro = cur.fetchone()
     # return bro
     return flask.render_template("brother.html", **bro)
+
+@obhapp.app.route('/apply/')
+def show_apply():
+    return flask.render_template("apply.html")
+
+@obhapp.app.route('/apply/', methods=['POST'])
+def apply_rec():
+    uniqname = flask.request.form["uniqname"]
+    email = flask.request.form["email"]
+    fullname = flask.request.form["fullname"]
+
+    time_made = datetime.datetime.now()
+    oct = datetime.datetime(2016, 10, 1)
+    year_diff = (time_made.year - oct.year) - (1 if (time_made.month, time_made.day) < (oct.month, oct.day) else 0)
+    line = line_int_to_line[str(year_diff)]
+    crosstime = "SP' " + str(2018 + year_diff)
+    
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "INSERT INTO recruits "
+        "(uniqname, fullname, email, cross_time, line, campus, accept) "
+        "VALUES(?, ?, ?, ?, ?, ?, ?) ",
+        (uniqname, fullname, email, crosstime, line, "Ann Arbor", 0)
+    )
+
+
+    return flask.render_template("apply.html")
+    

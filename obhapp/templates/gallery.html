@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for image in images %}
+    <div>
+        <img src="/uploads/{{ image['filename'] }}" alt="image">
+        <p> {{ image['desc']}} </p>
+    </div>
+{% endfor %}
+{% endblock %}

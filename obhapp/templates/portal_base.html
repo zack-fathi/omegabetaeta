@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portalstyle.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="/static/images/jawad.jpeg" alt="Logo" class="logo">
+            <div class="site-title">Custom Portal</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer (optional) -->
+    <footer class="footer">
+        © 2024 Custom Portal - All rights reserved.
+    </footer>
+</body>
+</html>
