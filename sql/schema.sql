@@ -21,9 +21,11 @@ CREATE TABLE recruits(
   uniqname VARCHAR(20) NOT NULL,
   fullname VARCHAR(40) NOT NULL,
   email VARCHAR(20) NOT NULL, 
-  line VARCHAR(40) NOT NULL,
-  cross_time VARCHAR(40) NOT NULL,
+  line VARCHAR(40),
+  cross_time VARCHAR(40),
   campus VARCHAR(40) NOT NULL,
+  accept INTEGER NOT NULL,
+  created DATETIME DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(uniqname)
 );
 

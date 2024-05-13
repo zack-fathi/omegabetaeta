@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="/login/?target=/portal/" method="post" enctype="multipart/form-data">
+    <input type="text" name="username" required/>
+    <input type="password" name="password" required/>
+    <input type="submit" value="login"/>
+    <input type="hidden" name="operation" value="login"/>
+</form>
+{% endblock %}

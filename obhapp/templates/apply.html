@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="/apply/" method="post" enctype="multipart/form-data">
+    <div> Full Name <input type="text" name="fullname" required/> </div>
+    <div> Uniqname <input type="text" name="uniqname" required/> </div>
+    <div> Email <input type="text" name="email" required/> </div>
+    <input type="submit" name="signup" value="sign up"/>
+    <input type="hidden" name="operation" value="create"/>
+</form>
+{% endblock %}
