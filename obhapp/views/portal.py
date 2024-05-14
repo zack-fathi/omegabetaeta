@@ -10,10 +10,11 @@ def show_login():
 
 @obhapp.app.route('/login/', methods=["POST"])
 def login():
-    username = flask.request.form["username"]
+    username = flask.request.form["username"].lower()
     password = flask.request.form["password"]
     if not username or not password:
-        flask.abort(400)
+        flask.flash('Please provide both username and password', 'error')
+        return flask.redirect(flask.url_for('show_login'))
     connection = obhapp.model.get_db()
     cur = connection.execute(
         "SELECT password FROM brothers "
@@ -22,7 +23,8 @@ def login():
     )
     pw = cur.fetchone()
     if pw is None:
-        flask.abort(403)
+        flask.flash('User does not exist', 'error')
+        return flask.redirect(flask.url_for('show_login'))
     stored_pw = pw["password"]
     # alg, salt, stored_hash = stored_pw.split('$')
     # hash_obj = hashlib.new(alg)
@@ -34,7 +36,8 @@ def login():
     if stored_pw == password:
         flask.session["user"] = username
     else:
-        flask.abort(403)
+        flask.flash('Incorrect password', 'error')
+        return flask.redirect(flask.url_for('show_login'))
     return flask.redirect(flask.request.args.get('target'))
 
 @obhapp.app.route('/portal/')

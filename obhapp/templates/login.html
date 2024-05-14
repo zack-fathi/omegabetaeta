@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
 <form action="/login/?target=/portal/" method="post" enctype="multipart/form-data">
     <input type="text" name="username" required/>
     <input type="password" name="password" required/>
