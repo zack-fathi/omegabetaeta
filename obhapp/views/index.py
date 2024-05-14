@@ -16,6 +16,14 @@ def show_index():
 def show_about():
     return flask.render_template("about.html")
 
+@obhapp.app.route('/contact/')
+def show_contact():
+    return flask.render_template("contact.html")
+
+@obhapp.app.route('/donate/')
+def show_donate():
+    return flask.render_template("donate.html")
+
 
 @obhapp.app.route('/gallery/')
 def show_gallery():
