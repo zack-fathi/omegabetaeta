@@ -8,22 +8,15 @@ from obhapp.utils import line_int_to_line
 def show_brothers():
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, name, line, line_num, uniqname FROM brothers "
-        "ORDER BY line ASC, line_num ASC;",
+        "SELECT fullname, name, line, line_num, uniqname, profile_picture FROM brothers "
+        "WHERE active = 1 "
+        "ORDER BY fullname ASC;",
     )
     brothers = cur.fetchall()
-    last_line = brothers[-1]["line"]
     context = {}
-
-    for i in range(int(last_line) + 1):
-        line = line_int_to_line[str(i)]
-        context[line] = [brother for brother in brothers if brother["line"] == i]
-
-
-    ret = {
-        "context": context
-    }
-    return flask.render_template("brothers.html", **ret)
+    context["brothers"] = brothers
+    
+    return flask.render_template("brothers.html", **context)
 
 @obhapp.app.route('/brothers/<name>/')
 def show_brother(name):
@@ -34,6 +27,7 @@ def show_brother(name):
         (name, )
     )
     bro = cur.fetchone()
+    bro["line_name"] = line_int_to_line[str(bro["line"])]
     # return bro
     return flask.render_template("brother.html", **bro)
 

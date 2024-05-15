@@ -1,7 +1,11 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %} 
 
-<img src="/uploads/{{ profile_picture }}" alt="image">
-
+<div>
+<img src="/uploads/{{ profile_picture }}" alt="image" />
+<div>Name: {{ fullname }}</div>
+<div>Major: {{ major }}</div>
+<div>Cross Time: {{ cross_time }}</div>
+<div>Line: {{ line_name }}</div>
+</div>
 
 {% endblock %}
