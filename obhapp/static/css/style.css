@@ -5,22 +5,29 @@
     box-sizing: border-box;
 }
 
+.link-no-style {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Inherits text color from parent */
+    font-family: inherit; /* Inherits font family from parent */
+    font-size: inherit; /* Inherits font size from parent */
+}
+
 body {
     font-family: 'Poppins', Arial, sans-serif;
-    background-color: #333;
+    background-color: #222;
     color: white;
 }
 
 header {
     margin-top: 3vh;
-    background-color: #ff1f1c;
+    background-color: #da3a37;
     color: white;
-    padding: 10px 20px;
     text-align: center;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 
 .logo {
     margin-left: 10vw;
