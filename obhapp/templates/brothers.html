@@ -5,12 +5,12 @@
             <h1>Active Brothers</h1>
             <div class="gallery-container">
                 {% for brother in brothers %}
-                <a href="/brothers/{{ brother['name'] }}/">
+                <a href="/brothers/{{ brother['name'] }}/" class="link-no-style">
                     <div class="gallery-item">
                         <img src="{{ url_for('static', filename='images/' ~ brother.profile_picture) }}" alt="{{ brother.fullname }}">
                         <div class="brother-info">
                             <p>{{ brother.fullname }}</p>
-                            <p>Line: {{ brother.line }}</p>
+                            <p>{{ brother.line_name }}</p>
                             <p>Line Number: {{ brother.line_num }}</p>
                             <p>Uniqname: {{ brother.uniqname }}</p>
                         </div>

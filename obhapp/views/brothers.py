@@ -13,6 +13,8 @@ def show_brothers():
         "ORDER BY fullname ASC;",
     )
     brothers = cur.fetchall()
+    for bro in brothers:
+        bro["line_name"] = line_int_to_line[str(bro["line"])]
     context = {}
     context["brothers"] = brothers
     
