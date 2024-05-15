@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for key in brothers.keys() %}
+    <h1>{{ key }}</h1>
+    {% for brother in brothers[key] %}
+        <div>
+            <a href="/portal/directory/{{ brother['name'] }}/">{{ brother['fullname'] }}</a>
+        </div>
+    {% endfor %}
+{% endfor %}
+{% endblock %}

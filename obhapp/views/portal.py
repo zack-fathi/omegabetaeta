@@ -79,16 +79,21 @@ def show_portal_directory():
         return flask.redirect(flask.url_for("login"))
     user = flask.session['user']
     context = {"user": user}
-    
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, name, line, line_num, uniqname, profile_picture FROM brothers "
-        "ORDER BY fullname ASC;",
+        "SELECT fullname, name, line, line_num, uniqname FROM brothers "
+        "ORDER BY line ASC, line_num ASC;",
     )
     brothers = cur.fetchall()
+    last_line = brothers[-1]["line"]
+    line_dict = {}
+    for i in range(int(last_line) + 1):
+        line = line_int_to_line[str(i)]
+        line_dict[line] = [brother for brother in brothers if brother["line"] == i]
 
-    context["brothers"] = brothers
-    return flask.render_template("portal_account.html", **context)
+
+    context["brothers"] = line_dict
+    return flask.render_template("brothers.html", **context)
 
 
 @obhapp.app.route('/portal/log/')
@@ -151,8 +156,8 @@ def move_recruits():
         cross_time = "SP' " + str(2018 + year_diff)
         name = recruit["fullname"].lower().replace(" ", "")
         con.execute(
-            "INSERT INTO brothers(name, uniqname, fullname, line, line_num, lion_name, cross_time) "
-            "VALUES(?, ?, ?, ?, ?, ?, ?); ",
+            "INSERT INTO brothers(name, uniqname, fullname, line, line_num, lion_name, cross_time, active) "
+            "VALUES(?, ?, ?, ?, ?, ?, ?, 1); ",
             (name, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
         )
         con.commit()
