@@ -1,51 +1,196 @@
-/* Basic Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f4f3f2;
+    background-color: #f2f2f2;
 }
 
-.header {
-    background-color: #00274c;
-    color: #fff;
-    padding: 10px 20px;
-    text-align: center;
-}
-
-.logo-container {
+.container {
     display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #4a4a4a;
+    color: white;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
 
-.logo {
-    width: 50px;
-    height: auto;
-    margin-right: 10px;
+.sidebar .logo {
+    margin: 20px 0;
 }
 
-.site-title {
-    font-size: 1.5rem;
+.sidebar .nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar .nav ul li {
+    margin: 20px 0;
+}
+
+.sidebar .nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
 }
 
 .main-content {
+    flex: 1;
     padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header .search-bar input {
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    width: 300px;
+}
+
+.header .profile {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header .profile-info {
+    margin-right: 10px;
+    text-align: right;
+}
+
+.profile-name {
+    font-weight: bold;
+    margin: 0;
+}
+
+.profile-role {
+    margin: 0;
+    color: #888;
+}
+
+.header .profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.header .profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.welcome {
+    background-color: #4a4a4a;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
     text-align: center;
 }
 
-.footer {
+.events, .announcements, .member-directory, .calendar, .recruits {
+    margin-top: 20px;
+}
+
+.events h2, .announcements h2, .member-directory h2, .calendar h2, .recruits h2 {
+    margin: 0 0 10px;
+}
+
+.event-card, .announcement-card, .member-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.announcement-card h3 {
+    margin-top: 0;
+}
+
+.event-card p, .announcement-card p, .member-card p {
+    margin: 5px 0;
+}
+
+.announcement-card a {
+    display: block;
     text-align: center;
-    padding: 10px 0;
-    background-color: #222;
-    color: #fff;
-    position: absolute;
-    bottom: 0;
+    margin-top: 10px;
+    background-color: #4a4a4a;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.member-directory .member-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.member-directory .member-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.calendar-embed {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.recruits table {
     width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.recruits table, .recruits th, .recruits td {
+    border: 1px solid #ddd;
+}
+
+.recruits th, .recruits td {
+    padding: 10px;
+    text-align: left;
+}
+
+.recruits button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.accept-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.remove-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+#move-recruits-btn {
+    background-color: #2196F3;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }

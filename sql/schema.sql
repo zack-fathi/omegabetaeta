@@ -5,7 +5,7 @@ CREATE TABLE brothers(
   uniqname VARCHAR(20) DEFAULT "N/A",
   fullname VARCHAR(40) NOT NULL,
   profile_picture VARCHAR(64) DEFAULT "jawad.jpeg",
-  password VARCHAR(128),
+  password VARCHAR(128) DEFAULT "password",
   major VARCHAR(40) DEFAULT "N/A",
   desc VARCHAR(256) DEFAULT "N/A",
   campus VARCHAR(40) DEFAULT "N/A",
@@ -14,6 +14,7 @@ CREATE TABLE brothers(
   grad_time VARCHAR(40) DEFAULT "N/A",
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
+  lion_name TEXT NOT NULL,
   PRIMARY KEY(name)
 );
 
@@ -21,11 +22,10 @@ CREATE TABLE recruits(
   uniqname VARCHAR(20) NOT NULL,
   fullname VARCHAR(40) NOT NULL,
   email VARCHAR(20) NOT NULL, 
-  line VARCHAR(40),
-  cross_time VARCHAR(40),
   campus VARCHAR(40) NOT NULL,
-  accept INTEGER NOT NULL,
-  created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  line_num INTEGER,
+  lion_name TEXT,
+  accept BIT DEFAULT 0,
   PRIMARY KEY(uniqname)
 );
 

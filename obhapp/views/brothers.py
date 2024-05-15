@@ -15,7 +15,7 @@ def show_brothers():
     last_line = brothers[-1]["line"]
     context = {}
 
-    for i in range(last_line + 1):
+    for i in range(int(last_line) + 1):
         line = line_int_to_line[str(i)]
         context[line] = [brother for brother in brothers if brother["line"] == i]
 
@@ -46,19 +46,13 @@ def apply_rec():
     uniqname = flask.request.form["uniqname"]
     email = flask.request.form["email"]
     fullname = flask.request.form["fullname"]
-
-    time_made = datetime.datetime.now()
-    oct = datetime.datetime(2016, 10, 1)
-    year_diff = (time_made.year - oct.year) - (1 if (time_made.month, time_made.day) < (oct.month, oct.day) else 0)
-    line = line_int_to_line[str(year_diff)]
-    crosstime = "SP' " + str(2018 + year_diff)
     
     con = obhapp.model.get_db()
     cur = con.execute(
         "INSERT INTO recruits "
-        "(uniqname, fullname, email, cross_time, line, campus, accept) "
-        "VALUES(?, ?, ?, ?, ?, ?, ?) ",
-        (uniqname, fullname, email, crosstime, line, "Ann Arbor", 0)
+        "(uniqname, fullname, email, campus) "
+        "VALUES(?, ?, ?, ?) ",
+        (uniqname, fullname, email, "Ann Arbor")
     )
 
 

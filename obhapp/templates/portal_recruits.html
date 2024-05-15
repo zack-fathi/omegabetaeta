@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruits</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portalstyle.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Announcements</a></li>
+                    <li><a href="#">Directory</a></li>
+                    <li><a href="#">Gallery</a></li>
+                    <li><a href="#">Finance</a></li>
+                    <li><a href="#">Committees</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search">
+                </div>
+                <div class="profile">
+                    <div class="profile-info">
+                        <p class="profile-name">John Doe</p>
+                        <p class="profile-role">Fraternity Member</p>
+                    </div>
+                    <div class="profile-pic">
+                        <img src="{{ url_for('static', filename='profile.png') }}" alt="Profile Picture">
+                    </div>
+                </div>
+            </header>
+            <section class="recruits">
+                <h2>Recruits</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Uniqname</th>
+                            <th>Email</th>
+                            <th>Line Number</th>
+                            <th>Lion Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recruit in recruits %}
+                        <tr id="recruit-{{ recruit.uniqname }}">
+                            <td>{{ recruit.fullname }}</td>
+                            <td>{{ recruit.uniqname }}</td>
+                            <td>{{ recruit.email }}</td>
+                            <td>
+                                <input type="number" class="line-num" data-id="{{ recruit.uniqname }}" value="{{ recruit.line_num }}">
+                            </td>
+                            <td>
+                                <input type="text" class="lion-name" data-id="{{ recruit.uniqname }}" value="{{ recruit.lion_name }}">
+                            </td>
+                            <td>
+                                <button class="accept-btn" data-id="{{ recruit.uniqname }}">Accept</button>
+                                <button class="remove-btn" data-id="{{ recruit.uniqname }}">X</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button id="move-recruits-btn">Move Accepted Recruits to Brothers</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.accept-btn').click(function() {
+                var id = $(this).data('id');
+                var line_num = $('#recruit-' + id).find('.line-num').val();
+                var lion_name = $('#recruit-' + id).find('.lion-name').val();
+
+                if (!line_num || !lion_name || line_num == "None" || lion_name == "None") {
+                    alert('Please fill in both Line Number and Lion Name before accepting the recruit.');
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for('accept_recruit') }}',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Recruit accepted!');
+                        }
+                    }
+                });
+            });
+
+            $('.remove-btn').click(function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for('remove_recruit') }}',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: id }),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#recruit-' + id).remove();
+                        }
+                    }
+                });
+            });
+
+
+            $('#move-recruits-btn').click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for('move_recruits') }}',
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Accepted recruits moved to brothers!');
+                            location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

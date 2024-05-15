@@ -1,5 +1,7 @@
 import flask
 import obhapp
+import datetime
+from obhapp.utils import line_int_to_line
 
 
 @obhapp.app.route('/login/')
@@ -40,8 +42,106 @@ def login():
         return flask.redirect(flask.url_for('show_login'))
     return flask.redirect(flask.request.args.get('target'))
 
+
 @obhapp.app.route('/portal/')
 def show_portal():
     if "user" not in flask.session:
         return flask.redirect(flask.url_for("login"))
-    return flask.render_template("portal.html")
+    return flask.render_template("portal_index.html")
+
+
+@obhapp.app.route('/portal/account/')
+def show_portal_account():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    user = flask.session['user']
+    context = {"user": user}
+    return flask.render_template("portal_account.html")
+
+
+@obhapp.app.route('/portal/agenda/')
+def show_portal_agenda():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    return flask.render_template("portal_agenda.html")
+
+
+@obhapp.app.route('/portal/calendar/')
+def show_portal_calender():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    return flask.render_template("portal_calendar.html")
+
+
+@obhapp.app.route('/portal/log/')
+def show_portal_log():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    return flask.render_template("portal_log.html")
+
+
+@obhapp.app.route('/portal/recruits/')
+def show_portal_recruits():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT fullname, uniqname, email, accept, line_num, lion_name FROM recruits "
+    )
+    recruits = cur.fetchall()
+    context = {"recruits": recruits}
+    return flask.render_template("portal_recruits.html", **context)
+
+
+@obhapp.app.route('/portal/recruits/accept', methods=['POST'])
+def accept_recruit():
+    recruit_id = flask.request.json['id']
+    line_num = flask.request.json['line_num']
+    lion_name = flask.request.json['lion_name']
+    con = obhapp.model.get_db()
+    con.execute(
+        "UPDATE recruits SET line_num = ?, lion_name = ?, accept = 1 WHERE uniqname = ?",
+        (line_num, lion_name, recruit_id)
+    )
+    con.commit()
+    return flask.jsonify(success=True)
+
+@obhapp.app.route('/portal/recruits/remove', methods=['POST'])
+def remove_recruit():
+    recruit_id = flask.request.json['id']
+    con = obhapp.model.get_db()
+    con.execute(
+        "DELETE FROM recruits WHERE uniqname = ?",
+        (recruit_id,)
+    )
+    con.commit()
+    return flask.jsonify(success=True)
+
+@obhapp.app.route('/portal/recruits/move', methods=['POST'])
+def move_recruits():
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT * FROM recruits "
+        "WHERE accept = 1 "
+    )
+    rec = cur.fetchall()
+    for recruit in rec:
+        time_made = datetime.datetime.now()
+        reference = datetime.datetime(2018, 1, 1)
+        year_diff = (time_made.year - reference.year) - (1 if (time_made.month, time_made.day) < (reference.month, reference.day) else 0)
+        line = year_diff
+        cross_time = "SP' " + str(2018 + year_diff)
+        name = recruit["fullname"].lower().replace(" ", "")
+        con.execute(
+            "INSERT INTO brothers(name, uniqname, fullname, line, line_num, lion_name, cross_time) "
+            "VALUES(?, ?, ?, ?, ?, ?, ?); ",
+            (name, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
+        )
+        con.commit()
+
+    con.execute(
+        "DELETE FROM recruits WHERE accept = 1"
+    )
+    con.commit()
+    return flask.jsonify(success=True)
+

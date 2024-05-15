@@ -24,6 +24,10 @@ def show_contact():
 def show_donate():
     return flask.render_template("donate.html")
 
+@obhapp.app.route('/calendar/')
+def show_calendar():
+    return flask.render_template("calendar.html")
+
 
 @obhapp.app.route('/gallery/')
 def show_gallery():
