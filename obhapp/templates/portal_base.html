@@ -1,28 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ΩBH</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/portalstyle.css') }}">
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo-container">
-            <img src="/static/images/jawad.jpeg" alt="Logo" class="logo">
-            <div class="site-title">ΩBH Portal</div>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/portalstyle.css') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" />
         </div>
-    </header>
+        <nav class="nav">
+          <ul>
+            <li><a href="/portal/">Home</a></li>
+            <li><a href="/portal/recruits/">Recruits</a></li>
+            <li><a href="/portal/agenda/">Agenda</a></li>
+            <li><a href="/portal/directory/">Directory</a></li>
+            <li><a href="/portal/finance/">Finance</a></li>
+            <li><a href="/portal/log/">Log</a></li>
+            <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></li>
+            <li><a href="/portal/logout/">Logout</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <main class="main-content">
+        <header class="header">
+        <a href="/portal/account/" style="text-decoration: none; color: inherit;">
+          <div class="profile">
+            <div class="profile-info">
+              <p class="profile-name">John Doe</p>
+              <p class="profile-role">Fraternity Member</p>
+            </div>
+            <div class="profile-pic">
+              <img
+                src="{{ url_for('static', filename='profile.png') }}"
+                alt="Profile Picture"
+              />
+            </div>
+          </div>
+        </a>
+        </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
         {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer (optional) -->
-    <footer class="footer">
-        © 2024 Custom Portal - All rights reserved.
-    </footer>
-</body>
+      </main>
+    </div>
+  </body>
 </html>

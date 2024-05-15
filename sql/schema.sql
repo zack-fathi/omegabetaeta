@@ -7,6 +7,7 @@ CREATE TABLE brothers(
   profile_picture VARCHAR(64) DEFAULT "jawad.jpeg",
   password VARCHAR(128) DEFAULT "password",
   major VARCHAR(40) DEFAULT "N/A",
+  job VARCHAR(40) DEFAULT "N/A",
   desc VARCHAR(256) DEFAULT "N/A",
   campus VARCHAR(40) DEFAULT "N/A",
   contacts VARCHAR(64) DEFAULT "N/A",
@@ -15,6 +16,7 @@ CREATE TABLE brothers(
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
   lion_name TEXT NOT NULL,
+  active BIT DEFAULT 0,
   PRIMARY KEY(name)
 );
 
