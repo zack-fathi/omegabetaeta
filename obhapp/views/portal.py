@@ -73,6 +73,24 @@ def show_portal_calender():
     return flask.render_template("portal_calendar.html")
 
 
+@obhapp.app.route('/portal/directory/')
+def show_portal_directory():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    user = flask.session['user']
+    context = {"user": user}
+    
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT fullname, name, line, line_num, uniqname, profile_picture FROM brothers "
+        "ORDER BY fullname ASC;",
+    )
+    brothers = cur.fetchall()
+
+    context["brothers"] = brothers
+    return flask.render_template("portal_account.html", **context)
+
+
 @obhapp.app.route('/portal/log/')
 def show_portal_log():
     if "user" not in flask.session:
@@ -106,7 +124,7 @@ def accept_recruit():
     con.commit()
     return flask.jsonify(success=True)
 
-@obhapp.app.route('/portal/recruits/remove', methods=['POST'])
+@obhapp.app.route('/portal/recruits/remove/', methods=['POST'])
 def remove_recruit():
     recruit_id = flask.request.json['id']
     con = obhapp.model.get_db()
@@ -117,7 +135,7 @@ def remove_recruit():
     con.commit()
     return flask.jsonify(success=True)
 
-@obhapp.app.route('/portal/recruits/move', methods=['POST'])
+@obhapp.app.route('/portal/recruits/move/', methods=['POST'])
 def move_recruits():
     con = obhapp.model.get_db()
     cur = con.execute(
