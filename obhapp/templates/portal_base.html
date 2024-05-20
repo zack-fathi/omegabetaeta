@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ΩBH</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/portalstyle.css') }}"
-    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portalstyle.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  <body>
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.href = event.target.href;
+            }
+        }
+    </script>
+</head>
+<body>
     <div class="container">
-      <aside class="sidebar">
-        <div class="logo">
-          <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" />
-        </div>
-        <nav class="nav">
-          <ul>
-            <li><a href="/portal/">Home</a></li>
-            <li><a href="/portal/recruits/">Recruits</a></li>
-            <li><a href="/portal/agenda/">Agenda</a></li>
-            <li><a href="/portal/directory/">Directory</a></li>
-            <li><a href="/portal/finance/">Finance</a></li>
-            <li><a href="/portal/log/">Log</a></li>
-            <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></li>
-            <li><a href="/portal/logout/">Logout</a></li>
-          </ul>
-        </nav>
-      </aside>
-      <main class="main-content">
-        <header class="header">
-        <a href="/portal/account/" style="text-decoration: none; color: inherit;">
-          <div class="profile">
-            <div class="profile-info">
-              <p class="profile-name">John Doe</p>
-              <p class="profile-role">Fraternity Member</p>
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="/">
+                    <div >
+                        <img src="{{ url_for('static', filename='images/OBHLogo.png') }}" alt="Logo">
+                    </div>
+                </a>
             </div>
-            <div class="profile-pic">
-              <img
-                src="{{ url_for('static', filename='profile.png') }}"
-                alt="Profile Picture"
-              />
+            <nav class="nav">
+                <ul>
+                    <li><a href="/portal/">Portal Home</a></li>
+                    <li><a href="/portal/recruits/">Recruits</a></li>
+                    <li><a href="/portal/agenda/">Agenda</a></li>
+                    <li><a href="/portal/directory/">Directory</a></li>
+                    <li><a href="/portal/finance/">Finance</a></li>
+                    <li><a href="/portal/log/">Log</a></li>
+                    <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></li>
+                    <li><a href="/portal/logout/" onclick="confirmLogout(event)">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <a href="/portal/account/" style="text-decoration: none; color: inherit;">
+                    <div class="profile">
+                        <div class="profile-info">
+                            <p class="profile-name">{{ session.get('name') }}</p>
+                        </div>
+                        <div class="profile-pic">
+                            <img src="/uploads/{{ session.get('pfp') }}" alt="Profile Picture">
+                        </div>
+                    </div>
+                </a>
+            </header>
+            <div class="main-info">
+            {% block content %}{% endblock %}
             </div>
-          </div>
-        </a>
-        </header>
-
-        {% block content %}{% endblock %}
-      </main>
+        </main>
     </div>
-  </body>
+</body>
 </html>

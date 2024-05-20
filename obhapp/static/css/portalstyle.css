@@ -1,44 +1,81 @@
+.link-no-style {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Inherits text color from parent */
+    font-family: inherit; /* Inherits font family from parent */
+    font-size: inherit; /* Inherits font size from parent */
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .container {
     display: flex;
+    flex: 1;
+    background-color: #da3a37; /* Black to ensure the color extends */
 }
 
 .sidebar {
     width: 250px;
-    background-color: #4a4a4a;
-    color: white;
+    background-color: #da3a37; /* Black */
+    color: #FFD700; /* Gold */
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100vh;
 }
 
 .sidebar .logo {
     margin: 20px 0;
 }
 
+.logo {
+    margin-left: 10vw;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo img {
+    height: 180px;
+    margin-right: 1vw;
+}
+
 .sidebar .nav ul {
     list-style: none;
     padding: 0;
+    width: 100%;
 }
 
 .sidebar .nav ul li {
     margin: 20px 0;
+    text-align: center;
 }
 
 .sidebar .nav ul li a {
     text-decoration: none;
-    color: white;
+    color: #FFD700; /* Gold */
     font-size: 18px;
+    display: block;
+    padding: 10px 0;
+}
+
+.sidebar .nav ul li a:hover {
+    background-color: #b22222; /* Dark Red */
+    color: white;
 }
 
 .main-content {
     flex: 1;
     padding: 20px;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -48,17 +85,10 @@ body {
     margin-bottom: 20px;
 }
 
-.header .search-bar input {
-    padding: 10px;
-    border-radius: 25px;
-    border: 1px solid #ddd;
-    width: 300px;
-}
-
 .header .profile {
     display: flex;
     align-items: center;
-    background-color: #fff;
+    background-color: #da3a37;
     padding: 10px;
     border-radius: 50px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -72,11 +102,7 @@ body {
 .profile-name {
     font-weight: bold;
     margin: 0;
-}
-
-.profile-role {
-    margin: 0;
-    color: #888;
+    color: #FFD700;
 }
 
 .header .profile-pic {
@@ -93,61 +119,15 @@ body {
 }
 
 .welcome {
-    background-color: #4a4a4a;
-    color: white;
+    background-color: #da3a37;
+    color: #FFD700;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
 }
 
-.events, .announcements, .member-directory, .calendar, .recruits {
-    margin-top: 20px;
-}
 
-.events h2, .announcements h2, .member-directory h2, .calendar h2, .recruits h2 {
-    margin: 0 0 10px;
-}
-
-.event-card, .announcement-card, .member-card {
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 10px;
-}
-
-.announcement-card h3 {
-    margin-top: 0;
-}
-
-.event-card p, .announcement-card p, .member-card p {
-    margin: 5px 0;
-}
-
-.announcement-card a {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    background-color: #4a4a4a;
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.member-directory .member-card {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.member-directory .member-card img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.calendar-embed {
+.main-info {
     background-color: white;
     border-radius: 10px;
     padding: 20px;
@@ -194,3 +174,62 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
+/* Container for the categories */
+.brothers-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+/* Each category section */
+.category {
+    width: 100%;
+    margin: 20px 0;
+}
+
+/* Title of each category */
+.category-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+
+/* Container for the list of brothers */
+.brothers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Each brother item */
+.brother-item {
+    background-color: #fff;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.brother-item a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+}
+
+.brother-item a:hover {
+    text-decoration: underline;
+}
+
+.brother-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
