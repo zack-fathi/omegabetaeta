@@ -1,55 +1,12 @@
 {% extends 'portal_base.html' %}
 {% block content %}
 <section class="welcome">
-    <h1>Welcome back, John!</h1>
+    <h1>Welcome back, {{ session.get('name') }}!</h1>
     <p>Stay updated with the latest fraternity news and events.</p>
 </section>
-<section class="events">
-    <h2>Upcoming Events</h2>
-    <div class="event-card">
-        <p>Spring Formal</p>
-        <p>April 20, 2024</p>
-    </div>
-    <div class="event-card">
-        <p>Charity Run</p>
-        <p>May 15, 2024</p>
-    </div>
-    <div class="event-card">
-        <p>Summer BBQ</p>
-        <p>June 10, 2024</p>
-    </div>
-</section>
-<section class="announcements">
-    <h2>Recent Announcements</h2>
-    <div class="announcement-card">
-        <h3>New Member Initiation</h3>
-        <p>We are excited to welcome our new members!</p>
-        <a href="#">Read more</a>
-    </div>
-    <div class="announcement-card">
-        <h3>Community Service Hours</h3>
-        <p>Reminder to log your community service hours.</p>
-        <a href="#">Read more</a>
-    </div>
-</section>
-<section class="member-directory">
-    <h2>Member Directory</h2>
-    <div class="member-card">
-        <img src="member1.png" alt="Member">
-        <p>Jane Smith</p>
-    </div>
-    <div class="member-card">
-        <img src="member2.png" alt="Member">
-        <p>Mike Johnson</p>
-    </div>
-    <div class="member-card">
-        <img src="member3.png" alt="Member">
-        <p>Susan Lee</p>
-    </div>
-</section>
+<br>
 <section class="calendar">
     <h2>Fraternity Calendar</h2>
-    <div class="calendar-embed">
         <!-- Embed Google Calendar iframe here -->
         <iframe src="https://calendar.google.com/calendar/embed?src=c_68d23489a7857366e4aebecc57682f6e23861729962c1d1f8ea02f2516c994d7%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
 </section>

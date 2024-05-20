@@ -19,7 +19,7 @@ def login():
         return flask.redirect(flask.url_for('show_login'))
     connection = obhapp.model.get_db()
     cur = connection.execute(
-        "SELECT password FROM brothers "
+        "SELECT password, profile_picture, fullname FROM brothers "
         "WHERE uniqname = ? OR name = ?",
         (username, username)
     )
@@ -37,6 +37,8 @@ def login():
     #     flask.session["user"] = username
     if stored_pw == password:
         flask.session["user"] = username
+        flask.session["pfp"] = pw["profile_picture"]
+        flask.session["name"] = pw["fullname"]
     else:
         flask.flash('Incorrect password', 'error')
         return flask.redirect(flask.url_for('show_login'))
@@ -93,7 +95,7 @@ def show_portal_directory():
 
 
     context["brothers"] = line_dict
-    return flask.render_template("brothers.html", **context)
+    return flask.render_template("portal_directory.html", **context)
 
 
 @obhapp.app.route('/portal/log/')
@@ -167,4 +169,10 @@ def move_recruits():
     )
     con.commit()
     return flask.jsonify(success=True)
+
+
+@obhapp.app.route('/portal/logout/')
+def logout():
+    flask.session.clear()
+    return flask.redirect(flask.url_for('show_index'))
 

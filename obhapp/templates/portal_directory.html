@@ -1,11 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'portal_base.html' %}
 {% block content %}
-{% for key in brothers.keys() %}
-    <h1>{{ key }}</h1>
-    {% for brother in brothers[key] %}
-        <div>
-            <a href="/portal/directory/{{ brother['name'] }}/">{{ brother['fullname'] }}</a>
-        </div>
+<div class="brothers-container">
+    {% for key in brothers.keys() %}
+        <section class="category">
+            <h1 class="category-title">{{ key }}</h1>
+            <div class="brothers-list">
+                {% for brother in brothers[key] %}
+                    <div class="brother-item">
+                        <a class="link-no-style" href="/portal/directory/{{ brother['name'] }}/">{{ brother['fullname'] }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
     {% endfor %}
-{% endfor %}
+</div>
 {% endblock %}
