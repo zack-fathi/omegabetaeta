@@ -168,3 +168,162 @@ footer {
     color: #FFD700;  /* Gold */
     text-decoration: none;
 }
+
+/* Form Styling */
+.apply-form-container {
+    display: flex;
+    flex-direction: column; /* Change to column to stack elements vertically */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Description above the form */
+.form-description {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-description h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.529);
+}
+
+.form-description p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.529);
+}
+
+.apply-form {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 100%;
+}
+
+.apply-form .form-group {
+    margin-bottom: 15px;
+}
+
+.apply-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #FFD700; /* Gold */
+}
+
+.apply-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #444;
+    color: white;
+}
+
+.apply-form .form-group input:focus {
+    outline: none;
+    background-color: #555;
+}
+
+.apply-form .form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.apply-form .form-actions input[type="submit"] {
+    background-color: #da3a37; /* Red */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.apply-form .form-actions input[type="submit"]:hover {
+    background-color: #b22222; /* Dark Red */
+}
+
+/* Form Styling */
+.login-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-form {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-form .form-group {
+    margin-bottom: 15px;
+}
+
+.login-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #FFD700; /* Gold */
+}
+
+.login-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #444;
+    color: white;
+}
+
+.login-form .form-group input:focus {
+    outline: none;
+    background-color: #555;
+}
+
+.login-form .form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.login-form .form-actions input[type="submit"] {
+    background-color: #da3a37; /* Red */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form .form-actions input[type="submit"]:hover {
+    background-color: #b22222; /* Dark Red */
+}
+
+/* Flash Messages */
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.flashes li {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.flashes .error {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.flashes .success {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}

@@ -1,4 +1,69 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-
+<div class="edit-profile-container">
+    <h2>Edit Profile</h2>
+    <form action="{{ url_for('edit_profile') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" value="{{ brother['fullname'] }}" required />
+        </div>
+        <div class="form-group">
+            <label for="profile_picture">Profile Picture</label>
+            <input type="hidden" name="existing_profile_picture" value="{{ brother['profile_picture'] }}">
+            <img src="{{ url_for('static', filename=brother['profile_picture']) }}" alt="Profile Picture" style="max-width: 100px; display: block; margin-bottom: 10px;">
+            <input type="file" id="profile_picture" name="profile_picture" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" value="{{ brother['password'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="major">Major</label>
+            <input type="text" id="major" name="major" value="{{ brother['major'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="job">Job</label>
+            <input type="text" id="job" name="job" value="{{ brother['job'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="desc">Description</label>
+            <input type="text" id="desc" name="desc" value="{{ brother['desc'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="campus">Campus</label>
+            <input type="text" id="campus" name="campus" value="{{ brother['campus'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="contacts">Contacts</label>
+            <input type="text" id="contacts" name="contacts" value="{{ brother['contacts'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="cross_time">Cross Time</label>
+            <input type="text" id="cross_time" name="cross_time" value="{{ brother['cross_time'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="grad_time">Grad Time</label>
+            <input type="text" id="grad_time" name="grad_time" value="{{ brother['grad_time'] }}" />
+        </div>
+        <div class="form-group">
+            <label for="line">Line</label>
+            <input type="text" id="line" name="line" value="{{ brother['line'] }}" required />
+        </div>
+        <div class="form-group">
+            <label for="line_num">Line Number</label>
+            <input type="text" id="line_num" name="line_num" value="{{ brother['line_num'] }}" required />
+        </div>
+        <div class="form-group">
+            <label for="lion_name">Lion Name</label>
+            <input type="text" id="lion_name" name="lion_name" value="{{ brother['lion_name'] }}" required />
+        </div>
+        <div class="form-group">
+            <label for="active">Active</label>
+            <input type="checkbox" id="active" name="active" value="1" {% if brother['active'] %}checked{% endif %} />
+        </div>
+        <div class="form-actions">
+            <input type="submit" value="Update Profile" />
+        </div>
+    </form>
+</div>
 {% endblock %}

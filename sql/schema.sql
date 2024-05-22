@@ -36,3 +36,10 @@ CREATE TABLE gallery(
     desc VARCHAR(256),
     PRIMARY KEY(filename)
 );
+
+CREATE TABLE change_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    change_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    desc TEXT NOT NULL
+);
