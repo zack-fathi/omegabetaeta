@@ -37,6 +37,15 @@ case $1 in
     cp sql/uploads/* var/uploads/
     ;;
 
+  "fill")
+    rm -rf var/${APP}.sqlite3 var/uploads
+    mkdir -p var/uploads
+    sqlite3 var/${APP}.sqlite3 < sql/schema.sql
+    cp sql/uploads/* var/uploads/
+    python3 bin/make_brothers.py
+    sqlite3 var/${APP}.sqlite3 < insert_brothers.sql
+    ;;
+
   "dump")
     TABLE_NAMES=$(sqlite3 var/${APP}.sqlite3 ".tables")
     for TABLE_NAME in $TABLE_NAMES

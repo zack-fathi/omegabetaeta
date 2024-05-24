@@ -1,23 +1,16 @@
 
-import obhapp
 import uuid
 import hashlib
 
 def line_to_cross_time(i):
     return "SP' 20" + str(18 + i)
 
-brothers = [
-    {
-        "u": "jawadals",
-        "f": "Jawad Alsahlani",
-        "l": 5,
-        "ln": 2,
-        "lion": "Muthafar",
-        "a": 1
-    },
-]
+
 
 bros = {
+0:[
+"Jad Elharake - Hareth",
+],
 1:[
 "Yasser Abusabha - Aklaaf",
 "Mohamad Awada - Haidar",
@@ -95,6 +88,8 @@ bros = {
 ],
 }
 
+
+brothers = []
 for key in bros.keys():
     ln = 0
     for bro in bros[key]:
@@ -102,33 +97,43 @@ for key in bros.keys():
         if key == 5 or key == 6:
             a = 1
         ln += 1
-        names = bro.replace('-', '').split()
-        brothers.append({
-            "u": "",
-            "f": names[0] + " " + names[1],
-            "l": key,
-            "ln": ln,
-            "lion": names[2],
-            "a": a
-        })
+        names = bro.replace('-', ' ').split()
+        if len(names) == 3:
+            brothers.append({
+                "u": "",
+                "f": names[0] + " " + names[1],
+                "l": key,
+                "ln": ln,
+                "lion": names[2],
+                "a": a
+            })
 
 
-con = obhapp.model.get_db()
+# Define the path to the SQL file
+sql_file_path = 'insert_brothers.sql'
 
 new_password = "password"
 algorithm = 'sha512'
-for b in brothers:
-    new_salt = uuid.uuid4().hex
-    new_hash_obj = hashlib.new(algorithm)
-    new_hash_obj.update((new_salt + new_password).encode('utf-8'))
-    new_password_hash = new_hash_obj.hexdigest()
-    new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
 
-    username = b["fullname"].lower().replace(" ", "")
+# Open the SQL file for writing
+with open(sql_file_path, 'w') as file:
+    for b in brothers:
+        new_salt = uuid.uuid4().hex
+        new_hash_obj = hashlib.new(algorithm)
+        new_hash_obj.update((new_salt + new_password).encode('utf-8'))
+        new_password_hash = new_hash_obj.hexdigest()
+        new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
 
-    con.execute(
-        "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active) "
-        "VALUES(?, ?, ?, ?, ?, ?, ?) ",
-        (username, new_password_db_string, b["u"], b["f"], b["l"], b["ln"], line_to_cross_time(b['l']), b["lion"], b["a"])
-    )
-    con.commit()
+        username = b["f"].lower().replace(" ", "")
+
+        # Create the SQL insert statement
+        sql = (
+            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active) "
+            f'VALUES("{username}", "{new_password_db_string}", "{b["u"]}", "{b["f"]}", {b["l"]}, {b["ln"]}, "{line_to_cross_time(b["l"])}", "{b["lion"]}", {b["a"]});\n'
+
+        )
+
+        # Write the SQL statement to the file
+        file.write(sql)
+
+print(f"SQL insert statements have been written to {sql_file_path}")
