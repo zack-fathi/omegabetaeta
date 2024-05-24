@@ -1,10 +1,10 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE brothers(
-  name VARCHAR(20) NOT NULL,
+  username VARCHAR(20) NOT NULL,
   uniqname VARCHAR(20) DEFAULT "N/A",
   fullname VARCHAR(40) NOT NULL,
-  profile_picture VARCHAR(64) DEFAULT "jawad.jpeg",
+  profile_picture VARCHAR(64) DEFAULT "default.jpg",
   password VARCHAR(128) DEFAULT "password",
   major VARCHAR(40) DEFAULT "N/A",
   job VARCHAR(40) DEFAULT "N/A",
@@ -12,12 +12,12 @@ CREATE TABLE brothers(
   campus VARCHAR(40) DEFAULT "N/A",
   contacts VARCHAR(64) DEFAULT "N/A",
   cross_time VARCHAR(40) DEFAULT "N/A",
-  grad_time VARCHAR(40) DEFAULT "N/A",
+  grad_time DATE DEFAULT NULL,
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
   lion_name TEXT NOT NULL,
   active BIT DEFAULT 0,
-  PRIMARY KEY(name)
+  PRIMARY KEY(username)
 );
 
 CREATE TABLE recruits(

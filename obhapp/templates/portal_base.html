@@ -20,7 +20,7 @@
         <aside class="sidebar">
             <div class="logo">
                 <a href="/">
-                    <div >
+                    <div>
                         <img src="{{ url_for('static', filename='images/OBHLogo.png') }}" alt="Logo">
                     </div>
                 </a>
@@ -32,6 +32,7 @@
                     <li><a href="/portal/directory/">Directory</a></li>
                     <li><a href="/portal/log/">Log</a></li>
                     <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></li>
+                    <li><a href="/portal/upload/">Upload</a></li>
                     <li><a href="/portal/logout/" onclick="confirmLogout(event)">Logout</a></li>
                 </ul>
             </nav>
@@ -50,7 +51,7 @@
                 </a>
             </header>
             <div class="main-info">
-            {% block content %}{% endblock %}
+                {% block content %}{% endblock %}
             </div>
         </main>
     </div>
