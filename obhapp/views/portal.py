@@ -1,8 +1,9 @@
 import uuid
+import hashlib
 import pathlib
 import flask
 import obhapp
-import datetime
+from datetime import datetime
 import obhapp.model
 from obhapp.utils import line_int_to_line
 
@@ -23,22 +24,20 @@ def login():
     connection = obhapp.model.get_db()
     cur = connection.execute(
         "SELECT password, profile_picture, fullname FROM brothers "
-        "WHERE uniqname = ? OR name = ?",
-        (username, username)
+        "WHERE username = ? ",
+        (username,)
     )
     pw = cur.fetchone()
     if pw is None:
         flask.flash('User does not exist', 'error')
         return flask.redirect(flask.url_for('show_login'))
-    stored_pw = pw["password"]
-    # alg, salt, stored_hash = stored_pw.split('$')
-    # hash_obj = hashlib.new(alg)
-    # password_salted = salt + password
-    # hash_obj.update(password_salted.encode('utf-8'))
-    # password_hash = hash_obj.hexdigest()
-    # if password_hash == stored_hash:
-    #     flask.session["user"] = username
-    if stored_pw == password:
+
+    alg, salt, stored_hash = pw["password"].split('$')
+    hash_obj = hashlib.new(alg)
+    password_salted = salt + password
+    hash_obj.update(password_salted.encode('utf-8'))
+    password_hash = hash_obj.hexdigest()
+    if password_hash == stored_hash:
         flask.session["user"] = username
         flask.session["pfp"] = pw["profile_picture"]
         flask.session["name"] = pw["fullname"]
@@ -66,46 +65,49 @@ def edit_profile():
 
     if flask.request.method == 'POST':
         # Get the form data
+        new_username = flask.request.form['username']
         fullname = flask.request.form['fullname']
-        password = flask.request.form['password']
         major = flask.request.form['major']
         job = flask.request.form['job']
         desc = flask.request.form['desc']
-        campus = flask.request.form['campus']
         contacts = flask.request.form['contacts']
-        cross_time = flask.request.form['cross_time']
         grad_time = flask.request.form['grad_time']
-        line = flask.request.form['line']
-        line_num = flask.request.form['line_num']
-        lion_name = flask.request.form['lion_name']
         active = flask.request.form.get('active', 0)
+        
 
         file = flask.request.files["profile_picture"]
-        if not file:
-            flask.abort(400)
+        if file:
+            filename = file.filename
+            stem = uuid.uuid4().hex
+            suffix = pathlib.Path(filename).suffix.lower()
+            uuid_basename = f"{stem}{suffix}"
+            path = obhapp.app.config["UPLOAD_FOLDER"]/uuid_basename
+            file.save(path)
+        else:
+            uuid_basename = flask.request.form['existing_profile_picture']
 
-        filename = file.filename
-        stem = uuid.uuid4().hex
-        suffix = pathlib.Path(filename).suffix.lower()
-        uuid_basename = f"{stem}{suffix}"
-        path = obhapp.app.config["UPLOAD_FOLDER"]/uuid_basename
-        file.save(path)
-
-        print("Updating profile for:", username)  # Debug statement
-        print("Form data:", fullname, uuid_basename, password, major, job, desc, campus, contacts, cross_time, grad_time, line, line_num, lion_name, active)  # Debug statement
+        flask.session["user"] = new_username
+        flask.session["pfp"] = uuid_basename
+        flask.session["name"] = fullname
         
         # Update the user's information in the database
         con.execute('''
-            UPDATE brothers SET fullname = ?, profile_picture = ?, password = ?, major = ?, job = ?, desc = ?, 
-            campus = ?, contacts = ?, cross_time = ?, grad_time = ?, line = ?, line_num = ?, lion_name = ?, active = ? 
-            WHERE name = ? OR uniqname = ?
-        ''', (fullname, uuid_basename, password, major, job, desc, campus, contacts, cross_time, grad_time, line, line_num, lion_name, active, username, username))
+            UPDATE brothers SET username = ?, fullname = ?, profile_picture = ?, major = ?, job = ?, desc = ?, 
+             contacts = ?, grad_time = ?, active = ? 
+            WHERE username = ?
+        ''', (new_username, fullname, uuid_basename, major, job, desc, contacts, grad_time, active, username))
         
+        con.execute(
+            "INSERT INTO change_log(username, desc) "
+            "VALUES(?, ?); ",
+            (flask.session["user"], f"Changed account details (former username: {username})")
+        )
+    
         con.commit()
         return flask.redirect(flask.url_for('edit_profile'))
 
     # Fetch the user's current information
-    cur = con.execute('SELECT * FROM brothers WHERE name = ? OR uniqname = ?', (username, username))
+    cur = con.execute('SELECT * FROM brothers WHERE username = ?', (username,))
     brother = cur.fetchone()
     context = {"brother": brother}
 
@@ -113,6 +115,44 @@ def edit_profile():
 
     return flask.render_template('portal_account.html', **context)
 
+
+@obhapp.app.route('/change_password', methods=['POST'])
+def change_password():
+    if 'username' not in flask.session:
+        return flask.redirect(flask.url_for('login'))
+    
+    username = flask.session['username']
+    current_password = flask.request.form['current_password']
+    new_password = flask.request.form['new_password']
+    confirm_new_password = flask.request.form['confirm_new_password']
+
+    if new_password != confirm_new_password:
+        return "New passwords do not match."
+
+    conn = obhapp.model.get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT password FROM brothers WHERE username = ?', (username,))
+    brother = cursor.fetchone()
+
+    algorithm, salt, stored_password_hash = brother['password'].split('$')
+    hash_obj = hashlib.new(algorithm)
+    hash_obj.update((salt + current_password).encode('utf-8'))
+
+    if hash_obj.hexdigest() != stored_password_hash:
+        conn.close()
+        return "Current password is incorrect."
+
+    new_salt = uuid.uuid4().hex
+    new_hash_obj = hashlib.new(algorithm)
+    new_hash_obj.update((new_salt + new_password).encode('utf-8'))
+    new_password_hash = new_hash_obj.hexdigest()
+    new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
+
+    cursor.execute('UPDATE brothers SET password = ? WHERE username = ?', (new_password_db_string, username))
+    conn.commit()
+    conn.close()
+
+    return flask.redirect(flask.url_for('profile'))
 
 
 @obhapp.app.route('/portal/directory/')
@@ -123,7 +163,7 @@ def show_portal_directory():
     context = {"user": user}
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, name, line, line_num, uniqname FROM brothers "
+        "SELECT fullname, username, line, line_num, uniqname FROM brothers "
         "ORDER BY line ASC, line_num ASC;",
     )
     brothers = cur.fetchall()
@@ -215,21 +255,45 @@ def move_recruits():
     )
     rec = cur.fetchall()
     for recruit in rec:
-        time_made = datetime.datetime.now()
-        reference = datetime.datetime(2018, 1, 1)
+        time_made = datetime.now()
+        reference = datetime(2018, 1, 1)
         year_diff = (time_made.year - reference.year) - (1 if (time_made.month, time_made.day) < (reference.month, reference.day) else 0)
         line = year_diff
         cross_time = "SP' " + str(2018 + year_diff)
-        name = recruit["fullname"].lower().replace(" ", "")
+        username = recruit["fullname"].lower().replace(" ", "")
+        counter = 0
+        temp_user = username
+        cur = con.execute(
+            "SELECT username FROM brothers "
+            "WHERE username = ? ",
+            (username,)
+        )
+        while cur.fetchone():
+            counter += 1
+            temp_user = username + str(counter)
+            cur = con.execute(
+                "SELECT username FROM brothers "
+                "WHERE username = ? ",
+                (temp_user,)
+            )
+        username = temp_user
+
+        algorithm = 'sha512'
+        salt = uuid.uuid4().hex
+        hash_obj = hashlib.new(algorithm)
+        hash_obj.update((salt + "password").encode('utf-8'))
+        password_hash = hash_obj.hexdigest()
+        password_db_string = "$".join([algorithm, salt, password_hash])
+
         con.execute(
-            "INSERT INTO brothers(name, uniqname, fullname, line, line_num, lion_name, cross_time, active) "
+            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, lion_name, cross_time, active) "
             "VALUES(?, ?, ?, ?, ?, ?, ?, 1); ",
-            (name, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
+            (username, password_db_string, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
         )
         con.execute(
             "INSERT INTO change_log(username, desc) "
             "VALUES(?, ?); ",
-            (flask.session["user"], f"Recruit {name} moved to Brothers")
+            (flask.session["user"], f"Recruit {recruit["uniqname"]} moved to Brothers as {username}")
         )
         con.commit()
         
@@ -248,3 +312,28 @@ def logout():
     flask.session.clear()
     return flask.redirect(flask.url_for('show_index'))
 
+@obhapp.app.route('/portal/upload/', methods=['GET', 'POST'])
+def upload():
+    if flask.request.method == 'POST':
+        description = flask.request.form['description']
+        file = flask.request.files['profile_picture']
+        connection = obhapp.model.get_db()
+
+        if file:
+            filename = file.filename
+            stem = uuid.uuid4().hex
+            suffix = pathlib.Path(filename).suffix.lower()
+            uuid_basename = f"{stem}{suffix}"
+            path = obhapp.app.config['UPLOAD_FOLDER'] / uuid_basename
+            file.save(path)
+            # Save description and file path to the database if necessary
+            
+            curr = connection.execute(
+                "INSERT INTO gallery(filename, desc) "
+                "VALUES(?, ?) ",
+                (uuid_basename, description)
+            )
+
+            return flask.redirect(flask.url_for('upload'))
+
+    return flask.render_template('portal_upload.html')

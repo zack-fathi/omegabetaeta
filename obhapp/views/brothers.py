@@ -1,5 +1,5 @@
 import flask
-import datetime
+from datetime import datetime
 import obhapp
 from obhapp.utils import line_int_to_line
 
@@ -8,7 +8,7 @@ from obhapp.utils import line_int_to_line
 def show_brothers():
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, name, line, line_num, uniqname, profile_picture FROM brothers "
+        "SELECT fullname, username, line, line_num, uniqname, profile_picture FROM brothers "
         "WHERE active = 1 "
         "ORDER BY fullname ASC;",
     )
@@ -25,12 +25,14 @@ def show_brother(name):
     con = obhapp.model.get_db()
     cur = con.execute(
         "SELECT fullname, uniqname, profile_picture, major, desc, campus, contacts, cross_time, grad_time, line, line_num FROM brothers "
-        "WHERE name = ? ",
+        "WHERE username = ? ",
         (name, )
     )
     bro = cur.fetchone()
     bro["line_name"] = line_int_to_line[str(bro["line"])]
     # return bro
+
+    bro['grad_time'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
     return flask.render_template("brother.html", **bro)
 
 @obhapp.app.route('/apply/')

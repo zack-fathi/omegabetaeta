@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
+
 {% block content %}
-{% for image in images %}
-    <div>
-        <img src="/uploads/{{ image['filename'] }}" alt="image">
-        <p> {{ image['desc']}} </p>
+<div class="photo-gallery">
+    <h1>Gallery</h1>
+    <div class="photo-gallery-container">
+        {% for image in images %}
+        <div class="photo-gallery-item">
+            <img src="/uploads/{{ image['filename'] }}" alt="image">
+            <div class="description">{{ image['desc'] }}</div>
+        </div>
+        {% endfor %}
     </div>
-{% endfor %}
+</div>
 {% endblock %}
+

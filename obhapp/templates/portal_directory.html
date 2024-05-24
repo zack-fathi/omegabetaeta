@@ -7,7 +7,7 @@
             <div class="brothers-list">
                 {% for brother in brothers[key] %}
                     <div class="brother-item">
-                        <a class="link-no-style" href="/portal/directory/{{ brother['name'] }}/">{{ brother['fullname'] }}</a>
+                        <a class="link-no-style" href="/portal/directory/{{ brother['username'] }}/">{{ brother['fullname'] }}</a>
                     </div>
                 {% endfor %}
             </div>
