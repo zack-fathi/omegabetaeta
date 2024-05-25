@@ -75,7 +75,7 @@ def edit_profile():
         active = flask.request.form.get('active', 0)
         
 
-        file = flask.request.files["profile_picture"]
+        file = flask.request.files.get("profile_picture")
         if file:
             filename = file.filename
             stem = uuid.uuid4().hex
@@ -116,18 +116,18 @@ def edit_profile():
     return flask.render_template('portal_account.html', **context)
 
 
-@obhapp.app.route('/change_password', methods=['POST'])
+@obhapp.app.route('/portal/change_password/', methods=['POST'])
 def change_password():
-    if 'username' not in flask.session:
+    if 'user' not in flask.session:
         return flask.redirect(flask.url_for('login'))
-    
-    username = flask.session['username']
+
+    username = flask.session['user']
     current_password = flask.request.form['current_password']
     new_password = flask.request.form['new_password']
     confirm_new_password = flask.request.form['confirm_new_password']
 
     if new_password != confirm_new_password:
-        return "New passwords do not match."
+        return flask.jsonify({"error": "New passwords do not match."}), 400
 
     conn = obhapp.model.get_db()
     cursor = conn.cursor()
@@ -139,8 +139,7 @@ def change_password():
     hash_obj.update((salt + current_password).encode('utf-8'))
 
     if hash_obj.hexdigest() != stored_password_hash:
-        conn.close()
-        return "Current password is incorrect."
+        return flask.jsonify({"error": "Current password is incorrect."}), 400
 
     new_salt = uuid.uuid4().hex
     new_hash_obj = hashlib.new(algorithm)
@@ -150,9 +149,8 @@ def change_password():
 
     cursor.execute('UPDATE brothers SET password = ? WHERE username = ?', (new_password_db_string, username))
     conn.commit()
-    conn.close()
 
-    return flask.redirect(flask.url_for('profile'))
+    return flask.jsonify({"success": "Password changed successfully."}), 200
 
 
 @obhapp.app.route('/portal/directory/')

@@ -1,12 +1,114 @@
-{% extends 'base.html' %} {% block content %} 
+{% extends 'base.html' %}
+{% block content %}
 
-<div>
-<img src="/uploads/{{ profile_picture }}" alt="image" />
-<div>Name: {{ fullname }}</div>
-<div>Major: {{ major }}</div>
-<div>Cross Time: {{ cross_time }}</div>
-<div>Line: {{ line_name }}</div>
-<div>Grad Time: {{ grad_time }}</div>
+<style>
+
+    .profile-container {
+        background-color: #444;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        flex-grow: 1;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 20px auto;
+        /* Center the container horizontally */
+        font-family: 'Poppins', Arial, sans-serif;
+        justify-content: space-between;
+        width: 50%;
+        /* Ensure the container takes up the middle half of the screen */
+    }
+
+    .profile-left {
+        display: flex;
+        flex-direction: column;
+        width: 48%;
+        /* Take the full width within the container */
+        margin-bottom: 20px;
+        /* Add space below for separation */
+    }
+
+    .profile-picture {
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-picture img {
+        width: 100%;
+        height: auto;
+    }
+
+    .profile-info {
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: #555;
+    }
+
+    .profile-info div {
+        margin-bottom: 10px;
+    }
+
+    .profile-info div strong {
+        font-size: 1.2em;
+        color: #fff;
+    }
+
+    .profile-description {
+        width: 48%;
+        /* Take the full width within the container */
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: #555;
+    }
+
+    .profile-description div {
+        color: #fff;
+    }
+
+    .profile-description div strong {
+        text-align: center;
+        font-size: 1.5em;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            width: 90%;
+            /* Make the container wider on smaller screens */
+        }
+
+        .profile-left,
+        .profile-description {
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-left">
+            <div class="profile-picture">
+                <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" />
+            </div>
+            <div class="profile-info">
+                <div><strong>Name:</strong> {{ fullname }}</div>
+                <div><strong>Major:</strong> {{ major }}</div>
+                <div><strong>Grad Time:</strong> {{ grad_time }}</div>
+                <div><strong>Cross Time:</strong> {{ cross_time }}</div>
+                <div><strong>Line:</strong> {{ line }}</div>
+                <div><strong>Line Number:</strong> {{ line_num }}</div>
+                <div><strong>Lion Name:</strong> {{ lion_name }}</div>
+            </div>
+    </div>
+    <div class="profile-description">
+        <div><strong>About Me</strong></div>
+        <div>{{ desc }}</div>
+    </div>
 </div>
 
 {% endblock %}

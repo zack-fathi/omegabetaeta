@@ -27,7 +27,7 @@
         </div>
         <div class="form-group">
             <label for="desc">Description</label>
-            <input type="text" id="desc" name="desc" value="{{ brother['desc'] }}" />
+            <textarea id="desc" name="desc" rows="16" cols="50">{{ brother['desc'] }}</textarea>
         </div>
         <div class="form-group">
             <label for="contacts">Contacts</label>
@@ -48,8 +48,11 @@
 
 </div>
 </br>
+
 <div class="form-container">
     <h2>Change Password</h2>
+    <div id="alert-error" class="alert alert-error"></div>
+    <div id="alert-success" class="alert alert-success"></div>
     <form action="{{ url_for('change_password') }}" method="post">
         <div class="form-group">
             <label for="current_password">Current Password</label>
@@ -68,4 +71,48 @@
         </div>
     </form>
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function showAlert(message, type) {
+            const alertBox = document.getElementById(type);
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+        }
+
+        $(document).ready(function () {
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+
+                const currentPassword = $('#current_password').val();
+                const newPassword = $('#new_password').val();
+                const confirmNewPassword = $('#confirm_new_password').val();
+
+                if (newPassword !== confirmNewPassword) {
+                    showAlert("New passwords do not match.", 'alert-error');
+                    return false;
+                }
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.error) {
+                            showAlert(response.error, 'alert-error');
+                        } else {
+                            $('#alert-error').hide();  // Hide the alert error
+                            showAlert(response.success, 'alert-success');
+                        }
+                    },
+                    error: function (response) {
+                        showAlert(response.responseJSON.error, 'alert-error');
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
+
+

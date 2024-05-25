@@ -5,6 +5,8 @@
     box-sizing: border-box;
 }
 
+
+
 .link-no-style {
     text-decoration: none; /* Removes underline */
     color: inherit; /* Inherits text color from parent */
@@ -57,7 +59,7 @@ header {
 .logoname p {
     margin: 0;
     padding: 2px 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
     color: black;
     font-size: 1.4em;
     font-weight: bold;
@@ -104,7 +106,7 @@ header {
 }
 
 .gallery h1 {
-    color: #FFD700; /* Gold */
+    color: rgba(255, 255, 255, 0.529); /* Gold */
     margin-bottom: 20px;
 }
 
@@ -116,11 +118,11 @@ header {
 
 .gallery-item {
     background-color: #444; /* Dark grey */
-    border: 2px solid #FFD700; /* Gold */
+    border: 2px solid #da3a37; /* Gold */
     border-radius: 10px;
     overflow: hidden;
     margin: 10px;
-    width: 200px;
+    width: 250px;
     text-align: center;
     transition: transform 0.2s;
 }
@@ -249,6 +251,7 @@ footer {
 /* Form Styling */
 .login-form-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
