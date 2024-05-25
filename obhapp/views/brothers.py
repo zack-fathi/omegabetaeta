@@ -24,7 +24,7 @@ def show_brothers():
 def show_brother(name):
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, uniqname, profile_picture, major, desc, campus, contacts, cross_time, grad_time, line, line_num FROM brothers "
+        "SELECT fullname, uniqname, profile_picture, major, desc, campus, contacts, cross_time, grad_time, line, line_num, lion_name FROM brothers "
         "WHERE username = ? ",
         (name, )
     )

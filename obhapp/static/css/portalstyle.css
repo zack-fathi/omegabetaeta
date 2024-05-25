@@ -5,6 +5,24 @@
     font-size: inherit; /* Inherits font size from parent */
 }
 
+.alert {
+    padding: 1em;
+    margin-bottom: 1em;
+    border: 1px solid transparent;
+    border-radius: 0.5em;
+    display: none;
+}
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;

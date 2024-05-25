@@ -5,7 +5,33 @@ import hashlib
 def line_to_cross_time(i):
     return "SP' 20" + str(18 + i)
 
-
+line_int_to_line = {
+    '0': 'Fraternal Father',
+    '1': 'Founding Line',
+    '2': 'Beta Line',
+    '3': 'Gamma Line',
+    '4': 'Delta Line',
+    '5': 'Epsilon Line',
+    '6': 'Zeta Line',
+    '7': 'Eta Line',
+    '8': 'Theta Line',
+    '9': 'Iota Line',
+    '10': 'Kappa Line',
+    '11': 'Lambda Line',
+    '12': 'Mu Line',
+    '13': 'Nu Line',
+    '14': 'Xi Line',
+    '15': 'Omicron Line',
+    '16': 'Pi Line',
+    '17': 'Rho Line',
+    '18': 'Sigma Line',
+    '19': 'Tau Line',
+    '20': 'Upsilon Line',
+    '21': 'Phi Line',
+    '22': 'Chi Line',
+    '23': 'Psi Line',
+    '24': 'Omega Line',    
+}
 
 bros = {
 0:[
@@ -126,10 +152,12 @@ with open(sql_file_path, 'w') as file:
 
         username = b["f"].lower().replace(" ", "")
 
+        desc = f"Hello, my name is {b['f']} and I am a brother of OBH.\n\n I crossed {line_to_cross_time(b['l'])} and am part of the {line_int_to_line[str(b['l'])]} as line number {b['ln']}.\n You can contact me at {b['u']}@umich.edu for further questions."
+
         # Create the SQL insert statement
         sql = (
-            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active) "
-            f'VALUES("{username}", "{new_password_db_string}", "{b["u"]}", "{b["f"]}", {b["l"]}, {b["ln"]}, "{line_to_cross_time(b["l"])}", "{b["lion"]}", {b["a"]});\n'
+            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) "
+            f'VALUES("{username}", "{new_password_db_string}", "{b["u"]}", "{b["f"]}", {b["l"]}, {b["ln"]}, "{line_to_cross_time(b["l"])}", "{b["lion"]}", {b["a"]}, "{desc}");\n'
 
         )
 
