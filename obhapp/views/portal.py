@@ -196,7 +196,7 @@ def show_portal_recruits():
         return flask.redirect(flask.url_for("login"))
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, uniqname, email, accept, line_num, lion_name FROM recruits "
+        "SELECT fullname, uniqname, email, accept, line_num, lion_name, accept FROM recruits "
     )
     recruits = cur.fetchall()
     context = {"recruits": recruits}
@@ -221,8 +221,26 @@ def accept_recruit():
         (flask.session["user"], f"Recruit {uniqname} accepted")
     )
     con.commit()
+    return flask.jsonify(success=True)
+
+@obhapp.app.route('/portal/recruits/unaccept', methods=['POST'])
+def unaccept_recruit():
+    if "user" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    uniqname = flask.request.json['id']
+    con = obhapp.model.get_db()
+    con.execute(
+        "UPDATE recruits SET accept = 0 WHERE uniqname = ?",
+        (uniqname,)
+    )
+    con.execute(
+        "INSERT INTO change_log(username, desc) "
+        "VALUES(?, ?)",
+        (flask.session["user"], f"Recruit {uniqname} unaccepted")
+    )
     con.commit()
     return flask.jsonify(success=True)
+
 
 @obhapp.app.route('/portal/recruits/remove/', methods=['POST'])
 def remove_recruit():
@@ -285,7 +303,7 @@ def move_recruits():
 
         con.execute(
             "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, lion_name, cross_time, active) "
-            "VALUES(?, ?, ?, ?, ?, ?, ?, 1); ",
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, 1); ",
             (username, password_db_string, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
         )
         con.execute(

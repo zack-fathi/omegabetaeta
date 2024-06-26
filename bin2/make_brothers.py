@@ -34,6 +34,19 @@ line_int_to_line = {
 }
 
 bros = {
+5:[ 
+"X",
+"Jawad Alsahlani - Muthafar",
+"Zackery Fathi - Aklaaf",
+"Mohsen Najar - Farhud",
+"Mohamman Alhameed - Asrul",
+"Ali Haidar - Usayd",
+"Ahmad Sukhon - Baqer",
+"Omar Said - Shibel",
+"Wadih Alradi - Haider",
+"Zaid Omari - Sarem",
+"Jaafar Abdallah - Feras",
+],
 0:[
 "Jad Elharake - Hareth",
 ],
@@ -83,19 +96,6 @@ bros = {
 "Abbas Ajami - Feras",
 "Ziad Harb - Rebaal",
 "Abood Alsubee - Abbas",
-],
-5:[ 
-"X",
-"Jawad Alsahlani - Muthafar",
-"Zackery Fathi - Aklaaf",
-"Mohsen Najar - Farhud",
-"Mohamman Alhameed - Asrul",
-"Ali Haidar - Usayd",
-"Ahmad Sukhon - Baqer",
-"Omar Said - Shibel",
-"Wadih Alradi - Haider",
-"Zaid Omari - Sarem",
-"Jaafar Abdallah - Feras",
 ],
 6:[
 "Ali Elhawli- Sarem",
