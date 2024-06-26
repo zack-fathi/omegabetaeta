@@ -5,51 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ΩBH</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap_base.css') }}">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <a href="/" class="link-no-style"><img src="/static/images/OBHLogo.png" alt="image"></a>
-            <a href="/" class="link-no-style">
-            <div class="logoname">
-                <p>Omega Beta Eta</p>
-                <p>Fraternity</p>
+    <header class="bg-danger text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="logo d-flex align-items-center">
+                <a href="/" class="link-no-style"><img src="/static/images/OBHLogo.png" alt="image" class="mr-2" style="height: 80px;"></a>
+                <a href="/" class="link-no-style">
+                    <div class="logoname">
+                        <p class="mb-0">Omega Beta Eta</p>
+                        <p class="mb-0">Fraternity</p>
+                    </div>
+                </a>
             </div>
-            </a>
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="/about/">About</a>
+                        <a class="nav-item nav-link" href="/brothers/">Brothers</a>
+                        <a class="nav-item nav-link" href="/gallery/">Gallery</a>
+                        <a class="nav-item nav-link" href="/calendar/">Calendar</a>
+                        <a class="nav-item nav-link" href="/contact/">Contact</a>
+                        <a class="nav-item nav-link" href="/donate/">Donate</a>
+                        <a class="nav-item nav-link" href="/apply/">Apply</a>
+                        <a class="nav-item nav-link" href="/portal/">Portal</a>
+                    </div>
+                </div>
+            </nav>
         </div>
-        <nav class="navbar">
-            <a href="/about/">About</a>
-            <a href="/brothers/">Brothers</a>
-            <a href="/gallery/">Gallery</a>
-            <a href="/calendar/">Calendar</a>
-            <a href="/contact/">Contact</a>
-            <a href="/donate/">Donate</a>
-            <a href="/apply/">Apply</a>
-            <a href="/portal/">Portal</a>
-        </nav>
     </header>
 
-
-    <div class="main-info">
-    {% block content %}{% endblock %}
+    <div class="main-info container mt-4">
+        {% block content %}{% endblock %}
     </div>
 
-   
+    <footer class="bg-dark text-white py-3 mt-auto">
+        <div class="container text-center">
+            <div class="footer-container d-flex justify-content-center mb-2">
+                <a href="https://www.instagram.com/omegabetaeta/?hl=en" class="social-icon mx-2" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.youtube.com/@OmegaBetaEta" class="social-icon mx-2" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+            <div>&copy; Omega Beta Eta Arab Fraternity Incorporated.</div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-<footer>
-    <div class="footer-container">
-        <a href="https://www.instagram.com/omegabetaeta/?hl=en" class="social-icon" target="_blank">
-            <i class="fab fa-instagram"></i>
-        </a>
-        <a href="https://www.youtube.com/@OmegaBetaEta" class="social-icon" target="_blank">
-            <i class="fab fa-youtube"></i>
-        </a>
-    </div>
-     <!-- Copyright notice -->
-    <div>
-        &copy; Omega Beta Eta Arab Fraternity Incorporated.
-    </div>
-</footer>
 </html>

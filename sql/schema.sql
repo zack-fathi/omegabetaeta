@@ -1,6 +1,7 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE brothers(
+  user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username VARCHAR(20) NOT NULL,
   uniqname VARCHAR(20) DEFAULT "N/A",
   fullname VARCHAR(40) NOT NULL,
@@ -16,8 +17,7 @@ CREATE TABLE brothers(
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
   lion_name TEXT NOT NULL,
-  active BIT DEFAULT 0,
-  PRIMARY KEY(username)
+  active BIT DEFAULT 0
 );
 
 CREATE TABLE recruits(
@@ -42,4 +42,11 @@ CREATE TABLE change_log (
     username TEXT NOT NULL,
     change_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     desc TEXT NOT NULL
+);
+
+CREATE TABLE boards (
+    role_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role_name TEXT NOT NULL,
+    user_id TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

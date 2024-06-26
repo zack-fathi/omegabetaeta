@@ -26,7 +26,11 @@
                     <input type="text" class="lion-name" data-id="{{ recruit.uniqname }}" value="{{ recruit.lion_name }}">
                 </td>
                 <td>
+                    {% if recruit.accept %}
+                    <button class="accepted-btn" data-id="{{ recruit.uniqname }}">Accepted</button>
+                    {% else %}
                     <button class="accept-btn" data-id="{{ recruit.uniqname }}">Accept</button>
+                    {% endif %}
                     <button class="remove-btn" data-id="{{ recruit.uniqname }}">X</button>
                 </td>
             </tr>
@@ -36,10 +40,22 @@
     <button id="move-recruits-btn">Move Accepted Recruits to Brothers</button>
 </section>
 
+<style>
+    .accept-btn {
+        background-color: green;
+        color: white;
+    }
+    .accepted-btn {
+        background-color: grey;
+        color: black;
+    }
+</style>
+
 <script>
     $(document).ready(function() {
-        $('.accept-btn').click(function() {
-            var id = $(this).data('id');
+        $(document).on('click', '.accept-btn', function() {
+            var $button = $(this);
+            var id = $button.data('id');
             var line_num = $('#recruit-' + id).find('.line-num').val();
             var lion_name = $('#recruit-' + id).find('.lion-name').val();
 
@@ -55,7 +71,24 @@
                 data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
                 success: function(response) {
                     if (response.success) {
-                        alert('Recruit accepted!');
+                        $button.removeClass('accept-btn').addClass('accepted-btn').text('Accepted');
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '.accepted-btn', function() {
+            var $button = $(this);
+            var id = $button.data('id');
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ url_for('unaccept_recruit') }}',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id }),
+                success: function(response) {
+                    if (response.success) {
+                        $button.removeClass('accepted-btn').addClass('accept-btn').text('Accept');
                     }
                 }
             });
@@ -75,7 +108,6 @@
                 }
             });
         });
-
 
         $('#move-recruits-btn').click(function() {
             $.ajax({
