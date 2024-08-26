@@ -1,8 +1,4 @@
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a3a7d9c (style changes)
 INSERT INTO gallery(filename, desc) 
 VALUES('OBH1.jpg', 'This is image 1 of 3 test images');
 
