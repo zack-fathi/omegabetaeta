@@ -39,10 +39,12 @@ CREATE TABLE gallery(
 
 CREATE TABLE change_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
     change_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    desc TEXT NOT NULL
+    desc TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES brothers(user_id)
 );
+
 
 CREATE TABLE boards (
     role_id INTEGER PRIMARY KEY AUTOINCREMENT,

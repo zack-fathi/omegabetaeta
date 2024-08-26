@@ -8,6 +8,7 @@ import obhapp.model
 from obhapp.utils import line_int_to_line
 
 
+
 @obhapp.app.route('/login/')
 def show_login():
     if "user" in flask.session:
@@ -23,44 +24,42 @@ def login():
         return flask.redirect(flask.url_for('show_login'))
     connection = obhapp.model.get_db()
     cur = connection.execute(
-        "SELECT password, profile_picture, fullname FROM brothers "
+        "SELECT user_id, password, profile_picture, fullname FROM brothers "
         "WHERE username = ? ",
         (username,)
     )
-    pw = cur.fetchone()
-    if pw is None:
+    user = cur.fetchone()
+    if user is None:
         flask.flash('User does not exist', 'error')
         return flask.redirect(flask.url_for('show_login'))
 
-    alg, salt, stored_hash = pw["password"].split('$')
+    alg, salt, stored_hash = user["password"].split('$')
     hash_obj = hashlib.new(alg)
     password_salted = salt + password
     hash_obj.update(password_salted.encode('utf-8'))
     password_hash = hash_obj.hexdigest()
     if password_hash == stored_hash:
-        flask.session["user"] = username
-        flask.session["pfp"] = pw["profile_picture"]
-        flask.session["name"] = pw["fullname"]
+        flask.session["user_id"] = user["user_id"]
+        flask.session["pfp"] = user["profile_picture"]
+        flask.session["name"] = user["fullname"]
     else:
         flask.flash('Incorrect password', 'error')
         return flask.redirect(flask.url_for('show_login'))
     return flask.redirect(flask.request.args.get('target'))
 
-
 @obhapp.app.route('/portal/')
 def show_portal():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     return flask.render_template("portal_index.html")
 
 
-
 @obhapp.app.route('/portal/account/', methods=['GET', 'POST'])
 def edit_profile():
-    # if 'username' not in flask.session:
-    #     return flask.redirect(flask.url_for('login'))
-    
-    username = flask.session['user']
+    if 'user_id' not in flask.session:
+        return flask.redirect(flask.url_for('login'))
+
+    user_id = flask.session['user_id']
     con = obhapp.model.get_db()
 
     if flask.request.method == 'POST':
@@ -73,7 +72,6 @@ def edit_profile():
         contacts = flask.request.form['contacts']
         grad_time = flask.request.form['grad_time']
         active = flask.request.form.get('active', 0)
-        
 
         file = flask.request.files.get("profile_picture")
         if file:
@@ -81,47 +79,45 @@ def edit_profile():
             stem = uuid.uuid4().hex
             suffix = pathlib.Path(filename).suffix.lower()
             uuid_basename = f"{stem}{suffix}"
-            path = obhapp.app.config["UPLOAD_FOLDER"]/uuid_basename
+            path = obhapp.app.config["UPLOAD_FOLDER"] / uuid_basename
             file.save(path)
         else:
             uuid_basename = flask.request.form['existing_profile_picture']
 
-        flask.session["user"] = new_username
-        flask.session["pfp"] = uuid_basename
-        flask.session["name"] = fullname
-        
         # Update the user's information in the database
         con.execute('''
             UPDATE brothers SET username = ?, fullname = ?, profile_picture = ?, major = ?, job = ?, desc = ?, 
              contacts = ?, grad_time = ?, active = ? 
-            WHERE username = ?
-        ''', (new_username, fullname, uuid_basename, major, job, desc, contacts, grad_time, active, username))
-        
+            WHERE user_id = ?
+        ''', (new_username, fullname, uuid_basename, major, job, desc, contacts, grad_time, active, user_id))
+
         con.execute(
-            "INSERT INTO change_log(username, desc) "
+            "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
-            (flask.session["user"], f"Changed account details (former username: {username})")
+            (user_id, f"Changed account details (new username: {new_username})")
         )
-    
         con.commit()
+
+        # Update the session variables
+        flask.session["pfp"] = uuid_basename
+        flask.session["name"] = fullname
+
         return flask.redirect(flask.url_for('edit_profile'))
 
     # Fetch the user's current information
-    cur = con.execute('SELECT * FROM brothers WHERE username = ?', (username,))
+    cur = con.execute('SELECT * FROM brothers WHERE user_id = ?', (user_id,))
     brother = cur.fetchone()
     context = {"brother": brother}
-
-    print("Fetched brother data:", brother)  # Debug statement
 
     return flask.render_template('portal_account.html', **context)
 
 
 @obhapp.app.route('/portal/change_password/', methods=['POST'])
 def change_password():
-    if 'user' not in flask.session:
+    if 'user_id' not in flask.session:
         return flask.redirect(flask.url_for('login'))
 
-    username = flask.session['user']
+    user_id = flask.session['user_id']
     current_password = flask.request.form['current_password']
     new_password = flask.request.form['new_password']
     confirm_new_password = flask.request.form['confirm_new_password']
@@ -131,7 +127,7 @@ def change_password():
 
     conn = obhapp.model.get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT password FROM brothers WHERE username = ?', (username,))
+    cursor.execute('SELECT password FROM brothers WHERE user_id = ?', (user_id,))
     brother = cursor.fetchone()
 
     algorithm, salt, stored_password_hash = brother['password'].split('$')
@@ -147,18 +143,17 @@ def change_password():
     new_password_hash = new_hash_obj.hexdigest()
     new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
 
-    cursor.execute('UPDATE brothers SET password = ? WHERE username = ?', (new_password_db_string, username))
+    cursor.execute('UPDATE brothers SET password = ? WHERE user_id = ?', (new_password_db_string, user_id))
     conn.commit()
 
     return flask.jsonify({"success": "Password changed successfully."}), 200
 
-
 @obhapp.app.route('/portal/directory/')
 def show_portal_directory():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
-    user = flask.session['user']
-    context = {"user": user}
+    user_id = flask.session['user_id']
+    context = {"user_id": user_id}
     con = obhapp.model.get_db()
     cur = con.execute(
         "SELECT fullname, username, line, line_num, uniqname FROM brothers "
@@ -171,14 +166,12 @@ def show_portal_directory():
         line = line_int_to_line[str(i)]
         line_dict[line] = [brother for brother in brothers if brother["line"] == i]
 
-
     context["brothers"] = line_dict
     return flask.render_template("portal_directory.html", **context)
 
-
 @obhapp.app.route('/portal/log/')
 def show_portal_log():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     con = obhapp.model.get_db()
     cur = con.execute(
@@ -189,10 +182,9 @@ def show_portal_log():
     context = {"log": log}
     return flask.render_template("portal_log.html", **context)
 
-
 @obhapp.app.route('/portal/recruits/')
 def show_portal_recruits():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     con = obhapp.model.get_db()
     cur = con.execute(
@@ -202,10 +194,9 @@ def show_portal_recruits():
     context = {"recruits": recruits}
     return flask.render_template("portal_recruits.html", **context)
 
-
 @obhapp.app.route('/portal/recruits/accept', methods=['POST'])
 def accept_recruit():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     uniqname = flask.request.json['id']
     line_num = flask.request.json['line_num']
@@ -216,16 +207,16 @@ def accept_recruit():
         (line_num, lion_name, uniqname)
     )
     con.execute(
-        "INSERT INTO change_log(username, desc) "
+        "INSERT INTO change_log(user_id, desc) "
         "VALUEs(?, ?) ",
-        (flask.session["user"], f"Recruit {uniqname} accepted")
+        (flask.session["user_id"], f"Recruit {uniqname} accepted")
     )
     con.commit()
     return flask.jsonify(success=True)
 
 @obhapp.app.route('/portal/recruits/unaccept', methods=['POST'])
 def unaccept_recruit():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     uniqname = flask.request.json['id']
     con = obhapp.model.get_db()
@@ -234,17 +225,16 @@ def unaccept_recruit():
         (uniqname,)
     )
     con.execute(
-        "INSERT INTO change_log(username, desc) "
+        "INSERT INTO change_log(user_id, desc) "
         "VALUES(?, ?)",
-        (flask.session["user"], f"Recruit {uniqname} unaccepted")
+        (flask.session["user_id"], f"Recruit {uniqname} unaccepted")
     )
     con.commit()
     return flask.jsonify(success=True)
 
-
 @obhapp.app.route('/portal/recruits/remove/', methods=['POST'])
 def remove_recruit():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     uniqname = flask.request.json['id']
     con = obhapp.model.get_db()
@@ -253,16 +243,16 @@ def remove_recruit():
         (uniqname,)
     )
     con.execute(
-        "INSERT INTO change_log(username, desc) "
+        "INSERT INTO change_log(user_id, desc) "
         "VALUES(?, ?) ",
-        (flask.session["user"], f"Recruit {uniqname} deleted")
+        (flask.session["user_id"], f"Recruit {uniqname} deleted")
     )
     con.commit()
     return flask.jsonify(success=True)
 
 @obhapp.app.route('/portal/recruits/move/', methods=['POST'])
 def move_recruits():
-    if "user" not in flask.session:
+    if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     con = obhapp.model.get_db()
     cur = con.execute(
@@ -307,21 +297,18 @@ def move_recruits():
             (username, password_db_string, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
         )
         con.execute(
-            "INSERT INTO change_log(username, desc) "
+            "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
-            (flask.session["user"], f"Recruit {recruit["uniqname"]} moved to Brothers as {username}")
+            (flask.session["user_id"], f"Recruit {recruit['uniqname']} moved to Brothers as {username}")
         )
         con.commit()
-        
 
     con.execute(
         "DELETE FROM recruits WHERE accept = 1"
     )
     con.commit()
-    
 
     return flask.jsonify(success=True)
-
 
 @obhapp.app.route('/portal/logout/')
 def logout():
@@ -343,7 +330,7 @@ def upload():
             path = obhapp.app.config['UPLOAD_FOLDER'] / uuid_basename
             file.save(path)
             # Save description and file path to the database if necessary
-            
+
             curr = connection.execute(
                 "INSERT INTO gallery(filename, desc) "
                 "VALUES(?, ?) ",
