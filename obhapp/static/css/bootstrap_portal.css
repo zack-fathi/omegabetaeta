@@ -1,0 +1,127 @@
+/* Link Styles */
+.link-no-style {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Alert Styles */
+.alert {
+    display: none;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #da3a37;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    width: 250px;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+}
+
+.sidebar .logo img {
+    height: 150px;
+    margin: 20px;
+}
+
+.sidebar .nav {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar .nav li {
+    margin: 10px 0;
+}
+
+.sidebar .nav li a {
+    color: white;
+    font-size: 18px;
+    display: block;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.sidebar .nav li a:hover {
+    background-color: #b22222;
+    color: #FFD700;
+    transform: scale(1.05);
+}
+
+/* Main Content Styles */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    background-color: #f2f2f2;
+    min-height: 100vh;
+}
+
+/* Profile Styles */
+.profile {
+    display: flex;
+    align-items: center;
+    background-color: #da3a37;
+    padding: 10px;
+    border-radius: 50px;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile:hover {
+    background-color: #b22222;
+    transform: scale(1.05);
+}
+
+.profile-pic img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Category Title Styles */
+.category-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+
+/* Log Table Styles */
+.log-table th {
+    background-color: #da3a37;
+    color: white;
+}
+
+.log-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.log-table tr:hover {
+    background-color: #ddd;
+}
+
+/* Form Actions Styles */
+.form-actions input[type="submit"] {
+    background-color: #da3a37;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.form-actions input[type="submit"]:hover {
+    background-color: #b22222;
+}
+
+.welcome {
+    background-color: #da3a37;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}

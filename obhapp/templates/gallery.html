@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="photo-gallery">
-    <h1>Gallery</h1>
-    <div class="photo-gallery-container">
+<div class="container py-5">
+    <h1 class="text-center mb-4">Gallery</h1>
+    <div class="row d-flex justify-content-center">
         {% for image in images %}
-        <div class="photo-gallery-item">
-            <img src="/uploads/{{ image['filename'] }}" alt="image">
-            <div class="description">{{ image['desc'] }}</div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card h-100">
+                <div class="image-container">
+                    <img src="/uploads/{{ image['filename'] }}" class="card-img-top img-fluid" alt="image">
+                </div>
+                <div class="card-body text-center">
+                    <p class="card-text">{{ image['desc'] }}</p>
+                </div>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
 {% endblock %}
-

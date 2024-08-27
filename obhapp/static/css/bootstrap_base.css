@@ -63,63 +63,56 @@ footer .social-icon:hover {
     color: #FFD700;  /* Gold */
 }
 
-/* Apply Form Styling */
-.apply-form-container, .login-form-container {
+/* apply form styling */
+.apply-form-container {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    min-height: 80vh; /* Center vertically with a height that adjusts */
 }
 
-.apply-form, .login-form {
-    background-color: #333;
+.apply-form {
+    background-color: transparent; /* No background */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    max-width: 400px;
-    width: 100%;
 }
 
-.apply-form .form-group, .login-form .form-group {
-    margin-bottom: 15px;
+.form-label {
+    color: #FFD700; /* Gold text color for labels */
 }
 
-.apply-form .form-group label, .login-form .form-group label {
-    color: #FFD700; /* Gold */
-}
-
-.apply-form .form-group input, .login-form .form-group input {
-    width: 100%;
-    padding: 10px;
+.form-control {
+    background-color: #444; /* Dark gray background for inputs */
+    color: white; /* White text */
     border: none;
     border-radius: 5px;
-    background-color: #444;
-    color: white;
 }
 
-.apply-form .form-group input:focus, .login-form .form-group input:focus {
+.form-control::placeholder {
+    color: #ccc; /* Optional: Light gray color for placeholder text */
+}
+
+.form-control:focus {
+    background-color: #555; /* Slightly lighter gray on focus */
+    color: white; /* Ensure the text remains white on focus */
     outline: none;
-    background-color: #555;
 }
 
-.apply-form .form-actions, .login-form .form-actions {
-    display: flex;
-    justify-content: space-between;
-}
 
-.apply-form .form-actions input[type="submit"], .login-form .form-actions input[type="submit"] {
-    background-color: #da3a37; /* Red */
-    color: white;
-    padding: 10px 20px;
+.btn-primary {
+    background-color: #da3a37; /* Red button */
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
-.apply-form .form-actions input[type="submit"]:hover, .login-form .form-actions input[type="submit"]:hover {
-    background-color: #b22222; /* Dark Red */
+.btn-primary:hover {
+    background-color: #b22222; /* Darker red on hover */
 }
+
+
+.d-flex.justify-content-center {
+    margin-top: 20px; /* Add space between form fields and button */
+}
+
 
 /* Flash Messages */
 .flashes {
@@ -206,71 +199,25 @@ footer .social-icon:hover {
     margin: 5px 0;
 } */
 
-
-/* Photo Gallery styling */
-.photo-gallery {
-    padding: 20px;
-    text-align: center;
+.image-container {
+    width: 100%;
+    height: 200px; /* Set the desired height */
+    overflow: hidden; /* Hide any overflow */
 }
 
-.photo-gallery h1 {
-    color: #333; /* Dark text */
-    margin-bottom: 20px;
-    font-size: 2em; /* Larger font size */
+.image-container img {
+    object-fit: cover; /* Ensures the image covers the container without distortion */
+    width: 100%;
+    height: 100%;
 }
 
-.photo-gallery-container {
+.login-form-container {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px; /* Space between images */
+    align-items: center;
+    /* min-height: 80vh; Adjust the form height as needed */
 }
 
-.photo-gallery-item {
-    position: relative;
-    overflow: hidden;
-    flex: 1 1 calc(25% - 10px); /* Adjusts to fit four items per row, with spacing */
-    max-width: calc(25% - 10px); /* Ensures max width */
-}
-
-.photo-gallery-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.photo-gallery-item:hover img {
-    transform: scale(1.1); /* Slight zoom effect on hover */
-}
-
-.photo-gallery-item .description {
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    color: #FFD700; /* Gold text */
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.photo-gallery-item:hover .description {
-    opacity: 1;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .photo-gallery-item {
-        flex: 1 1 calc(50% - 10px); /* Two items per row */
-        max-width: calc(50% - 10px);
-    }
-}
-
-@media (max-width: 480px) {
-    .photo-gallery-item {
-        flex: 1 1 calc(100% - 10px); /* One item per row */
-        max-width: calc(100% - 10px);
-    }
+.flashes li {
+    margin-bottom: 10px;
 }
