@@ -136,7 +136,7 @@ for key in bros.keys():
 
 
 # Define the path to the SQL file
-sql_file_path = 'insert_brothers.sql'
+sql_file_path = 'sql/insert_brothers.sql'
 
 new_password = "password"
 algorithm = 'sha512'
