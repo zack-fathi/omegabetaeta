@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ΩBH</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/portalstyle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_portal.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function confirmLogout(event) {
@@ -16,32 +17,30 @@
     </script>
 </head>
 <body>
-    <div class="container">
+    <div class="d-flex">
         <aside class="sidebar">
-            <div class="logo">
+            <div class="logo text-center">
                 <a href="/">
-                    <div>
-                        <img src="{{ url_for('static', filename='images/OBHLogo.png') }}" alt="Logo">
-                    </div>
+                    <img src="{{ url_for('static', filename='images/OBHLogo.png') }}" alt="Logo">
                 </a>
             </div>
-            <nav class="nav">
-                <ul>
-                    <li><a href="/portal/">Portal Home</a></li>
-                    <li><a href="/portal/recruits/">Recruits</a></li>
-                    <li><a href="/portal/directory/">Directory</a></li>
-                    <li><a href="/portal/log/">Log</a></li>
-                    <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></li>
-                    <li><a href="/portal/upload/">Upload</a></li>
-                    <li><a href="/portal/logout/" onclick="confirmLogout(event)">Logout</a></li>
+            <nav>
+                <ul class="nav flex-column text-center">
+                    <li class="nav-item"><a class="nav-link" href="/portal/">Portal Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portal/recruits/">Recruits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portal/directory/">Directory</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portal/log/">Log</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portal/upload/">Upload</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portal/logout/" onclick="confirmLogout(event)">Logout</a></li>
                 </ul>
             </nav>
         </aside>
-        <main class="main-content">
-            <header class="header">
-                <a href="/portal/account/" style="text-decoration: none; color: inherit;">
-                    <div class="profile">
-                        <div class="profile-info">
+        <main class="main-content flex-grow-1">
+            <header class="d-flex justify-content-end align-items-center mb-4">
+                <a href="/portal/account/" class="link-no-style">
+                    <div class="profile d-flex align-items-center">
+                        <div class="profile-info mr-2 text-right">
                             <p class="profile-name">{{ session.get('name') }}</p>
                         </div>
                         <div class="profile-pic">
@@ -50,7 +49,7 @@
                     </div>
                 </a>
             </header>
-            <div class="main-info">
+            <div class="main-info bg-white p-4 rounded shadow">
                 {% block content %}{% endblock %}
             </div>
         </main>

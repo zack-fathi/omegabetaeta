@@ -1,8 +1,8 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-<section class="recruits">
-    <h2>Recruits</h2>
-    <table>
+<section class="recruits mb-4">
+    <h2 class="mb-4">Recruits</h2>
+    <table class="table">
         <thead>
             <tr>
                 <th>Full Name</th>
@@ -20,36 +20,25 @@
                 <td>{{ recruit.uniqname }}</td>
                 <td>{{ recruit.email }}</td>
                 <td>
-                    <input type="number" class="line-num" data-id="{{ recruit.uniqname }}" value="{{ recruit.line_num }}">
+                    <input type="number" class="form-control line-num" data-id="{{ recruit.uniqname }}" value="{{ recruit.line_num }}">
                 </td>
                 <td>
-                    <input type="text" class="lion-name" data-id="{{ recruit.uniqname }}" value="{{ recruit.lion_name }}">
+                    <input type="text" class="form-control lion-name" data-id="{{ recruit.uniqname }}" value="{{ recruit.lion_name }}">
                 </td>
                 <td>
                     {% if recruit.accept %}
-                    <button class="accepted-btn" data-id="{{ recruit.uniqname }}">Accepted</button>
+                    <button class="btn accepted-btn" data-id="{{ recruit.uniqname }}" style="background-color: grey; color: black;">Accepted</button>
                     {% else %}
-                    <button class="accept-btn" data-id="{{ recruit.uniqname }}">Accept</button>
+                    <button class="btn accept-btn" data-id="{{ recruit.uniqname }}" style="background-color: green; color: white;">Accept</button>
                     {% endif %}
-                    <button class="remove-btn" data-id="{{ recruit.uniqname }}">X</button>
+                    <button class="btn remove-btn" data-id="{{ recruit.uniqname }}" style="background-color: red; color: white;">X</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <button id="move-recruits-btn">Move Accepted Recruits to Brothers</button>
+    <button id="move-recruits-btn" class="btn" style="background-color: #da3a37; color: white;">Move Accepted Recruits to Brothers</button>
 </section>
-
-<style>
-    .accept-btn {
-        background-color: green;
-        color: white;
-    }
-    .accepted-btn {
-        background-color: grey;
-        color: black;
-    }
-</style>
 
 <script>
     $(document).ready(function() {
@@ -71,7 +60,10 @@
                 data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
                 success: function(response) {
                     if (response.success) {
-                        $button.removeClass('accept-btn').addClass('accepted-btn').text('Accepted');
+                        $button.removeClass('accept-btn').addClass('accepted-btn').text('Accepted').css({
+                            "background-color": "grey",
+                            "color": "black"
+                        });
                     }
                 }
             });
@@ -88,7 +80,10 @@
                 data: JSON.stringify({ id: id }),
                 success: function(response) {
                     if (response.success) {
-                        $button.removeClass('accepted-btn').addClass('accept-btn').text('Accept');
+                        $button.removeClass('accepted-btn').addClass('accept-btn').text('Accept').css({
+                            "background-color": "green",
+                            "color": "white"
+                        });
                     }
                 }
             });
