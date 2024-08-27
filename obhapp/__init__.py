@@ -7,6 +7,7 @@ app = flask.Flask(__name__)  # pylint: disable=invalid-name
 # Read settings from config module (insta485/config.py)
 app.config.from_object('obhapp.config')
 
+app.debug = True
 # Overlay settings read from a Python file whose path is set in the environment
 # variable INSTA485_SETTINGS. Setting this environment variable is optional.
 # Docs: http://flask.pocoo.org/docs/latest/config/

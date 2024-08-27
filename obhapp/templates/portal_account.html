@@ -2,7 +2,7 @@
 {% block content %}
 <div class="form-container">
     <h2>Edit Profile</h2>
-    <form action="{{ url_for('edit_profile') }}" method="post" enctype="multipart/form-data">
+    <form id="edit-profile-form" action="{{ url_for('edit_profile') }}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" value="{{ brother['username'] }}" required />
@@ -15,7 +15,7 @@
             <label for="profile_picture">Profile Picture</label>
             <input type="hidden" name="existing_profile_picture" value="{{ brother['profile_picture'] }}">
             <img src="/uploads/{{ brother['profile_picture'] }}" alt="Profile Picture" style="max-width: 100px; display: block; margin-bottom: 10px;">
-            <input type="file" id="profile_picture" name="profile_picture" />
+            <input type="file" id="profile_picture" name="profile_picture" >
         </div>
         <div class="form-group">
             <label for="major">Major</label>
@@ -53,7 +53,7 @@
     <h2>Change Password</h2>
     <div id="alert-error" class="alert alert-error"></div>
     <div id="alert-success" class="alert alert-success"></div>
-    <form action="{{ url_for('change_password') }}" method="post">
+    <form id="change-password-form" action="{{ url_for('change_password') }}" method="post">
         <div class="form-group">
             <label for="current_password">Current Password</label>
             <input type="password" id="current_password" name="current_password" required />
@@ -82,7 +82,7 @@
         }
 
         $(document).ready(function () {
-            $('form').on('submit', function (event) {
+            $('#change-password-form').on('submit', function (event) {
                 event.preventDefault();
 
                 const currentPassword = $('#current_password').val();
