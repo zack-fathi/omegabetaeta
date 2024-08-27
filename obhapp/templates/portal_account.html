@@ -1,118 +1,116 @@
 {% extends 'portal_base.html' %}
+
 {% block content %}
-<div class="form-container">
-    <h2>Edit Profile</h2>
-    <form id="edit-profile-form" action="{{ url_for('edit_profile') }}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" value="{{ brother['username'] }}" required />
-        </div>
-        <div class="form-group">
-            <label for="fullname">Full Name</label>
-            <input type="text" id="fullname" name="fullname" value="{{ brother['fullname'] }}" required />
-        </div>
-        <div class="form-group">
-            <label for="profile_picture">Profile Picture</label>
-            <input type="hidden" name="existing_profile_picture" value="{{ brother['profile_picture'] }}">
-            <img src="/uploads/{{ brother['profile_picture'] }}" alt="Profile Picture" style="max-width: 100px; display: block; margin-bottom: 10px;">
-            <input type="file" id="profile_picture" name="profile_picture" >
-        </div>
-        <div class="form-group">
-            <label for="major">Major</label>
-            <input type="text" id="major" name="major" value="{{ brother['major'] }}" />
-        </div>
-        <div class="form-group">
-            <label for="job">Job</label>
-            <input type="text" id="job" name="job" value="{{ brother['job'] }}" />
-        </div>
-        <div class="form-group">
-            <label for="desc">Description</label>
-            <textarea id="desc" name="desc" rows="16" cols="50">{{ brother['desc'] }}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="contacts">Contacts</label>
-            <input type="text" id="contacts" name="contacts" value="{{ brother['contacts'] }}" />
-        </div>
-        <div class="form-group">
-            <label for="grad_time">Grad Time</label>
-            <input type="month" id="grad_time" name="grad_time" value="{{ brother['grad_time'] }}" />
-        </div>
-        <div class="form-group">
-            <label for="active">Active</label>
-            <input type="checkbox" id="active" name="active" value="1" {% if brother['active'] %}checked{% endif %} />
-        </div>
-        <div class="form-actions">
-            <input type="submit" value="Update Profile" />
-        </div>
-    </form>
-
+<div class="container mt-4">
+    <div class="card p-4">
+        <h2 class="text-center mb-4">Edit Profile</h2>
+        <form id="edit-profile-form" action="{{ url_for('edit_profile') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ brother['username'] }}" required>
+            </div>
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" class="form-control" id="fullname" name="fullname" value="{{ brother['fullname'] }}" required>
+            </div>
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture</label>
+                <input type="hidden" name="existing_profile_picture" value="{{ brother['profile_picture'] }}">
+                <img src="/uploads/{{ brother['profile_picture'] }}" alt="Profile Picture" class="img-thumbnail mb-2" style="max-width: 100px;">
+                <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
+            </div>
+            <div class="form-group">
+                <label for="major">Major</label>
+                <input type="text" class="form-control" id="major" name="major" value="{{ brother['major'] }}">
+            </div>
+            <div class="form-group">
+                <label for="job">Job</label>
+                <input type="text" class="form-control" id="job" name="job" value="{{ brother['job'] }}">
+            </div>
+            <div class="form-group">
+                <label for="desc">Description</label>
+                <textarea class="form-control" id="desc" name="desc" rows="5">{{ brother['desc'] }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="contacts">Contacts</label>
+                <input type="text" class="form-control" id="contacts" name="contacts" value="{{ brother['contacts'] }}">
+            </div>
+            <div class="form-group">
+                <label for="grad_time">Grad Time</label>
+                <input type="month" class="form-control" id="grad_time" name="grad_time" value="{{ brother['grad_time'] }}">
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="active" name="active" value="1" {% if brother['active'] %}checked{% endif %}>
+                <label class="form-check-label" for="active">Active</label>
+            </div>
+            <div class="form-actions text-center">
+                <input type="submit" class="btn btn-danger" value="Update Profile">
+            </div>
+        </form>
+    </div>
+    
+    <div class="card p-4 mt-5">
+        <h2 class="text-center mb-4">Change Password</h2>
+        <div id="alert-error" class="alert alert-danger" style="display:none;"></div>
+        <div id="alert-success" class="alert alert-success" style="display:none;"></div>
+        <form id="change-password-form" action="{{ url_for('change_password') }}" method="post">
+            <div class="form-group">
+                <label for="current_password">Current Password</label>
+                <input type="password" class="form-control" id="current_password" name="current_password" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" class="form-control" id="new_password" name="new_password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_new_password">Confirm New Password</label>
+                <input type="password" class="form-control" id="confirm_new_password" name="confirm_new_password" required>
+            </div>
+            <div class="form-actions text-center">
+                <input type="submit" class="btn btn-danger" value="Change Password">
+            </div>
+        </form>
+    </div>
 </div>
-</br>
-
-<div class="form-container">
-    <h2>Change Password</h2>
-    <div id="alert-error" class="alert alert-error"></div>
-    <div id="alert-success" class="alert alert-success"></div>
-    <form id="change-password-form" action="{{ url_for('change_password') }}" method="post">
-        <div class="form-group">
-            <label for="current_password">Current Password</label>
-            <input type="password" id="current_password" name="current_password" required />
-        </div>
-        <div class="form-group">
-            <label for="new_password">New Password</label>
-            <input type="password" id="new_password" name="new_password" required />
-        </div>
-        <div class="form-group">
-            <label for="confirm_new_password">Confirm New Password</label>
-            <input type="password" id="confirm_new_password" name="confirm_new_password" required />
-        </div>
-        <div class="form-actions">
-            <input type="submit" value="Change Password" />
-        </div>
-    </form>
-</div>
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function showAlert(message, type) {
-            const alertBox = document.getElementById(type);
-            alertBox.textContent = message;
-            alertBox.style.display = 'block';
-        }
+<script>
+    function showAlert(message, type) {
+        const alertBox = $('#' + type);
+        alertBox.text(message);
+        alertBox.show();
+    }
 
-        $(document).ready(function () {
-            $('#change-password-form').on('submit', function (event) {
-                event.preventDefault();
+    $(document).ready(function () {
+        $('#change-password-form').on('submit', function (event) {
+            event.preventDefault();
 
-                const currentPassword = $('#current_password').val();
-                const newPassword = $('#new_password').val();
-                const confirmNewPassword = $('#confirm_new_password').val();
+            const currentPassword = $('#current_password').val();
+            const newPassword = $('#new_password').val();
+            const confirmNewPassword = $('#confirm_new_password').val();
 
-                if (newPassword !== confirmNewPassword) {
-                    showAlert("New passwords do not match.", 'alert-error');
-                    return false;
-                }
+            if (newPassword !== confirmNewPassword) {
+                showAlert("New passwords do not match.", 'alert-danger');
+                return false;
+            }
 
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        if (response.error) {
-                            showAlert(response.error, 'alert-error');
-                        } else {
-                            $('#alert-error').hide();  // Hide the alert error
-                            showAlert(response.success, 'alert-success');
-                        }
-                    },
-                    error: function (response) {
-                        showAlert(response.responseJSON.error, 'alert-error');
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.error) {
+                        showAlert(response.error, 'alert-danger');
+                    } else {
+                        $('#alert-danger').hide();
+                        showAlert(response.success, 'alert-success');
                     }
-                });
+                },
+                error: function (response) {
+                    showAlert(response.responseJSON.error, 'alert-danger');
+                }
             });
         });
-    </script>
+    });
+</script>
 {% endblock %}
-
-

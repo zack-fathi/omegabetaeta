@@ -1,17 +1,25 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-<div class="brothers-container">
-    {% for key in brothers.keys() %}
-        <section class="category">
-            <h1 class="category-title">{{ key }}</h1>
-            <div class="brothers-list">
-                {% for brother in brothers[key] %}
-                    <div class="brother-item">
-                        <a class="link-no-style" href="/portal/directory/{{ brother['username'] }}/">{{ brother['fullname'] }}</a>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
-    {% endfor %}
+<div class="container mt-4">
+    <div class="row">
+        {% for key in brothers.keys() %}
+            <section class="col-md-12 mb-4">
+                <h2 class="category-title">{{ key }}</h2>
+                <div class="row">
+                    {% for brother in brothers[key] %}
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <a class="link-no-style" href="/portal/directory/{{ brother['username'] }}/">
+                                        {{ brother['fullname'] }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

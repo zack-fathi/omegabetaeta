@@ -4,6 +4,11 @@
     color: inherit;
 }
 
+.link-no-style:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* Alert Styles */
 .alert {
     display: none;
@@ -57,7 +62,7 @@
     min-height: 100vh;
 }
 
-/* Profile Styles */
+/* Profile button container */
 .profile {
     display: flex;
     align-items: center;
@@ -68,17 +73,41 @@
     margin: 0;
     color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
+/* Ensure the profile name is vertically centered */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 10px;
+    text-align: right;
+}
+
+/* Remove highlight on hover */
 .profile:hover {
     background-color: #b22222;
     transform: scale(1.05);
+    box-shadow: none; /* Remove highlight effect */
 }
 
-.profile-pic img {
+.profile-name {
+    margin: 0;
+    font-size: 16px; /* Adjust size for better centering */
+}
+
+/* Profile picture styles */
+.profile-pic {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
