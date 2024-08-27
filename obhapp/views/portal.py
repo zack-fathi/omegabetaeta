@@ -74,8 +74,12 @@ def edit_profile():
         active = flask.request.form.get('active', 0)
 
         file = flask.request.files.get("profile_picture")
+        print(flask.request.files)
+        print(file)
+        print(flask.request.form['existing_profile_picture'])
         if file:
             filename = file.filename
+            print("img: ",filename)
             stem = uuid.uuid4().hex
             suffix = pathlib.Path(filename).suffix.lower()
             uuid_basename = f"{stem}{suffix}"
