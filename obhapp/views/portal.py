@@ -95,6 +95,7 @@ def edit_profile():
             WHERE user_id = ?
         ''', (new_username, fullname, uuid_basename, major, job, desc, contacts, grad_time, active, user_id))
 
+        # TODO: Need to see if this is the correct way to update the change log
         con.execute(
             "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
@@ -149,6 +150,15 @@ def change_password():
 
     cursor.execute('UPDATE brothers SET password = ? WHERE user_id = ?', (new_password_db_string, user_id))
     conn.commit()
+
+    cursor.execute(
+            "INSERT INTO change_log(user_id, desc) "
+            "VALUES(?, ?); ",
+            (user_id, f"{flask.session['name']} changed password"),
+        )
+    conn.commit()
+
+
 
     return flask.jsonify({"success": "Password changed successfully."}), 200
 
@@ -206,12 +216,27 @@ def show_portal_recruits():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
     con = obhapp.model.get_db()
+
+    # only show certain buttons if user has the right permissions
+    cur = con.execute(
+        "SELECT role_name FROM roles "
+        "WHERE user_id = ? ",
+        (flask.session["user_id"],)
+    )
+
+    # currently up to president
+    role = cur.fetchone()
+    can_change = False
+    if role:
+        role = role["role_name"]
+        can_change = role in ["Admin", "President", "Director of Recruitment"]
+
     cur = con.execute(
         "SELECT fullname, uniqname, email, accept, line_num, lion_name, accept FROM recruits "
     )
     recruits = cur.fetchall()
     context = {"recruits": recruits}
-    return flask.render_template("portal_recruits.html", **context)
+    return flask.render_template("portal_recruits.html", **context, can_change=can_change)
 
 @obhapp.app.route('/portal/recruits/accept', methods=['POST'])
 def accept_recruit():
@@ -383,6 +408,15 @@ def assign_roles():
             if user_id:
                 cursor.execute("UPDATE roles SET user_id = ? WHERE role_name = ?", (user_id, role))
         connection.commit()
+
+        cursor.execute(
+            "INSERT INTO change_log(user_id, desc) "
+            "VALUES(?, ?); ",
+            (flask.session["user_id"], f"{flask.session['name']} updated roles"),
+        )
+
+        connection.commit()
+
         return flask.redirect(flask.url_for('assign_roles'))
 
     connection = obhapp.model.get_db()
