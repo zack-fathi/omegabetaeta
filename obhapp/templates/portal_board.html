@@ -1,135 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assign Roles</title>
-</head>
-<body>
-    <h1>Assign Roles to Active Brothers</h1>
+{% extends 'portal_base.html' %}
+{% block content %}
+    <section class="Roles mb-4">
+        <h2 class="mb-4">Assign Roles to Active Brothers</h2>
+        <form action="{{ url_for('assign_roles') }}" method="POST">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Current</th>
+                        <th>User ID</th>
+                        {% if can_change %}
+                        <th>Select New</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role in roles %}
+                    <tr id="role-{{ role['role_name'] }}">
+                        <td>{{ role['role_name'] }}</td>
+                        <td>{{ role['username'] }}</td>
+                        <td>{{ role['user_id'] }}</td>
+                        {% if can_change %}
+                        <td>
+                            {% if role['role_name'] != "Admin" %}
+                                <select name="{{ role['role_name'] }}" id="{{ role['role_name'] }}">
+                                    <option value="">--Select Brother--</option>
+                                    {% for brother in brothers %}
+                                    <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-    <form action="{{ url_for('assign_roles') }}" method="POST">
-        <div>
-            <label for="Admin">Admin:</label>
-            <select name="Admin" id="Admin">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
+            {% if can_change %}
+            <button type="submit">Assign Roles</button>
+            {% endif %}
+        </form>
+    </section>
 
-        <div>
-            <label for="President">President:</label>
-            <select name="President" id="President">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Internal Vice President">Internal Vice President:</label>
-            <select name="Internal Vice President" id="Internal_Vice_President">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="External Vice President">External Vice President:</label>
-            <select name="External Vice President" id="External_Vice_President">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of Finance">Director of Finance:</label>
-            <select name="Director of Finance" id="Director_of_Finance">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Administrator">Administrator:</label>
-            <select name="Administrator" id="Administrator">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of Recruitment">Director of Recruitment:</label>
-            <select name="Director of Recruitment" id="Director_of_Recruitment">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of Internal">Director of Internal:</label>
-            <select name="Director of Internal" id="Director_of_Internal">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of Public Relations">Director of Public Relations:</label>
-            <select name="Director of Public Relations" id="Director_of_Public_Relations">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of Education">Director of Education:</label>
-            <select name="Director of Education" id="Director_of_Education">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of Philanthropy">Director of Philanthropy:</label>
-            <select name="Director of Philanthropy" id="Director_of_Philanthropy">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="Director of External">Director of External:</label>
-            <select name="Director of External" id="Director_of_External">
-                <option value="">--Select Brother--</option>
-                {% for brother in brothers %}
-                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <button type="submit">Assign Roles</button>
-    </form>
-</body>
-</html>
+{% endblock %}

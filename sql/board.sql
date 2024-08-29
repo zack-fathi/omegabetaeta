@@ -14,4 +14,4 @@ INSERT INTO roles (role_name) VALUES
 ('Director of Education'),
 ('Director of Philanthropy'),
 ('Director of Philanthropy'),
-('Director of External'),
+('Director of External');

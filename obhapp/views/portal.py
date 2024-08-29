@@ -366,22 +366,41 @@ def get_active_brothers():
     cursor = connection.cursor()
     cursor.execute("SELECT user_id, fullname FROM brothers WHERE active = 1")
     brothers = cursor.fetchall()
-    print(brothers)
+    #print(brothers)
     return brothers
 
-@obhapp.app.route('/portal/board', methods=['GET', 'POST'])
+@obhapp.app.route('/portal/board/', methods=['GET', 'POST'])
 def assign_roles():
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
     if flask.request.method == 'POST':
         # Handle role assignment logic
         role_assignments = flask.request.form.to_dict()
+        print(role_assignments)
         connection = obhapp.model.get_db()
         cursor = connection.cursor()
         for role, user_id in role_assignments.items():
             if user_id:
-                cursor.execute("UPDATE boards SET user_id = ? WHERE role_name = ?", (user_id, role))
+                cursor.execute("UPDATE roles SET user_id = ? WHERE role_name = ?", (user_id, role))
         connection.commit()
         return flask.redirect(flask.url_for('assign_roles'))
 
+    connection = obhapp.model.get_db()
+    cursor = connection.cursor()
+    cursor.execute("SELECT role_name, user_id FROM roles")
+    roles = cursor.fetchall()
+    for role in roles:
+        cursor.execute("SELECT username FROM brothers WHERE user_id = ?", (role['user_id'],))
+        role_user = cursor.fetchone()
+        if role_user:
+            role_user = role_user['username']
+        role["username"] = role_user
     active_brothers = get_active_brothers()
-    return flask.render_template('assign_roles.html', brothers=active_brothers)
+    cursor.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session['user_id'],))
+    can_change = False
+    current_role = cursor.fetchone()
+    if current_role:
+        current_role = current_role["role_name"]
+        can_change = current_role == 'Admin' or current_role == 'President'
+    return flask.render_template('portal_board.html', brothers=active_brothers, roles=roles, can_change=can_change)
 

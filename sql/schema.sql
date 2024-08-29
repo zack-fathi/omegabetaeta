@@ -46,9 +46,9 @@ CREATE TABLE change_log (
 );
 
 
-CREATE TABLE boards (
+CREATE TABLE roles (
     role_id INTEGER PRIMARY KEY AUTOINCREMENT,
     role_name TEXT NOT NULL,
-    user_id TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES brothers(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
