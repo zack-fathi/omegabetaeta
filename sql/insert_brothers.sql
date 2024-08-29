@@ -1,244 +1,244 @@
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("jadelharake", "sha512$6eb3c1d99e514d9fbea03f7daf85a4b1$9b8e11f2f354ef30231a10194c46721ec2f92e8bf5951d8a3f50fba8f91b16efbc873e43f461ed166013001be1647751be442135af0ec8c24a4baa4feb1fd265", "", "Jad Elharake", 0, 1, "SP' 2018", "Hareth", 0, "Hello, my name is Jad Elharake and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("jadelharake", "sha512$bbf493bbd0d84df6bc9cb36a8126a180$1ea94c9d7abedcb84e400c1a979548f69565bfb6bd1b9a760ce3a59b6cba92e30266b581429f07aabb23aeb183ecc7bb759ec7ac8d6d50b3bd62de47891c4c8b", "", "Jad Elharake", 0, 1, "SP' 2018", "Hareth", 0, "Hello, my name is Jad Elharake and I am a brother of OBH.
 
  I crossed SP' 2018 and am part of the Fraternal Father as line number 1.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("yasserabusabha", "sha512$a79e0a27ffd04c8c828b3e2c82cbcf69$9ec98b3dfcfd6a23b45dc9b24f0f304e5fe73c3d30745af1aef412a7a85cad5108c8dddfc18da03f8a56ab45a50f463a0908b7019d6b85f26bfc62dcd2222ce9", "", "Yasser Abusabha", 1, 1, "SP' 2019", "Aklaaf", 0, "Hello, my name is Yasser Abusabha and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("yasserabusabha", "sha512$f89c2ddc11cf45089b69dddc14a795ad$ae73f641d409ccb8676f96152f77f9201be9aa333e51274cb4e279b6ab1c87aacf65b65bff87adaf0adc66318f11f8ba23038ce8779f7e00451e0fc5a801183e", "", "Yasser Abusabha", 1, 1, "SP' 2019", "Aklaaf", 0, "Hello, my name is Yasser Abusabha and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 1.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamadawada", "sha512$3c1262c9572d4d75957ebbdbd274fdbe$59d3afd1eda15931081b9e788b2ff8efdfcee98e567c6efc31f6cc3684dafe2d4848ca0e1f7e5f38fcd90b39a085dc585d346661b6d6f035cfaa80bd4be0fea3", "", "Mohamad Awada", 1, 2, "SP' 2019", "Haidar", 0, "Hello, my name is Mohamad Awada and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamadawada", "sha512$b9e0af62e6614a108aba61105408a758$a53c589ae0842b5a1873ad36d995e88bbd418049a2bf0b3d702b6da98582d2bb526d413c836abc34b723207c22f911ec1d094eb30df7bcf4815ffd3f378e6995", "", "Mohamad Awada", 1, 2, "SP' 2019", "Haidar", 0, "Hello, my name is Mohamad Awada and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 2.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hassanbazzi", "sha512$a0993bd750024aa3a5f93f941fdaf8ab$734829c49d2b026df1c21639c2b1e08f7cec35281a95a8bf356df8f06af206e0316da6f83868e0bab6b76e9a314effd7c7956714e532efd46a3bd0d4fce60696", "", "Hassan Bazzi", 1, 3, "SP' 2019", "Abbas", 0, "Hello, my name is Hassan Bazzi and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hassanbazzi", "sha512$2c4bc52b001a44528cb65cddc4785bb2$3871ab2a0ac89b2a4d83d10cb19d3cdebf6e8bc8fb0ba525dd7c53aa4b6865e874c81ed18a9fa54f773a41001fb0e98497cd245e75c0fe72cf727682b2dd1d0c", "", "Hassan Bazzi", 1, 3, "SP' 2019", "Abbas", 0, "Hello, my name is Hassan Bazzi and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 3.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("marwanbazzi", "sha512$fb8a5f12e32a4b56b23f5a7368efce04$4e8caf892965e0cfa76c409c23eeb72ab33788de79086bc17d44076b19615625c00a4d4ed420ad0c23ee2ba6de87e357ff6574ec2fe5744f19b2fe80edab3dc1", "", "Marwan Bazzi", 1, 4, "SP' 2019", "Furhud", 0, "Hello, my name is Marwan Bazzi and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("marwanbazzi", "sha512$620a919b9af545849958635f9bbf3e5c$415517f65026865104540b4b826341d1520df96ccc4d82beed8500fe2a209c26b68c9aa885f2529b73f0dd3c6181dec9c957afb8b16cf2b1f750f08b7de5f953", "", "Marwan Bazzi", 1, 4, "SP' 2019", "Furhud", 0, "Hello, my name is Marwan Bazzi and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 4.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alidarwiche", "sha512$8b4f85d9f4b9407b89767c7c41157eb3$f16f19aff6fbe89c185143ae651a5b4be3635bd1bcfc8f546a0e7194b67104688a52c48a6b97f24f7d0f6f7c4c983187b709f20b82f1162e5120223b30a9b0a0", "", "Ali Darwiche", 1, 5, "SP' 2019", "Hamza", 0, "Hello, my name is Ali Darwiche and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alidarwiche", "sha512$10fa703805434de3a53f4d74f518d363$744dba3d69c1e18834a846fc983a79cb9162d84bc9392d13963b6c62bae2a41017c1fb08a5ee5a82d44584175c805d2ea8fbec3d37599935e6d2f20b100f46e2", "", "Ali Darwiche", 1, 5, "SP' 2019", "Hamza", 0, "Hello, my name is Ali Darwiche and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 5.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("rachadelghoul", "sha512$8ceaee869f2b44b997a72c924924db3f$9082f6a605e08e9af0a604c9e5b30de7b6c8bdb90b0167080e697096d422a9b70393ed4c3df571205a213ea59eb13aafbf8d18357083c28519659a92cc18f369", "", "Rachad Elghoul", 1, 6, "SP' 2019", "Sarem", 0, "Hello, my name is Rachad Elghoul and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("rachadelghoul", "sha512$50233fd073bc41c7a85f40c95b3bc571$57a1f1815b6c8f2b7f69395399766ac2ef4139320b6838913607a620bc7ad886fcbf81f6e022e2c71817927abe31de2880c54114b29113b081b55cb4b12db1e2", "", "Rachad Elghoul", 1, 6, "SP' 2019", "Sarem", 0, "Hello, my name is Rachad Elghoul and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 6.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("islamgellani", "sha512$2aa59a21a9ff4f9a921adfe75f6dc1b5$b12ad5f4c8943c636282f31e4ba65330ce14b24efc794a316dbe4d95699d3d04018a354fb48ff6abd9c96cf6dbf1df10f77a1c3bc90e79b022b635a61f0ff534", "", "Islam Gellani", 1, 7, "SP' 2019", "Usayd", 0, "Hello, my name is Islam Gellani and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("islamgellani", "sha512$8aa34ab11a034f5fa1ed69583a65fe3d$100257d70fbae2e4065910596bbf7abb31aca2876144dbc9c91890225e88ee6c27f3572b9c377960da55729026293210f554e9a060c83743abcaa55c878b50c6", "", "Islam Gellani", 1, 7, "SP' 2019", "Usayd", 0, "Hello, my name is Islam Gellani and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 7.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohammedhammoud", "sha512$521fe587b919467187919adcedae7128$b11dd96628b5a412ffa800f0b064ab0048f258fd98eed918de858be890957f41ddf93226a7035e9944d468e08cf946fb9e154120ee22042b05e4014f963f6c6a", "", "Mohammed Hammoud", 1, 8, "SP' 2019", "Feras", 0, "Hello, my name is Mohammed Hammoud and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohammedhammoud", "sha512$bfbf260d08224109a3997c00108ad703$0ffadd83a8df0dd15ce2654d22b41cf1eb214121fe79bb6d75b951daac7ce808457329da78217c1d80fcef62fe8c2245c960699965de4ac1cbd160bd707c3513", "", "Mohammed Hammoud", 1, 8, "SP' 2019", "Feras", 0, "Hello, my name is Mohammed Hammoud and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 8.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("labibjoumaa", "sha512$35962f9f00da48538065bce12fd121fc$224b8f7801ae4c88c74f2284ffe4bd29514a3f72ea0f367ba9393c807161c9f112ee6dce90d5cd7d64cab5aff153cbfbaecc804a6d457efb602e4f64ad9e213b", "", "Labib Joumaa", 1, 9, "SP' 2019", "Asrul", 0, "Hello, my name is Labib Joumaa and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("labibjoumaa", "sha512$44fe7391c8584c7a86ba3ee6cc3aa540$05ec22150cc0aa1d95dc23359ab359a8fc49b547e729b9b294ecc323a0496575350e78bb35c46cfb862d85b088219b08d4d091c46e6ea86a58aaabeea22a69bd", "", "Labib Joumaa", 1, 9, "SP' 2019", "Asrul", 0, "Hello, my name is Labib Joumaa and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 9.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mahdimazeh", "sha512$ff133f0d123c4eb7ab0c204b7d2b5e36$00c960ad46fc6dd421f3350def0d73764f82282d7057c89a5c5f98c22e7837e17e8a539e58ce33e6088391c4109c2dad3fc0b254ead5acdf05fa5a5127801da2", "", "Mahdi Mazeh", 1, 10, "SP' 2019", "Layth", 0, "Hello, my name is Mahdi Mazeh and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mahdimazeh", "sha512$e0a604f5811e4326942bfaa1b8e8a6be$4c3582d34cec442138d79453fc4209a4e07df0cfb810052dd416a36ad8758bee7094abbcb9de4c837e8baa9654939f96fec66af57d3788cd6489a532e5f9ce61", "", "Mahdi Mazeh", 1, 10, "SP' 2019", "Layth", 0, "Hello, my name is Mahdi Mazeh and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 10.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("houdmashrah", "sha512$9985cef7dc704620b75056673b01c860$d9a116b9ca4125f1819edc2adc9616e18c045cd0d0654e7e774eb9b4b7b7b7f4c974ea71dd577b1c73d3d6122d28594bf77d820b6e7388329aaea8be2860170e", "", "Houd Mashrah", 1, 11, "SP' 2019", "Baqer", 0, "Hello, my name is Houd Mashrah and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("houdmashrah", "sha512$c1edc9a4568b4d4d856df755bcbdcb9b$8293707fcdfe29356676040d24d45e766ea2eea86acf7df8f5a33f1d78f2c31cc23e00da85eeaebb22b10da924ce0d38b6ae948c6002d8668b25b968348658a5", "", "Houd Mashrah", 1, 11, "SP' 2019", "Baqer", 0, "Hello, my name is Houd Mashrah and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 11.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamedmazeh", "sha512$a9f341ed08e045b0b3cf9e98e746b149$51ede6a667bcace9811f27866ce16c6c0564943334605af94bbeaeea5a7394cc6beb55eacf6b3e2fadc4b48e4a2fb3c34de9d65f238686749422da9067535b4c", "", "Mohamed Mazeh", 1, 12, "SP' 2019", "Shibel", 0, "Hello, my name is Mohamed Mazeh and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamedmazeh", "sha512$dbf8707a56fa472eb224e660561ef772$60076881c571aadfb4999ff8a03656c3b6632e30cfe5035d0ada2e4905987e63849fe2c9d5cb11c0c6975998bf98197dfc202a60e033bae194f047e794fc2470", "", "Mohamed Mazeh", 1, 12, "SP' 2019", "Shibel", 0, "Hello, my name is Mohamed Mazeh and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 12.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ahmadsaad", "sha512$8f0b9609ebe444a28be4182c09873f4d$917c14254322e0a6af4ebcdbd8d7dcdd1b4ffecb2c723de7d551bec2d488e2672b034460ecd69dd84e0c10576e266498f112bee501d9d34ae7520d576af78ed1", "", "Ahmad Saad", 1, 13, "SP' 2019", "Bassel", 0, "Hello, my name is Ahmad Saad and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ahmadsaad", "sha512$50a5e9457bec452784f8ce26d4756253$7708f8d88c18fcc1e7c6d8c821dcac534dad2c41b84f2c0905312589b17432ce37b206a8f3af5154d12d8e2e2055b0465ab27b391b53adf311fd762782193e39", "", "Ahmad Saad", 1, 13, "SP' 2019", "Bassel", 0, "Hello, my name is Ahmad Saad and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 13.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("kassimsalami", "sha512$a0c33484689749fa85eefb68908ed483$3abe9584122354a24f0cc7edb666f616c510a1d20d390dd1a5060d93fe0811f61381a8823acc6764b2eb2811a0a3c36c8ecd8c1b6402e81eccb9e2d85364842e", "", "Kassim Salami", 1, 14, "SP' 2019", "Muthafar", 0, "Hello, my name is Kassim Salami and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("kassimsalami", "sha512$4ea21c9bed3e413882527d6957073e21$450bd8fbeb6e0f1ac6eb6c772bd81fd7e9cf3aafd2de7a342d4abda870fbfc771446c811c58902bcca5c33b98836a07e03ee7edb332743187cf9b9642ec3dc55", "", "Kassim Salami", 1, 14, "SP' 2019", "Muthafar", 0, "Hello, my name is Kassim Salami and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 14.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamadsaleh", "sha512$2ff9f8d9a8064224bb87ee221849e6be$50b60b081cb35b44fea49d3a5690ab933acd582273e7b2c4fa889cd8ad7469b91adccc8d452523958ec25b665d25133ae016069e0a4c1182fe5fdede9fb1721c", "", "Mohamad Saleh", 1, 15, "SP' 2019", "Rebaal", 0, "Hello, my name is Mohamad Saleh and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamadsaleh", "sha512$01c2f0759c324cb596f713acce18aabc$6199674bc2e9054592697c0d7365f480f41fbe25b071786b0d4a507b007e822fe56043f36eee0645aecde287e40c031a6360bcf8c442649f100407d7fd725f10", "", "Mohamad Saleh", 1, 15, "SP' 2019", "Rebaal", 0, "Hello, my name is Mohamad Saleh and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 15.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ryanshami", "sha512$0c9fe7a025ff423db3c178fc52549547$cd4a4164735dfe83a9f266e22615c6b3971cf7e229e45801f64353be7b36d60c87e449ff953c99c10326c3c9196d30240325e75ea03247c04eb8010faa7f1b69", "", "Ryan Shami", 1, 16, "SP' 2019", "Dhergham", 0, "Hello, my name is Ryan Shami and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ryanshami", "sha512$70e333a453804bc7935c8a895a9a0849$36f698d7410f2475af9a94bbbdfe2e533eba9600fffd05073b230288aac89c564de8be6ac5d17808e4fa3a40aab0c27cfdaf7dabf473f9a3ad8fd92737cf6a98", "", "Ryan Shami", 1, 16, "SP' 2019", "Dhergham", 0, "Hello, my name is Ryan Shami and I am a brother of OBH.
 
  I crossed SP' 2019 and am part of the Founding Line as line number 16.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("navidfotovat", "sha512$a981f8bf58cc4f90b7fd689ae42c3025$a446b720fdb3cdb0349bff5ed2ec4c551808160403ed7a57b1a428c51c8683e19cef4422dce947b1de155fa0cff5de1101b31ee09e70737a347246b5a6bd30ec", "", "Navid Fotovat", 2, 2, "SP' 2020", "Akklaf", 0, "Hello, my name is Navid Fotovat and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("navidfotovat", "sha512$042fe3b6975b40a989f484236763f7a5$a78d4d033a3506ada7cb402b52ad084503cbe828c84c79e2767d8e19b351f5c2245589469ebe881910b30555cde66969618bb4ce9fd1f699ad7a5d83cc7fb230", "", "Navid Fotovat", 2, 2, "SP' 2020", "Akklaf", 0, "Hello, my name is Navid Fotovat and I am a brother of OBH.
 
  I crossed SP' 2020 and am part of the Beta Line as line number 2.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("nadernehme", "sha512$8ff6fcb421494aaab1888de8d178c94d$3c11042469353ed04b03a099fa23e1f3020bfff41cbe78cbbc860c8ae22d0770dd262415a6c014ceda2f301e1b974bc0039062d2f7e91819ee6cb880a6db2d31", "", "Nader Nehme", 2, 3, "SP' 2020", "Furhud", 0, "Hello, my name is Nader Nehme and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("nadernehme", "sha512$f53877b453ff472094e5a9b500b388eb$50398779f69abb6d87af31e512d2e4272c49866be750179d4b427bc7900865c521bca62771d7a176b9c0b1265d9bc8d33de89df4737ca94e415afb78b9cfa304", "", "Nader Nehme", 2, 3, "SP' 2020", "Furhud", 0, "Hello, my name is Nader Nehme and I am a brother of OBH.
 
  I crossed SP' 2020 and am part of the Beta Line as line number 3.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("haiderkoussan", "sha512$1316146a63dd496284a6cdb32d43515e$cb1eefc2851792b5fe58639e987a0ba39d0394fe5dafcb0d94ef2dfa91b4bf4a0b6cd167b533e3bfd804b27759e7e9638c074ee81a09f3aa0afad4d797a7f6bf", "", "Haider Koussan", 2, 4, "SP' 2020", "Bassel", 0, "Hello, my name is Haider Koussan and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("haiderkoussan", "sha512$3f525596d5bc43198fd55a5df68ad492$9e64f9004781a8471187790494e244336dc36bfad5c6f3194465bde3477cd184d061ef9ce76a602bc479920750dc9c6b1fa31148b0d80dbc248770fe5196e0e3", "", "Haider Koussan", 2, 4, "SP' 2020", "Bassel", 0, "Hello, my name is Haider Koussan and I am a brother of OBH.
 
  I crossed SP' 2020 and am part of the Beta Line as line number 4.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ziadfehmi", "sha512$7b6cc65dddbb41eeb642a8c1b2cfad14$6895623b164a87907e7cfa4181cd290b73596701e1bf26a7908f6e483260b2f5ad6b80101ee4df994a4e7a3f0bf58a633e6937456cc601dcef8b33d61fa9a690", "", "Ziad Fehmi", 2, 5, "SP' 2020", "Sarem", 0, "Hello, my name is Ziad Fehmi and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ziadfehmi", "sha512$c909c6e04e254e32914022c09b868c7c$7d448d4ccd217a790525267d0fe26cf429ec4612ee636e1a3a8e08c0351fabc18b241f4862baa1838eeb511484191a196cedec571fe5c691d369989d59ddbc1e", "", "Ziad Fehmi", 2, 5, "SP' 2020", "Sarem", 0, "Hello, my name is Ziad Fehmi and I am a brother of OBH.
 
  I crossed SP' 2020 and am part of the Beta Line as line number 5.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("naderwehbi", "sha512$d9a97f1368d948129ee98197a4d857ef$e3cab04acf14301cc22d42ae508ac02c46fe538b941b9c39929cf85ec8687baff4c2851ee92b3c193a1e7fbe04726718561f5bf77cb9ca305819d0b77a420b01", "", "Nader Wehbi", 2, 6, "SP' 2020", "Rebaal", 0, "Hello, my name is Nader Wehbi and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("naderwehbi", "sha512$c86a7d90623c4f9588a41be300208c9d$bd69c4e09d07d0e00308e44f2b385ef5a715b8e48aed1bd3277a7d701afcf8e6fdb5df8c8948168383d080f7470f5aa9fa3613de8e12448a1f53941240e2fc45", "", "Nader Wehbi", 2, 6, "SP' 2020", "Rebaal", 0, "Hello, my name is Nader Wehbi and I am a brother of OBH.
 
  I crossed SP' 2020 and am part of the Beta Line as line number 6.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("adamchalak", "sha512$c47a14de69ce457e8f070edb2dbd68bb$d58cc0bad0d1b66763e391813ca0612bb496bbb6d87450dc0471fa7c1fc00d1e51618d992ec87933d471aad0fb455a28c6ec6003a88a465151aefbcafb0aa8a3", "", "Adam Chalak", 3, 1, "SP' 2021", "Sarem", 0, "Hello, my name is Adam Chalak and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("adamchalak", "sha512$7d4390ae0cf54c609e0c7bd946843406$8c558bf6a23874d910cec2ddd061eabc15a42b933caee01f6607b933db9b86d779473dd67bf90cf37db7820d8333f23de799555dd20481405ce3c4598ed651f7", "", "Adam Chalak", 3, 1, "SP' 2021", "Sarem", 0, "Hello, my name is Adam Chalak and I am a brother of OBH.
 
  I crossed SP' 2021 and am part of the Gamma Line as line number 1.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hadiallouch", "sha512$71d502e85a364095b00bd4c4dd282478$233ce6f461a8c32295d8e9276a2452c8e23b591e4d8ef7d087608f39c1e36767f41b0af1fa8b0719970211f5a78241efc5586b6ded6c3d478f4e9aa5ba06d914", "", "Hadi Allouch", 3, 2, "SP' 2021", "Baqer", 0, "Hello, my name is Hadi Allouch and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hadiallouch", "sha512$d3124d2065414a08adf54d53d6bfa086$3d575ed72efffdd73742d443b5ff9823a3f6f1b0b0675a931bb231abae0a7fa1b6a727f4ef5dd2db7d16e2e88fd5b5b840e9e259112b43017a32dc13e8b89b6c", "", "Hadi Allouch", 3, 2, "SP' 2021", "Baqer", 0, "Hello, my name is Hadi Allouch and I am a brother of OBH.
 
  I crossed SP' 2021 and am part of the Gamma Line as line number 2.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("samiissa", "sha512$44a758c20f9a4e65bcbd30210ac24952$1d287b13ff1fc4c8d19e5b9b833f252d4bd2f7c62c3dffb5e11962935dbf66bf3d7d3b7690a2d58a9bb6b1600ac53905654f2bc60ebbe587a4873d52d787d485", "", "Sami Issa", 3, 4, "SP' 2021", "Furhud", 0, "Hello, my name is Sami Issa and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("samiissa", "sha512$b56a667660b34e72a9c911cb742dcfd0$4997440d3eba3a2b2b39fe6c27693f25756ef57bd537007ebfcb6ccae7e99d2395092dfef9c0bbe096329a924ec9566688545375ab980bd705f3dd802fef0121", "", "Sami Issa", 3, 4, "SP' 2021", "Furhud", 0, "Hello, my name is Sami Issa and I am a brother of OBH.
 
  I crossed SP' 2021 and am part of the Gamma Line as line number 4.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("akramirshaid", "sha512$99f6dcac065b45a4ba41d400258fe3ba$a35de55e5a43d38bae2bb8725637b11bb2d2c1e72b6dfc2b82f35be6ba127290b7debdf64a2a973bce2927f5dcc59d4a7dff93610b4077305dc6a771567a89dc", "", "Akram Irshaid", 3, 5, "SP' 2021", "Shibel", 0, "Hello, my name is Akram Irshaid and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("akramirshaid", "sha512$ba4a188aa0be4f2b88d688e3653e88d2$b555363e1cb14f96af44bcd3d55d04676b9b0b8a1fcb9299d38869ef42b9585b356a88eaa54ac096be4d5193df66c14ae743da2b76540f53690199e753974408", "", "Akram Irshaid", 3, 5, "SP' 2021", "Shibel", 0, "Hello, my name is Akram Irshaid and I am a brother of OBH.
 
  I crossed SP' 2021 and am part of the Gamma Line as line number 5.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("sharifsalman", "sha512$f6377dfe557b46f3b49bc8f22a23aed0$55829cc1f67bf88d9eebb78f0ffb687b9d48438d65c15041612b4ac794b1a89f87a5b432f962e8fab5578356d3d359010b2b130246e42e6576cdeaf8cf74e883", "", "Sharif Salman", 3, 6, "SP' 2021", "Asrul", 0, "Hello, my name is Sharif Salman and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("sharifsalman", "sha512$97c048003a374e14a976a6e2161a3026$7346b8a7851c8dfed3712993055f36c27a66904802af0ad2ba5b6eedab66d00cca4ee1745357312cc383ee18db8f1db1f8e1dbad8019fdc65e200495b5e2c1b7", "", "Sharif Salman", 3, 6, "SP' 2021", "Asrul", 0, "Hello, my name is Sharif Salman and I am a brother of OBH.
 
  I crossed SP' 2021 and am part of the Gamma Line as line number 6.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("abdouatoui", "sha512$94f924c36dad422f900c56ae968c68ac$af44c1bc2975fba778ad83636d243b3a5de03e3e665736b031f6926fd7be766b442a946e29aef36869858e86c6ae5911e750a66ec87245bcec89dfd94543167b", "", "Abdou Atoui", 3, 7, "SP' 2021", "Abbas", 0, "Hello, my name is Abdou Atoui and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("abdouatoui", "sha512$4131be5d5a824dc19e2a02031424cd98$b50b85691df4a01ab058c781a78adf1c6c035fafaaa446314c8194f73cef5a6ee16e2d3b4c3d3a6dc78e8145fbc3c6e90c1dd2f428952cf7b7928a57e33e8d13", "", "Abdou Atoui", 3, 7, "SP' 2021", "Abbas", 0, "Hello, my name is Abdou Atoui and I am a brother of OBH.
 
  I crossed SP' 2021 and am part of the Gamma Line as line number 7.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("redamazeh", "sha512$98bfc0d7a1d5406d9e46c8f0cd19d5bd$27512dcf7fd23e03123766408fe607d3259565735ee5ec8c7c2d295230ec29a1c2cd9c47e688335cf9276e18a6eb95b56dcd6d9ee5036d7813b6f0903ed4b16f", "", "Reda Mazeh", 4, 1, "SP' 2022", "Furhud", 0, "Hello, my name is Reda Mazeh and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("redamazeh", "sha512$bbaa4302f1474cb3ad6120d10a2346fb$c567609066b06344e09eff557437be156ce05377ad39c6983ac1d4856710bf7107ec0a31ab1ae9f38f5e9a1ae48d04140a4ddb878037ca94a358d5d59a3c1c81", "", "Reda Mazeh", 4, 1, "SP' 2022", "Furhud", 0, "Hello, my name is Reda Mazeh and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 1.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("husseinmustafa", "sha512$575bf665c9554b36a87d5458d319ed27$e1e972e254c5fc6288da871f1aa0599c5329fbf909661edd244bf7fff2d94163aee0a05d3caf3788e349948cccef0659486d11576f1e24051b37aad99696782c", "", "Hussein Mustafa", 4, 2, "SP' 2022", "Hamza", 0, "Hello, my name is Hussein Mustafa and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("husseinmustafa", "sha512$91a3354590d9468491d1c98417a3f185$c98f2a12600e52016efc8a4ad4a1722cfb7590b709592f0c67ebbbabe7eeacf71630b486d44b6e13e6345ab4c035e70ceff3a11a4e6db8338bb7efe22c6351a8", "", "Hussein Mustafa", 4, 2, "SP' 2022", "Hamza", 0, "Hello, my name is Hussein Mustafa and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 2.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hadifayad", "sha512$bbf9185ee2fd4bcc9fbf65f2da2b97f5$5af3034299031efeca80e2832448501df7cee7dee355a0c3a2472ea292d73b764c7b916823596ec1449924bb5288e419b1ee73a356ebf00f9d4f83701e58e784", "", "Hadi Fayad", 4, 3, "SP' 2022", "Akklaf", 0, "Hello, my name is Hadi Fayad and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hadifayad", "sha512$9fdb6f8b0e8845ea984d4d38d5766861$7aa1806001b60fd55ef2151239fde58396de8f5ec63052f38d6f639ae9f8585f3dc478a782da461d6d3f40aa99fc9347aee12fa8b5c78bf511cc2fc9c0b970c6", "", "Hadi Fayad", 4, 3, "SP' 2022", "Akklaf", 0, "Hello, my name is Hadi Fayad and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 3.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("josephhaddad", "sha512$22bec87c371249eb9fe5dc9969093b33$83fcf140bc090fb5a7d8d75b183635b06226ed826250823d66cb4227f104649b333861970d617455680e9915b53adb0187f5debeb1d9488ad254062ec1891f00", "", "Joseph Haddad", 4, 4, "SP' 2022", "Dergham", 0, "Hello, my name is Joseph Haddad and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("josephhaddad", "sha512$3f97daaf927648a2be1de7a7818c6b1a$962e98bca55f073ee3301ed32fb3e5f7e7c3fad0824fd62f6b96c5677f02f465bb3025828df9b5cb17ee1e6c0f288a4b8f41f8e4c1ca035c563b79d09c8fb0a9", "", "Joseph Haddad", 4, 4, "SP' 2022", "Dergham", 0, "Hello, my name is Joseph Haddad and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 4.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("basharzeidan", "sha512$6c95cb59f93145e7bbaf49a2fe336271$ed02898ae42c6f467b52d5e9a3b0aae2d98d44fe7b8d36e64dc7ee7cbe854fefe490ae2a5d47230baf35727e14d07c3a70f6ad4518baa083eeeb504b2411cb7e", "", "Bashar Zeidan", 4, 5, "SP' 2022", "Asrul", 0, "Hello, my name is Bashar Zeidan and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("basharzeidan", "sha512$c0a3383297ca46569128079c9bb1fb7c$98ccf43893f2fb7e0ee4d1dc5a5b92f97e4eb53206fd76b6c3f89b730404a8360df57c838f121d6a75e01c15b423f2924dd1d80fffc8e7ebea74c62bacdf135b", "", "Bashar Zeidan", 4, 5, "SP' 2022", "Asrul", 0, "Hello, my name is Bashar Zeidan and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 5.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("adamallouch", "sha512$4913e7a3edb44a5baa7e1eece71d735f$c5bcd8e73f25c81081ec03bf000d42f6fd706b582934028b52e0dd2d25f175a3d8f2b9a58bb22cc5bc5098a3177b7487e69d2ab24b4902341fe037123919a5cd", "", "Adam Allouch", 4, 6, "SP' 2022", "Muthafar", 0, "Hello, my name is Adam Allouch and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("adamallouch", "sha512$bbbdf4e083dd451483cf1003c1128cad$b894a927ffe88abd372551388a843c2390d1e7917133849d06a6808d3bf0b3550fe19bfe9c2e58be0cb12dbe3b77c8973e6fb6b0d33115b26ffd25a4cda06d01", "", "Adam Allouch", 4, 6, "SP' 2022", "Muthafar", 0, "Hello, my name is Adam Allouch and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 6.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ammarsaloum", "sha512$f209d7c7f5cb43ba82aaff8d0e922f8a$46445e68606bd494315052a54f6fa6ac2dfa81463f2bdc9ac523686bb024a0f4333f220c335b4c0e88102d391795f5576631416555547d488b34ff6188d937d2", "", "Ammar Saloum", 4, 7, "SP' 2022", "Layth", 0, "Hello, my name is Ammar Saloum and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ammarsaloum", "sha512$a0b08f6b0716429195d21ec98989e401$49265a725142dfe1d627c76fd4cbad5664260cc770d70335e552ce50ec13f7ed784515fd92f6eaab5db007b16cc2cf42d58bd54f9d2b00ca7655fc95e3c704ff", "", "Ammar Saloum", 4, 7, "SP' 2022", "Layth", 0, "Hello, my name is Ammar Saloum and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 7.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("abbasajami", "sha512$2164b131417744e08645817065ebc301$17543d0d505c83316d28a17c529a55b3e28b70371160237462b60316387ac3a7996c5bdd096272c346c36cadfe40288753e7a181b1748fae6cd6a815907153f8", "", "Abbas Ajami", 4, 8, "SP' 2022", "Feras", 0, "Hello, my name is Abbas Ajami and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("abbasajami", "sha512$f133e5c8bcdd415e8375451d7507e5b9$fba4003641eb6a12ccf12664f22f0403c2452767d4ad115bb270b897f82b6c2e31331f3ccc1b40eb9500b456ba380a531913032bc33c58d22a5c595586cba590", "", "Abbas Ajami", 4, 8, "SP' 2022", "Feras", 0, "Hello, my name is Abbas Ajami and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 8.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ziadharb", "sha512$ab47cf29a9064b4a88ac96df3fc3cca0$80344b8eeff075e3b665681af47d1d161982b02ed342560c3c1b697455bb4e3c15d336568e250b195389271a8f3530e55879eb04eee2bf0bf9528dcc55abe079", "", "Ziad Harb", 4, 9, "SP' 2022", "Rebaal", 0, "Hello, my name is Ziad Harb and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ziadharb", "sha512$ce9cce8d11c24811b1e476fbf8813106$50ac9654bc21561077a987c21e9b2b862f8d16e61a94e73d4b5624313524ad701fe2d170f5a52c819e6cb84f19b914aef1c752396cc3bb7a910b65ca23ad6d9a", "", "Ziad Harb", 4, 9, "SP' 2022", "Rebaal", 0, "Hello, my name is Ziad Harb and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 9.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("aboodalsubee", "sha512$e6e6e7749b7e4fc6aa5e691c8114ee50$48d7fcbe183127b68514e212cacd6fa736b85bc2af54fbb2d3599150e33089a0a87dd429eaf7cffabbbb5f80d8f5cf3bfe3dd536002d60062833a64d06997bdd", "", "Abood Alsubee", 4, 10, "SP' 2022", "Abbas", 0, "Hello, my name is Abood Alsubee and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("aboodalsubee", "sha512$d5a5cc5fe66746b9ae8b2d320be14043$dbc7e849d92a20fa0a035c62b33aa6809e0c32e8ce31b2ed4a9abf46a5f5f594026b3e7e8ce5bd504241862904cab81154306dba3ed48c942f1d5d4ab9939779", "", "Abood Alsubee", 4, 10, "SP' 2022", "Abbas", 0, "Hello, my name is Abood Alsubee and I am a brother of OBH.
 
  I crossed SP' 2022 and am part of the Delta Line as line number 10.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("jawadalsahlani", "sha512$5593daa1b5734aa1a74c350d54a758ae$781c23c82a144dc418c1ab8d9afaf31bdbf249d3a1fdf6a459fe5114e5f638c41b37de57e36a3cf2164de52931ee49e64f8443fa5914d87139c5bf8338716f21", "", "Jawad Alsahlani", 5, 2, "SP' 2023", "Muthafar", 1, "Hello, my name is Jawad Alsahlani and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("jawadalsahlani", "sha512$3fa17c24d7f8422bb6e91450d517594d$f107255015f374a9af9821b39e4572a7599a4de91fea82e2b4e552d3ad2eeb6633ff98184bedcd28e14533834a85ee19ecbd743c0338ba44d06105d605984303", "", "Jawad Alsahlani", 5, 2, "SP' 2023", "Muthafar", 1, "Hello, my name is Jawad Alsahlani and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 2.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("zackeryfathi", "sha512$8f3d3d50e8fd4de980b7fb229417f964$4fe8a3e71a32b5bad410c39d90ebf27258f98d196ab0fafab4e707b778c9a478bbefdb7092c2c20fc2470d930d6d88514c6264b74adf78d6855c1587722991b2", "", "Zackery Fathi", 5, 3, "SP' 2023", "Aklaaf", 1, "Hello, my name is Zackery Fathi and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("zackeryfathi", "sha512$e242942c7d1c4ade8dad46f614943535$fee32ffb11fd3d8b35a0c90e87f704631c81a78e702a2db0d3eda68da84e86a1d5db338b3456d5862ab059ecbc0ae71b8e9db031f4f5a7bd9430cb0bb1570566", "", "Zackery Fathi", 5, 3, "SP' 2023", "Aklaaf", 1, "Hello, my name is Zackery Fathi and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 3.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohsennajar", "sha512$58930fca553a4129b37fa04667bea7e1$10eb54984075eac3947f4adfee42daccb62b869b94aeb714c6f1a599c99a8be2ad377c5a78470a6c910c2cd7e52e60f311fb099fdfd7d327d37cb17c5d0210dc", "", "Mohsen Najar", 5, 4, "SP' 2023", "Farhud", 1, "Hello, my name is Mohsen Najar and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohsennajar", "sha512$fe2a1d2af2e24f31b912361947f0da6c$31bf919f3bed26b5fde66e638327717c2f25d3052b27e398fb4c01a69bf6fec6b14c686f3741c43ed060cd6d02317f592691ba88366525d7568641ca80484b66", "", "Mohsen Najar", 5, 4, "SP' 2023", "Farhud", 1, "Hello, my name is Mohsen Najar and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 4.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohammanalhameed", "sha512$dd1292fefba240f6b38b9c1b8e387a9e$8f7f757bd54be3f3dc2785c156c421b015d8ba278f9a313ede0717306e1b0f93240534371f5c1e4c6613f9dfbc6a7bdd71a7cc45302460a8c6bbcc10f54fb5af", "", "Mohamman Alhameed", 5, 5, "SP' 2023", "Asrul", 1, "Hello, my name is Mohamman Alhameed and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohammanalhameed", "sha512$2169213448c042748077190f80e189a2$3558a017f9048a3e93fa70bc615793ffc6bd617a8523ddff5b53343a91a3aa2ed539b7c1590a0ab63193c142b81db919bf3e37a7ce544c048fbfbc681b0c66c2", "", "Mohamman Alhameed", 5, 5, "SP' 2023", "Asrul", 1, "Hello, my name is Mohamman Alhameed and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 5.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alihaidar", "sha512$9947a7d9f9ef45308b50eb1d8c7d40c1$53db594a28e4caed958bcdc276b9b583d8ff58187a6031b26a02da96f4047b8b47209a0d6c779edd26bad8ad87ba3945b652b600722ba8fa1e0a5e8188e9a0c5", "", "Ali Haidar", 5, 6, "SP' 2023", "Usayd", 1, "Hello, my name is Ali Haidar and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alihaidar", "sha512$5e4dc54b3743406aae8f2524a1cd8ca4$f73debc8fd42fa900b1c908685d50f8392abf7a0baf0e58ea8a51065dc1ceafd947db2199a3b0098cbbc145266520376ac59e251b7574b145f5c2dac64e09618", "", "Ali Haidar", 5, 6, "SP' 2023", "Usayd", 1, "Hello, my name is Ali Haidar and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 6.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ahmadsukhon", "sha512$762b054e769240b89636449f47827c7c$c1b594eadfe71693945f4dedac53c291fef09091d67bc976e81f350a977306776d0f65185c5a47e5093fe6046adc4751ce0800e71430f4f285a3fbbcb3aefce2", "", "Ahmad Sukhon", 5, 7, "SP' 2023", "Baqer", 1, "Hello, my name is Ahmad Sukhon and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ahmadsukhon", "sha512$b3f17e6dd134419e96fa90d555799251$885cec69c88e5749182af634fc8ae92cd0c7602e108600f183e9283e24995a696e61035633cdb0d90c3fdeb6a7ba9e4000d4a8143a3a9bc0fd9922c1b053ab9c", "", "Ahmad Sukhon", 5, 7, "SP' 2023", "Baqer", 1, "Hello, my name is Ahmad Sukhon and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 7.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("omarsaid", "sha512$503b7b045fa942e780663a435f4fab24$5a69815d0f1c2ef672fbe0f5106c3970be852e0c5ed34f573f6bc2bab0fdb7f8188d780cadd0a0ad47a459a373bb87a27207160a65a39ce55e42a6ac6332dd4f", "", "Omar Said", 5, 8, "SP' 2023", "Shibel", 1, "Hello, my name is Omar Said and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("omarsaid", "sha512$98fedd732f03409c879cd46fc8e10e91$237b4ac27cab9f0218d3d273163aca60b723f2db81e5b4e186e9a11f33884eb7fdbb18525c5a1013b1cb0a48fbdbdc8c39212787e1dcba43887212ab0740088a", "", "Omar Said", 5, 8, "SP' 2023", "Shibel", 1, "Hello, my name is Omar Said and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 8.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("wadihalradi", "sha512$f1cf9d6f7ace4ce391a65d4e4b06b785$6b986378d170c324f004caaee99a1064568416286d35507674f0f9825070bcdf851d68479ca3e9fbaa1fa3b511df00492a95c70e8298e37f4fabd050dc90130f", "", "Wadih Alradi", 5, 9, "SP' 2023", "Haider", 1, "Hello, my name is Wadih Alradi and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("wadihalradi", "sha512$ba66893ffc1f47589df71e4c4ce83e6e$3f8e19436f0615e760d264348bd2a73f554580f633d9ad42a2beb071c2352a6136a6c4a8c5854845dc27d599be86513ae67c8c93f204a6d9b4fe3c8c6840975d", "", "Wadih Alradi", 5, 9, "SP' 2023", "Haider", 1, "Hello, my name is Wadih Alradi and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 9.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("zaidomari", "sha512$f47dd295913b435db8a9bdd0cd947446$52f06f3ba2846d015dc24b2fe912f4f29a88bb7491631e1a4bf49c00322240e5da1ac49fe22b397437323c78b396bb3c7629cd3de61c5e4d5a738a81fb15e04b", "", "Zaid Omari", 5, 10, "SP' 2023", "Sarem", 1, "Hello, my name is Zaid Omari and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("zaidomari", "sha512$a5293f8fbc3148e0b2170ddbc6af960a$1a1187ff707db52637f98cb3d998456f3bec6f358815434d70a4a72aecf9c98454c44f7622771c3e3542523909b0fea6c46127635fe88bdf4bcddb53d67bb36a", "", "Zaid Omari", 5, 10, "SP' 2023", "Sarem", 1, "Hello, my name is Zaid Omari and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 10.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("jaafarabdallah", "sha512$2dc561e7f6f741f8aee45ce79637b26c$df06167088497e2c4a7ea32c17335f1a131094d4ab764645585d1bc775f0bac70803bda96610be1cc1b109125755a3565c9a35002318ef54a606c0d4207defa2", "", "Jaafar Abdallah", 5, 11, "SP' 2023", "Feras", 1, "Hello, my name is Jaafar Abdallah and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("jaafarabdallah", "sha512$c375a3486f3a4dff9b76836e94b622df$bc25c4d6b9b98e4ce5b4f35f23a86188f17b64182101fe7c7bb73de6d481bb780e33f45c9375eab598be112b873eec338891fd15e40b1af2d0380f19d9ad42c0", "", "Jaafar Abdallah", 5, 11, "SP' 2023", "Feras", 1, "Hello, my name is Jaafar Abdallah and I am a brother of OBH.
 
  I crossed SP' 2023 and am part of the Epsilon Line as line number 11.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alielhawli", "sha512$f348efdbedb645acb68734c5eb4824f6$26817456e75cc5925875424157256014dfc684d2e78cc3e4ece1499b6011af605ed8c7f321d4c10cc3129556ef03ddab6af0463ababa601531b453f6aa446792", "", "Ali Elhawli", 6, 1, "SP' 2024", "Sarem", 1, "Hello, my name is Ali Elhawli and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alielhawli", "sha512$1a87949d8430463e993287823e24c4cc$9319b5888f4d124231b82e6b675d82ecbe0f4a38140dee562887f19f365adf78634da765ca30568bdfc7dac41e73e53971c65ea6ced55d68fc63496e48675231", "", "Ali Elhawli", 6, 1, "SP' 2024", "Sarem", 1, "Hello, my name is Ali Elhawli and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 1.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ahmadelkhatib", "sha512$3dc8b65de5f741ae9647c91acdc1cfaf$113f0209d5e909d6084b4ea6154528f6c159310c8039f886676e0287f262a405531be168a7cb1e510fbb1dc6da53473a27c96f12136bb9043876008939a3c631", "", "Ahmad Elkhatib", 6, 2, "SP' 2024", "Usayd", 1, "Hello, my name is Ahmad Elkhatib and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ahmadelkhatib", "sha512$9fb0504c8d4f411a90b8e2a6488414b6$c7bd5bb3cb85ac1f8fe390112f5fe386abda7587578858156e54c77a7a2003ae99f8e0890c1a534c2918a6b75f0d23dad6ca22726eaa8676e92b40db9e79bc2b", "", "Ahmad Elkhatib", 6, 2, "SP' 2024", "Usayd", 1, "Hello, my name is Ahmad Elkhatib and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 2.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("adamabduljabbar", "sha512$99bb8aff146f49f68835fdae3765b95a$7ccee7f8bafe724eeb5260c4d254759d1065016fd1bf7ad232e04c7dc41106ca51d65fb05df8636dee03902267550f5734326b5de5eb74997850b667d786204a", "", "Adam Abduljabbar", 6, 3, "SP' 2024", "Hamza", 1, "Hello, my name is Adam Abduljabbar and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("adamabduljabbar", "sha512$d6452a800159424c95f20554d6eac680$2bd596cea500261732d001d59420cf664c5d4c296dcdc16edbc44d6460a760d18d2a35153508d4401583abb08928465fdea578bfc31f50a2d879d9aa8db8aba2", "", "Adam Abduljabbar", 6, 3, "SP' 2024", "Hamza", 1, "Hello, my name is Adam Abduljabbar and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 3.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("saifalesawy", "sha512$66feb0a4a1a144c78ca014da444ac489$4ba94ced9e009d1ba3eb47fdf6261411258d18f8e4cdcf145ff9a7e30223019c4b2ed8cde8bce185f79900eee9b32ded801cc959508eab413fcb75f9f456f24e", "", "Saif Alesawy", 6, 4, "SP' 2024", "Dhergham", 1, "Hello, my name is Saif Alesawy and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("saifalesawy", "sha512$c9209a07cca24f47b9c3999b8fe100b4$8dd3cdab33ef8d5a6cd596ab57b04636bf08ef0388e0d182cdc6145a562cd9da22b2b84805e063ebaf78e5ccbf26e1d8630c2c88a7f403afa7ba92f372ef8a99", "", "Saif Alesawy", 6, 4, "SP' 2024", "Dhergham", 1, "Hello, my name is Saif Alesawy and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 4.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alihammoud", "sha512$6d854002694545589ed72b336eb2f373$9836d8c442eb62d0965e4213296b8466fefe4d4d6d8c43055951ff3d3348da7349df9b5ece36f64c782043407f9e7ecd0184eca485a0235cf19db492d7ab1e03", "", "Ali Hammoud", 6, 5, "SP' 2024", "Muthafar", 1, "Hello, my name is Ali Hammoud and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alihammoud", "sha512$738e4fa9eb2d45ce893351b0ad0cb8e6$ab289032456822f25c9a371d90caea78857f3b7de2f89f7ef9ce7bb68bafa93c5d2cbebdf0809c11203685fa5842702600063e418f65139bb056b80a71dcd1bd", "", "Ali Hammoud", 6, 5, "SP' 2024", "Muthafar", 1, "Hello, my name is Ali Hammoud and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 5.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("aliatoui", "sha512$b09c109ebf494f9eb6705094b5a4edd9$d2a969a312d1fd30976555e81cc5f79600c64c01e87f51d48a862f4a4eb92320f33524b43f6b36bb4e4acce16b261c3a9c6e95d076a3216d7723c421c7352374", "", "Ali Atoui", 6, 6, "SP' 2024", "Feras", 1, "Hello, my name is Ali Atoui and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("aliatoui", "sha512$ee2ae9856854488ca751b6281aaf7385$8a9ff4feff4c7b93a0cb0d7f5ca6f3a322fedf3091ae196d44bc84ee3465c80078f7cd9949b23f113e632636bea4f5002e1b3686296f5174e0d43c62ee139bd5", "", "Ali Atoui", 6, 6, "SP' 2024", "Feras", 1, "Hello, my name is Ali Atoui and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 6.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamednajm", "sha512$9e8f9dedb376411fb68a284cead51ab0$af236efe68d14eba5c2895a93a70732126999a0bef63cd3e763271a1c41f42b72117935c81dfb8e0689b409cb5f9c73708c768de08826145b189da179987fcd6", "", "Mohamed Najm", 6, 7, "SP' 2024", "Laith", 1, "Hello, my name is Mohamed Najm and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("mohamednajm", "sha512$96624fc48d9047d1a514d8405a2dc58b$e818829a40a9a0b89bac4c125a67aa5a7bf8bca32a16bae1d3c67eda79f30322032df55a21cc75cfa4a2e0bcb38e433c4d731eb8de8cf45a3908331bf82058f1", "", "Mohamed Najm", 6, 7, "SP' 2024", "Laith", 1, "Hello, my name is Mohamed Najm and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 7.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ibrahimqamhieh", "sha512$6403328f7dfa4a3d9fd38babcaeba84e$cd567a4b16a21eee1d333e29edf834fd568a9ec9b5cb3a94ba692728cdf4544f42330901dc0f69bb71acd84a14956b0c8a4e14c75d2ac25d25c525026b6c84ec", "", "Ibrahim Qamhieh", 6, 8, "SP' 2024", "Asrul", 1, "Hello, my name is Ibrahim Qamhieh and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ibrahimqamhieh", "sha512$2682a74d7e854fc0bd6b0df98647c0cf$c4d81878992669ee2309a078a43cfd0c880d9b9ae0caf9f1708648a31ce30f67857eeb0be0fd220bd3d8e3ff0b579fbf8833fce1e9cbda231f4b02f961b3027d", "", "Ibrahim Qamhieh", 6, 8, "SP' 2024", "Asrul", 1, "Hello, my name is Ibrahim Qamhieh and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 8.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alighoul", "sha512$5bdcd42a634e4cccb291be602e1bb7f2$8f25c7fe8d43bc1ea00f2514cd9aab49da81ef3aedb86c7e0d5329fbbe0ff73229611b2eb1b5f3203e4641fb976bf6f7ef284d156bf2bfcc5d73b59518da6315", "", "Ali Ghoul", 6, 9, "SP' 2024", "Rebal", 1, "Hello, my name is Ali Ghoul and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("alighoul", "sha512$0e14adc9387d4dabbd2742aa60b03f7d$79fa82c84d0763465d7acf061ebd9f08d49f14a858a4fa0bfa2710c56d66da0a4c7ca1500eb2dc3a69e27c27145d6abd956ad69252e90ebfe64f2eac17a375b8", "", "Ali Ghoul", 6, 9, "SP' 2024", "Rebal", 1, "Hello, my name is Ali Ghoul and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 9.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("sajednehme", "sha512$73cb5240365d4381b5b9f1f22971d25d$558e855dd7a4a1a1b1e4ff24f8e4d808850cc15db93e8d70f1bd5fd5b34df6ddebe629b364e69b1c6f1a15fbb65e3d7e05a00f9b25787e0a5ed404077a6b1b5d", "", "Sajed Nehme", 6, 10, "SP' 2024", "Baqer", 1, "Hello, my name is Sajed Nehme and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("sajednehme", "sha512$6cec85385d584a508510802a223db3b5$edbe8aca13310889e54f656e906e95a6ae0cfdbe9fee0a8ae6c860840f325422b3ae0e03b18379d92e73439509f66990e6f233943ea1501eab62403825891751", "", "Sajed Nehme", 6, 10, "SP' 2024", "Baqer", 1, "Hello, my name is Sajed Nehme and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 10.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ghassanshohatee", "sha512$cf6ee6667f93455f81e894c10ad55c59$96da5cf9e44cc24cb260eb13af278e735707483efe9805b85a0801c785c3e2b2f7cc09aab3f815a70e09a00a15efea58c2d553c4575d312a95e7e7f30380cb27", "", "Ghassan Shohatee", 6, 11, "SP' 2024", "Farhud", 1, "Hello, my name is Ghassan Shohatee and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("ghassanshohatee", "sha512$fee0f2b5e7bd4961b49f6e2fe2c60a62$a18711618c028720567577ceabb547b74b147ece6844573c25c56138d674bbd3d086d92835ae58536b032b8ec952e1c39c7693fb84e61851a81616cc00b66ea4", "", "Ghassan Shohatee", 6, 11, "SP' 2024", "Farhud", 1, "Hello, my name is Ghassan Shohatee and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 11.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hishamirshaid", "sha512$a47b76f640bd4ca5b4b4d39dc3025300$53724ad526cc9332d845d6bf6573b9707acd4cf00bb1fb15f6ec02e68d43c56aea68db75163e50cc0251634f899404976899e27e44c4db25f7afa98c9edc8de5", "", "Hisham Irshaid", 6, 12, "SP' 2024", "Haidar", 1, "Hello, my name is Hisham Irshaid and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("hishamirshaid", "sha512$ef4e9cc667df4b378bb453b565b933df$4cb89355bcc2e5a26843971dc48a541551516f16a7cb7a08e85b5a6894031870a1b9b71143294e1be3a1fb317cd0ddb4753e4b3811680050dd40ab7957d230c3", "", "Hisham Irshaid", 6, 12, "SP' 2024", "Haidar", 1, "Hello, my name is Hisham Irshaid and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 12.
  You can contact me at @umich.edu for further questions.");
-INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("youssefcherri", "sha512$00931a5adccc4c96b23de36de742d38a$3e866b1e21c29f1b8d7308b88aeadb78a963ac4f701b90fd73ce1fa573082fe647414113c2443850f5ee2182e9397e5ef4bed10d42e623cb77c066ded7dc1b8f", "", "Youssef Cherri", 6, 13, "SP' 2024", "Bassel", 1, "Hello, my name is Youssef Cherri and I am a brother of OBH.
+INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) VALUES("youssefcherri", "sha512$63756f8dbde84e349d62bcebb5649e76$6141a23fcfcffc91e966e3c00e5b37b4775fbd85f4dc55ea112ab9f59341b0fde4bb2069cc426d7a152da8aa294161d84a91d5bd41904d0018b984eb851b13db", "", "Youssef Cherri", 6, 13, "SP' 2024", "Bassel", 1, "Hello, my name is Youssef Cherri and I am a brother of OBH.
 
  I crossed SP' 2024 and am part of the Zeta Line as line number 13.
  You can contact me at @umich.edu for further questions.");

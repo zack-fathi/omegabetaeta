@@ -42,6 +42,7 @@ case $1 in
     mkdir -p var/uploads
     sqlite3 var/${APP}.sqlite3 < sql/schema.sql
     sqlite3 var/${APP}.sqlite3 < sql/data.sql
+    sqlite3 var/${APP}.sqlite3 < sql/board.sql
     cp sql/uploads/* var/uploads/
     python3 bin/make_brothers.py
     sqlite3 var/${APP}.sqlite3 < sql/insert_brothers.sql
