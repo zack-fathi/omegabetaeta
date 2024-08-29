@@ -160,7 +160,7 @@ def show_portal_directory():
     context = {"user_id": user_id}
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, username, line, line_num, uniqname FROM brothers "
+        "SELECT user_id, fullname, username, line, line_num, uniqname FROM brothers "
         "ORDER BY line ASC, line_num ASC;",
     )
     brothers = cur.fetchall()
@@ -172,6 +172,21 @@ def show_portal_directory():
 
     context["brothers"] = line_dict
     return flask.render_template("portal_directory.html", **context)
+
+@obhapp.app.route('/portal/directory/<name>/')
+def show_directory_brother(name):
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT * FROM brothers "
+        "WHERE username = ? ",
+        (name, )
+    )
+    bro = cur.fetchone()
+    bro["line_name"] = line_int_to_line[str(bro["line"])]
+    # return bro
+
+    bro['grad_time'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
+    return flask.render_template("portal_brother.html", **bro)
 
 @obhapp.app.route('/portal/log/')
 def show_portal_log():
@@ -344,3 +359,29 @@ def upload():
             return flask.redirect(flask.url_for('upload'))
 
     return flask.render_template('portal_upload.html')
+
+
+def get_active_brothers():
+    connection = obhapp.model.get_db()
+    cursor = connection.cursor()
+    cursor.execute("SELECT user_id, fullname FROM brothers WHERE active = 1")
+    brothers = cursor.fetchall()
+    print(brothers)
+    return brothers
+
+@obhapp.app.route('/portal/board', methods=['GET', 'POST'])
+def assign_roles():
+    if flask.request.method == 'POST':
+        # Handle role assignment logic
+        role_assignments = flask.request.form.to_dict()
+        connection = obhapp.model.get_db()
+        cursor = connection.cursor()
+        for role, user_id in role_assignments.items():
+            if user_id:
+                cursor.execute("UPDATE boards SET user_id = ? WHERE role_name = ?", (user_id, role))
+        connection.commit()
+        return flask.redirect(flask.url_for('assign_roles'))
+
+    active_brothers = get_active_brothers()
+    return flask.render_template('assign_roles.html', brothers=active_brothers)
+

@@ -3,97 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Board Members</title>
-    <script src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/babel-standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Assign Roles</title>
 </head>
 <body>
-    <section id="board"></section>
+    <h1>Assign Roles to Active Brothers</h1>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <form action="{{ url_for('assign_roles') }}" method="POST">
+        <div>
+            <label for="Admin">Admin:</label>
+            <select name="Admin" id="Admin">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        function Board() {
-            const [boardMembers, setBoardMembers] = useState([]);
-            const [brothers, setBrothers] = useState([]);
-            const [editingRole, setEditingRole] = useState(null);
-            const [newMember, setNewMember] = useState('');
+        <div>
+            <label for="President">President:</label>
+            <select name="President" id="President">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            useEffect(() => {
-                fetchBoardMembers();
-                fetchBrothers();
-            }, []);
+        <div>
+            <label for="Internal Vice President">Internal Vice President:</label>
+            <select name="Internal Vice President" id="Internal_Vice_President">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            const fetchBoardMembers = async () => {
-                const response = await axios.get('/portal/board/');
-                setBoardMembers(response.data);
-            };
+        <div>
+            <label for="External Vice President">External Vice President:</label>
+            <select name="External Vice President" id="External_Vice_President">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            const fetchBrothers = async () => {
-                const response = await axios.get('/api/brothers'); // Assume you have an endpoint for fetching brothers
-                setBrothers(response.data);
-            };
+        <div>
+            <label for="Director of Finance">Director of Finance:</label>
+            <select name="Director of Finance" id="Director_of_Finance">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            const handleUpdate = async (roleName) => {
-                const response = await axios.post('/portal/board/update', {
-                    role_name: roleName,
-                    user_id: newMember
-                });
+        <div>
+            <label for="Administrator">Administrator:</label>
+            <select name="Administrator" id="Administrator">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-                if (response.data.success) {
-                    fetchBoardMembers();
-                    setEditingRole(null);
-                } else {
-                    alert(response.data.message);
-                }
-            };
+        <div>
+            <label for="Director of Recruitment">Director of Recruitment:</label>
+            <select name="Director of Recruitment" id="Director_of_Recruitment">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            return (
-                <div>
-                    <h2>Board Members</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Role Name</th>
-                                <th>Member Name</th>
-                                {session.role in ['Admin', 'President', 'Internal Vice President', 'External Vice President'] && <th>Actions</th>}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {boardMembers.map(member => (
-                                <tr key={member.role_name}>
-                                    <td>{member.role_name}</td>
-                                    <td>{member.fullname}</td>
-                                    {session.role in ['Admin', 'President', 'Internal Vice President', 'External Vice President'] &&
-                                        <td>
-                                            {editingRole === member.role_name ? (
-                                                <>
-                                                    <select value={newMember} onChange={(e) => setNewMember(e.target.value)}>
-                                                        {brothers.map(brother => (
-                                                            <option key={brother.user_id} value={brother.user_id}>
-                                                                {brother.fullname}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                    <button onClick={() => handleUpdate(member.role_name)}>Save</button>
-                                                    <button onClick={() => setEditingRole(null)}>Cancel</button>
-                                                </>
-                                            ) : (
-                                                <button onClick={() => setEditingRole(member.role_name)}>Edit</button>
-                                            )}
-                                        </td>
-                                    }
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            );
-        }
+        <div>
+            <label for="Director of Internal">Director of Internal:</label>
+            <select name="Director of Internal" id="Director_of_Internal">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        ReactDOM.render(<Board />, document.getElementById('board'));
-    </script>
+        <div>
+            <label for="Director of Public Relations">Director of Public Relations:</label>
+            <select name="Director of Public Relations" id="Director_of_Public_Relations">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="Director of Education">Director of Education:</label>
+            <select name="Director of Education" id="Director_of_Education">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="Director of Philanthropy">Director of Philanthropy:</label>
+            <select name="Director of Philanthropy" id="Director_of_Philanthropy">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="Director of External">Director of External:</label>
+            <select name="Director of External" id="Director_of_External">
+                <option value="">--Select Brother--</option>
+                {% for brother in brothers %}
+                    <option value="{{ brother[0] }}">{{ brother[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Assign Roles</button>
+    </form>
 </body>
 </html>

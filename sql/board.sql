@@ -1,6 +1,6 @@
 INSERT INTO roles (role_name, user_id) VALUES
-('Admin', 0),
-('Admin', 1);
+('Admin', 39),
+('Admin', 40);
 INSERT INTO roles (role_name) VALUES
 ('President'),
 ('Internal Vice President'),
