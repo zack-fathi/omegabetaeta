@@ -1,113 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<style>
-
-    .profile-container {
-        background-color: #444;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        flex-grow: 1;
-        display: flex;
-        flex-wrap: wrap;
-        margin: 20px auto;
-        /* Center the container horizontally */
-        font-family: 'Poppins', Arial, sans-serif;
-        justify-content: space-between;
-        width: 50%;
-        /* Ensure the container takes up the middle half of the screen */
-    }
-
-    .profile-left {
-        display: flex;
-        flex-direction: column;
-        width: 48%;
-        /* Take the full width within the container */
-        margin-bottom: 20px;
-        /* Add space below for separation */
-    }
-
-    .profile-picture {
-        margin-bottom: 20px;
-        border-radius: 10px;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .profile-picture img {
-        width: 100%;
-        height: auto;
-    }
-
-    .profile-info {
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        background-color: #555;
-    }
-
-    .profile-info div {
-        margin-bottom: 10px;
-    }
-
-    .profile-info div strong {
-        font-size: 1.2em;
-        color: #fff;
-    }
-
-    .profile-description {
-        width: 48%;
-        /* Take the full width within the container */
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        background-color: #555;
-    }
-
-    .profile-description div {
-        color: #fff;
-    }
-
-    .profile-description div strong {
-        text-align: center;
-        font-size: 1.5em;
-        color: #fff;
-    }
-
-    @media (max-width: 768px) {
-        .profile-container {
-            width: 90%;
-            /* Make the container wider on smaller screens */
-        }
-
-        .profile-left,
-        .profile-description {
-            margin-right: 0;
-        }
-    }
-</style>
-
-<div class="profile-container">
-    <div class="profile-left">
-            <div class="profile-picture">
-                <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" />
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card bg-dark text-white shadow-sm mb-4 border-gold rounded">
+                <div class="row no-gutters">
+                    <!-- Left Column: Profile Picture and Info -->
+                    <div class="col-md-6">
+                        <div class="card-body h-100 d-flex flex-column">
+                            <div class="text-center mb-4">
+                                <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" class="img-fluid rounded">
+                            </div>
+                            <div class="bg-secondary p-4 flex-grow-1 rounded">
+                                <div class="mb-3"><strong>Name:</strong> {{ fullname }}</div>
+                                <div class="mb-3"><strong>Major:</strong> {{ major }}</div>
+                                <div class="mb-3"><strong>Grad Time:</strong> {{ grad_time }}</div>
+                                <div class="mb-3"><strong>Cross Time:</strong> {{ cross_time }}</div>
+                                <div class="mb-3"><strong>Line:</strong> {{ line }}</div>
+                                <div class="mb-3"><strong>Line Number:</strong> {{ line_num }}</div>
+                                <div><strong>Lion Name:</strong> {{ lion_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right Column: Profile Description -->
+                    <div class="col-md-6">
+                        <div class="card-body h-100 d-flex flex-column">
+                            <div class="bg-secondary p-4 flex-grow-1 rounded d-flex flex-column">
+                                <div class="text-center mb-4">
+                                    <strong class="h4">About Me</strong>
+                                </div>
+                                <div class="flex-grow-1">{{ desc }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="profile-info">
-                <div><strong>Name:</strong> {{ fullname }}</div>
-                <div><strong>Major:</strong> {{ major }}</div>
-                <div><strong>Grad Time:</strong> {{ grad_time }}</div>
-                <div><strong>Cross Time:</strong> {{ cross_time }}</div>
-                <div><strong>Line:</strong> {{ line }}</div>
-                <div><strong>Line Number:</strong> {{ line_num }}</div>
-                <div><strong>Lion Name:</strong> {{ lion_name }}</div>
-            </div>
-    </div>
-    <div class="profile-description">
-        <div><strong>About Me</strong></div>
-        <div>{{ desc }}</div>
+        </div>
     </div>
 </div>
 
