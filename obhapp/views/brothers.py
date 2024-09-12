@@ -52,7 +52,5 @@ def apply_rec():
         "VALUES(?, ?, ?, ?) ",
         (uniqname, fullname, email, "Ann Arbor")
     )
-
-
-    return flask.render_template("apply.html")
+    return flask.render_template("apply-confirm.html")
     

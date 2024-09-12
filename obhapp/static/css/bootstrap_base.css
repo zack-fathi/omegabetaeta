@@ -208,6 +208,10 @@ footer .social-icon:hover {
     background-color: #da3a37; /* Ensure body has the same background color */
 }
 
+.cal-body {
+    background-color: #FFF;
+}
+
 /* Gallery styling */
 .gallery {
     padding: 20px;
@@ -215,7 +219,7 @@ footer .social-icon:hover {
 }
 
 .gallery h1 {
-    color: #FFD700; /* Gold */
+    color: #fff; /* Gold */
     margin-bottom: 20px;
 }
 
@@ -225,9 +229,13 @@ footer .social-icon:hover {
     justify-content: center;
 }
 
+.center {
+    text-align: center;
+}
+
 .gallery-item {
     background-color: #444; /* Dark grey */
-    border: 2px solid #FFD700; /* Gold */
+    border: 1px solid #FFD700; /* Gold */
     border-radius: 10px;
     overflow: hidden;
     text-align: center;

@@ -99,7 +99,7 @@ bros = {
 ],
 6:[
 "Ali Elhawli- Sarem",
-"Ahmad Elkhatib- Usayd",
+"Ahmed Elkhatib- Usayd",
 "Adam Abduljabbar- Hamza",
 "Saif Alesawy- Dhergham",
 "Ali Hammoud- Muthafar",
