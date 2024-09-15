@@ -1,24 +1,54 @@
-"""Insta485 package initializer."""
+"""Omega Beta Eta package initializer."""
 import flask
+from dotenv import load_dotenv
+import os
+import requests
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 # app is a single object used by all the code modules in this package
 app = flask.Flask(__name__)  # pylint: disable=invalid-name
 
-# Read settings from config module (insta485/config.py)
+# Read settings from config module (obhapp/config.py)
 app.config.from_object('obhapp.config')
 
 app.debug = True
-# Overlay settings read from a Python file whose path is set in the environment
-# variable INSTA485_SETTINGS. Setting this environment variable is optional.
-# Docs: http://flask.pocoo.org/docs/latest/config/
-#
-# EXAMPLE:
-# $ export INSTA485_SETTINGS=secret_key_config.py
-# app.config.from_envvar('OBHAPP_SETTINGS', silent=True)
 
-# Tell our app about views and model.  This is dangerously close to a
-# circular import, which is naughty, but Flask was designed that way.
-# (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're
-# going to tell pylint and pycodestyle to ignore this coding style violation.
+# Load environment variables
+load_dotenv()
+
+# Access the service account file path and calendar ID from environment variables
+SERVICE_ACCOUNT_FILE = os.getenv('omegabetaeta-a2a6d02aedd3.json')  # Path to the service account JSON file
+PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')  # Calendar ID for the private calendar
+
+# Ensure necessary environment variables are set
+if not SERVICE_ACCOUNT_FILE or not PORTAL_CALENDAR_ID:
+    raise EnvironmentError("SERVICE_ACCOUNT_FILE or PORTAL_CALENDAR_ID not set in the environment variables.")
+
+@app.route('/get-events', methods=['GET'])
+def get_events():
+    """Return the events for the calendar using a service account."""
+    try:
+        # Set up credentials using the service account JSON file
+        SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
+
+        # Build the calendar service
+        service = build('calendar', 'v3', credentials=credentials)
+
+        # Fetch events from the calendar
+        events_result = service.events().list(calendarId=PORTAL_CALENDAR_ID).execute()
+        events = events_result.get('items', [])
+
+        return flask.jsonify(events)
+
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error fetching events: {e}")
+        return flask.jsonify({'error': str(e)}), 500
+
+# Ignore coding style violations for these imports
 import obhapp.views  # noqa: E402  pylint: disable=wrong-import-position
 import obhapp.model  # noqa: E402  pylint: disable=wrong-import-position

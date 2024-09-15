@@ -295,3 +295,33 @@ footer .social-icon:hover {
     color: #b22222;
   }
 
+Set a fixed height for the carousel
+.carousel-item img {
+    height: 500px; /* Adjust this value as needed */
+    object-fit: cover; /* Makes the image cover the container while preserving aspect ratio */
+    width: 100%;
+  }
+
+  /* Set a fixed height and rounded corners for carousel images */
+.carousel-inner .carousel-item {
+    overflow: hidden; /* Hide overflow to crop images */
+    border-radius: 10px; /* Rounded corners for the carousel */
+}
+
+.carousel-inner .image-container {
+    width: 100%;
+    height: 400px; /* Set a fixed height for the carousel */
+    overflow: hidden; /* Hide overflow to ensure uniform image display */
+}
+
+.carousel-inner .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the container without distortion */
+}
+
+/* Hover effect similar to gallery items */
+.carousel-inner .carousel-item:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease-in-out;
+}
