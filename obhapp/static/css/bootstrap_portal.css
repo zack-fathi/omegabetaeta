@@ -154,3 +154,11 @@
     border-radius: 10px;
     text-align: center;
 }
+
+.fc a{
+    color: #da3a37 !important;
+}
+
+.fc-toolbar-title {
+    color: #da3a37;
+  }
