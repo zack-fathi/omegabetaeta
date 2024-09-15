@@ -282,3 +282,16 @@ footer .social-icon:hover {
 .flashes li {
     margin-bottom: 10px;
 }
+
+/* static/css/calendar-styles.css */
+
+/* Change the background color of all events */
+/* Change the text color of all events to red */
+.fc a{
+    color: #b22222 !important;
+}
+
+.fc-toolbar-title {
+    color: #b22222;
+  }
+
