@@ -18,7 +18,7 @@ app.debug = True
 load_dotenv()
 
 # Access the service account file path and calendar ID from environment variables
-SERVICE_ACCOUNT_FILE = os.getenv('omegabetaeta-a2a6d02aedd3.json')  # Path to the service account JSON file
+SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # Path to the service account JSON file
 PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')  # Calendar ID for the private calendar
 
 # Ensure necessary environment variables are set
