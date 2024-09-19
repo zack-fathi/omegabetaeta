@@ -54,7 +54,7 @@ header .logoname p {
 header {
     width: 100%; /* Ensure header spans the full width */
     margin-top: 3vh;
-    background-color: #da3a37;
+    background-color: #b22222;
     color: black !important;
     text-align: center;
     font-weight: bold;
@@ -63,6 +63,12 @@ header {
     justify-content: space-between;
     align-items: center;
 }
+
+/* Custom Navbar Background Color */
+.custom-navbar {
+    background-color: #b22222 !important;
+}
+
 
 .navbar-nav .nav-item .nav-link {
     color: black !important;
@@ -120,12 +126,12 @@ footer .social-icon:hover {
 }
 
 .btn-primary {
-    background-color: #da3a37; /* Red button */
+    background-color: #b22222; /* Red button */
     border: none;
 }
 
 .btn-primary:hover {
-    background-color: #b22222; /* Darker red on hover */
+    background-color: #800000; /* Darker red on hover */
 }
 
 .d-flex.justify-content-center {
@@ -158,7 +164,7 @@ footer .social-icon:hover {
 /* Make the corners of the cards rounded */
 .card {
     border-radius: 10px; /* Adjust the value to control the roundness */
-    background-color: #da3a37; /* Same red as the navbar */
+    background-color: #b22222; /* Same red as the navbar */
     border: none; /* Remove default border */
 }
 
@@ -170,7 +176,7 @@ footer .social-icon:hover {
 .card-body {
     border-bottom-left-radius: 10px; /* Match the card border radius */
     border-bottom-right-radius: 10px; /* Match the card border radius */
-    background-color: #da3a37; /* Ensure body has the same background color */
+    background-color: #b22222; /* Ensure body has the same background color */
 }
 
 .cal-body {
@@ -298,6 +304,7 @@ footer .social-icon:hover {
 
 /* Welcome card container */
 .welcome-card-container {
+    background-color: #b22222;
     width: 80%; /* Adjust as needed */
     margin: -60px auto 0 auto; /* Negative margin to move the card up */
     z-index: 1; /* Ensure the card appears above the carousel */
@@ -305,7 +312,6 @@ footer .social-icon:hover {
 
 /* Welcome card styling */
 .welcome-card {
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
     padding: 20px;
     border-radius: 10px;
     /* Optional: Adjust box-shadow for better visibility */
