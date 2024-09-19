@@ -1,34 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class = "container">
+  <section class="card mb-4">
+    <div class="card-header text-center">
+      <h2 class="mb-0">Fraternity Calendar</h2>
+    </div>
+    <div class="card-body text-center cal-body">
+      <!-- FullCalendar Div -->
+      <div id="calendar"></div>
+    </div>
+  </section>
 
-<section class="card mb-4">
-  <div class="card-header text-center">
-    <h2 class="mb-0">Fraternity Calendar</h2>
-  </div>
-  <div class="card-body text-center cal-body">
-    <!-- FullCalendar Div -->
-    <div id="calendar"></div>
-  </div>
-</section>
+  <!-- Initialize FullCalendar -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
 
-<!-- Initialize FullCalendar -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth', // Sets the default view to a full month
+        initialDate: new Date(), // Sets the initial date to today's date
+        headerToolbar: {
+          left: 'prev,next today', // Navigation buttons
+          center: 'title', // Title that shows the current month
+          right: 'dayGridMonth,timeGridWeek,timeGridDay' // View options
+        }
+      });
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth', // Sets the default view to a full month
-      initialDate: new Date(), // Sets the initial date to today's date
-      headerToolbar: {
-        left: 'prev,next today', // Navigation buttons
-        center: 'title', // Title that shows the current month
-        right: 'dayGridMonth,timeGridWeek,timeGridDay' // View options
-      }
+      calendar.render();
     });
-
-    calendar.render();
-  });
-</script>
+  </script>
+</div>
 
 {% endblock %}
