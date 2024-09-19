@@ -12,15 +12,6 @@
     font-size: inherit; /* Inherits font size from parent */
 }
 
-/* body {
-    font-family: 'Poppins', Arial, sans-serif;
-    background-color: #222;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-} */
-
 body {
     font-family: 'Poppins', Arial, sans-serif;
     background-color: #222; /* Background color remains the same */
@@ -48,12 +39,6 @@ body {
     pointer-events: none; /* Ensure it doesn’t interfere with clicking */
 }
 
-/* .main-info {
-    padding-left: 150px;
-    padding-right: 150px;
-} */
-
-
 header .logo {
     display: flex;
     align-items: center;
@@ -65,22 +50,6 @@ header .logoname p {
     font-size: 1.2em;
     color: black;
 }
-
-/* header {
-    margin-top: 3vh;
-    background-color: #da3a37;
-    color: black !important;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar-nav .nav-item .nav-link {
-    color: black !important;
-} */
 
 header {
     width: 100%; /* Ensure header spans the full width */
@@ -101,7 +70,6 @@ header {
     padding-right: 15px;
 }
 
-
 .navbar-nav a:hover {
     color: #FFD700 !important; /* Gold */
 }
@@ -116,7 +84,7 @@ footer .social-icon:hover {
     color: #FFD700;  /* Gold */
 }
 
-/* apply form styling */
+/* Apply form styling */
 .apply-form-container {
     display: flex;
     justify-content: center;
@@ -151,7 +119,6 @@ footer .social-icon:hover {
     outline: none;
 }
 
-
 .btn-primary {
     background-color: #da3a37; /* Red button */
     border: none;
@@ -161,11 +128,9 @@ footer .social-icon:hover {
     background-color: #b22222; /* Darker red on hover */
 }
 
-
 .d-flex.justify-content-center {
     margin-top: 20px; /* Add space between form fields and button */
 }
-
 
 /* Flash Messages */
 .flashes {
@@ -252,14 +217,6 @@ footer .social-icon:hover {
     object-fit: cover;
 }
 
-/* .brother-info {
-    padding: 10px;
-}
-
-.brother-info p {
-    margin: 5px 0;
-} */
-
 .image-container {
     width: 100%;
     height: 200px; /* Set the desired height */
@@ -283,29 +240,30 @@ footer .social-icon:hover {
     margin-bottom: 10px;
 }
 
-/* static/css/calendar-styles.css */
-
-/* Change the background color of all events */
-/* Change the text color of all events to red */
-.fc a{
+/* Change the text color of all calendar events to red */
+.fc a {
     color: #b22222 !important;
 }
 
 .fc-toolbar-title {
     color: #b22222;
-  }
+}
 
-Set a fixed height for the carousel
+/* Carousel styling */
+.carousel {
+    width: 100%;
+}
+
 .carousel-item img {
-    height: 500px; /* Adjust this value as needed */
+    height: 55vh; /* Adjust this value as needed */
     object-fit: cover; /* Makes the image cover the container while preserving aspect ratio */
     width: 100%;
-  }
+}
 
-  /* Set a fixed height and rounded corners for carousel images */
+/* Set a fixed height and rounded corners for carousel images */
 .carousel-inner .carousel-item {
     overflow: hidden; /* Hide overflow to crop images */
-    border-radius: 10px; /* Rounded corners for the carousel */
+    border-radius: 0; /* Remove rounded corners if necessary */
 }
 
 .carousel-inner .image-container {
@@ -324,4 +282,49 @@ Set a fixed height for the carousel
 .carousel-inner .carousel-item:hover {
     transform: scale(1.02);
     transition: transform 0.3s ease-in-out;
+}
+
+/* Remove any padding or margin from 'main-info' to allow full-width content */
+.main-info {
+    padding: 0;
+    margin: 0;
+}
+
+/* Ensure the carousel container spans the full width */
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Welcome card container */
+.welcome-card-container {
+    width: 80%; /* Adjust as needed */
+    margin: -60px auto 0 auto; /* Negative margin to move the card up */
+    z-index: 1; /* Ensure the card appears above the carousel */
+}
+
+/* Welcome card styling */
+.welcome-card {
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    /* Optional: Adjust box-shadow for better visibility */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: black; /* Ensure text color is readable */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+    .welcome-card-container {
+        width: 90%;
+        margin-top: -40px; /* Adjust negative margin for smaller screens */
+    }
+
+    .welcome-card {
+        padding: 15px;
+    }
+
+    .welcome-card .card-title {
+        font-size: 1.5em;
+    }
 }
