@@ -1,4 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="login-form-container py-5 d-flex justify-content-center align-items-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="form-description text-center mb-4">
+      <h2>Support Omega Beta Eta</h2>
+      <p>
+        Your contributions help us uphold our values and support our initiatives.
+        Thank you for your generosity! To donate, please use the Venmo handle below,
+        or scan the QR Code below.
+      </p>
+    </div>
 
+    <div class="venmo-details mb-4 text-center">
+      <h3 class="mb-3" style="color: #FFD700;">@OBHUMICH</h3>
+      <p style="color: white;">
+        Open your Venmo app, search for <strong>@OBHUMICH</strong>, and send your donation securely.
+      </p>
+    </div>
+
+    <div class="venmo-qr mb-4 text-center">
+      <img
+        src="{{ url_for('static', filename='images/venmo_qr_code.png') }}"
+        alt="Venmo QR Code"
+        class="img-fluid"
+      />
+      <p class="mt-2" style="color: white;">Scan this QR code with the Venmo app.</p>
+    </div>
+  </div>
+</div>
 {% endblock %}
