@@ -1,6 +1,6 @@
 import flask
 import obhapp
-
+import os
 
 @obhapp.app.route('/uploads/<filename>')
 def uploaded_file(filename):
@@ -9,7 +9,22 @@ def uploaded_file(filename):
 
 @obhapp.app.route('/')
 def show_index():
-    return flask.render_template("index.html")
+
+    # Get the path to the carousel images folder
+    carousel_folder = os.path.join(
+        obhapp.app.static_folder, 'images/carousel_images'
+    )
+    
+    # Dynamically list all image files in the folder
+    images = [
+        f'images/carousel_images/{file}'
+        for file in os.listdir(carousel_folder)
+        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))
+    ]
+    
+    # Render the template and pass the image list
+    return flask.render_template("index.html", images=images)
+
 
 
 @obhapp.app.route('/about/')
