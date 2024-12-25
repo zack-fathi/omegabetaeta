@@ -40,7 +40,7 @@ CREATE TABLE gallery(
 CREATE TABLE change_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    change_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    change_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     desc TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES brothers(user_id)
 );
@@ -51,4 +51,13 @@ CREATE TABLE roles (
     role_name TEXT NOT NULL,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES brothers(user_id) ON UPDATE SET NULL ON DELETE SET NULL
+);
+
+CREATE TABLE messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
