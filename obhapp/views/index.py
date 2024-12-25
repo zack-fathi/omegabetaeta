@@ -45,12 +45,20 @@ def show_contact():
             flask.flash('Please fill out all required fields.', 'danger')
             return flask.redirect(flask.url_for('show_contact'))
 
-        # Process the message (e.g., send an email or save to database)
-        # For now, redirect to a thank-you page
-        flask.flash('Your message has been sent successfully!', 'success')
+        # Save the message to the database
+        con = obhapp.model.get_db()
+        con.execute(
+            "INSERT INTO messages (name, email, subject, message) "
+            "VALUES (?, ?, ?, ?)",
+            (name, email, subject, message)
+        )
+        con.commit()
+
+        flask.flash('Your message has been saved successfully!', 'success')
         return flask.redirect(flask.url_for('contact_thank_you'))
     
     return flask.render_template("contact.html")
+
 
 @obhapp.app.route('/donate/')
 def show_donate():

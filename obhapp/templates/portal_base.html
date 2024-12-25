@@ -43,6 +43,13 @@
               <a class="nav-link" href="/portal/">Portal Home</a>
             </li>
             <li class="nav-item">
+              {% if "Admin" in user_roles or "President" in user_roles or "Vice
+              President" in user_roles or "Director of External" in user_roles
+              %}
+              <a class="nav-link" href="/portal/messages/">Messages</a>
+              {% endif %}
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="/portal/recruits/">Recruits</a>
             </li>
             <li class="nav-item">
