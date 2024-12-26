@@ -2,68 +2,43 @@
 .link-no-style {
     text-decoration: none;
     color: inherit;
-}
-
-.link-no-style:hover {
+  }
+  
+  .link-no-style:hover {
     text-decoration: none;
     color: inherit;
-}
-
-/* Alert Styles */
-.alert {
+  }
+  
+  /* Alert Styles */
+  .alert {
     display: none;
-}
-
-/* Sidebar Styles */
-.sidebar {
-    background-color: #da3a37;
-    color: white;
-    height: 100vh;
-    position: fixed;
-    width: 250px;
-    top: 0;
-    left: 0;
-    overflow-y: auto;
-}
-
-.sidebar .logo img {
-    height: 150px;
-    margin: 20px;
-}
-
-.sidebar .nav {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar .nav li {
-    margin: 10px 0;
-}
-
-.sidebar .nav li a {
-    color: white;
+  }
+  
+  /* Sidebar link styles */
+  .sidebar-link {
+    color: white !important;
     font-size: 18px;
-    display: block;
-    padding: 10px 0;
-    text-align: center;
-}
-
-.sidebar .nav li a:hover {
-    background-color: #b22222;
-    color: #FFD700;
-    transform: scale(1.05);
-}
-
-/* Main Content Styles */
-.main-content {
-    margin-left: 250px;
+    padding: 15px 10px; /* Adjust spacing within each item */
+    transition: all 0.3s ease; /* Smooth hover effect */
+  }
+  
+  .sidebar-link:hover {
+    color: #FFD700 !important; /* Gold text on hover */
+    background-color: #b22222 !important; /* Darker red on hover */
+    font-size: 20px; /* Slightly increase font size on hover */
+    transform: scale(1.05); /* Subtle zoom effect */
+  }
+  
+  /* Main Content Styles */
+  .main-content {
+    /* No forced margin-left anymore (because offcanvas is hidden by default) */
     padding: 20px;
     background-color: #f2f2f2;
     min-height: 100vh;
-}
-
-/* Profile button container */
-.profile {
+  }
+  
+  /* Profile button container */
+  .profile {
     display: flex;
     align-items: center;
     background-color: #da3a37;
@@ -74,91 +49,91 @@
     color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-}
-
-/* Ensure the profile name is vertically centered */
-.profile-info {
+  }
+  
+  .profile-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-right: 10px;
     text-align: right;
-}
-
-/* Remove highlight on hover */
-.profile:hover {
+  }
+  
+  .profile:hover {
     background-color: #b22222;
     transform: scale(1.05);
     box-shadow: none; /* Remove highlight effect */
-}
-
-.profile-name {
+  }
+  
+  .profile-name {
     margin: 0;
     font-size: 16px; /* Adjust size for better centering */
-}
-
-/* Profile picture styles */
-.profile-pic {
+  }
+  
+  /* Profile picture styles */
+  .profile-pic {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
-}
-
-.profile-pic img {
+  }
+  
+  .profile-pic img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* Category Title Styles */
-.category-title {
+  }
+  
+  /* Category Title Styles */
+  .category-title {
     font-size: 24px;
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
     border-bottom: 2px solid #ccc;
     padding-bottom: 5px;
-}
-
-/* Log Table Styles */
-.log-table th {
+  }
+  
+  /* Log Table Styles */
+  .log-table th {
     background-color: #da3a37;
     color: white;
-}
-
-.log-table tr:nth-child(even) {
+  }
+  
+  .log-table tr:nth-child(even) {
     background-color: #f2f2f2;
-}
-
-.log-table tr:hover {
+  }
+  
+  .log-table tr:hover {
     background-color: #000000;
-}
-
-/* Form Actions Styles */
-.form-actions input[type="submit"] {
+  }
+  
+  /* Form Actions Styles */
+  .form-actions input[type="submit"] {
     background-color: #da3a37;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
-}
-
-.form-actions input[type="submit"]:hover {
+  }
+  
+  .form-actions input[type="submit"]:hover {
     background-color: #b22222;
-}
-
-.welcome {
+  }
+  
+  .welcome {
     background-color: #da3a37;
     color: white;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-}
-
-.fc a{
+  }
+  
+  /* FullCalendar link color overrides */
+  .fc a {
     color: #da3a37 !important;
-}
-
-.fc-toolbar-title {
+  }
+  
+  .fc-toolbar-title {
     color: #da3a37;
   }
+  
