@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Setting the path for the SQLite database
+DB_PATH="var/obhapp.sqlite3"
+
+# Check if the database file exists
+if [ ! -f "$DB_PATH" ]; then
+  echo "Error: can't find database $DB_PATH"
+  echo "Try: ./bin/obhdb create"
+  exit 1
+fi
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Running the application with Gunicorn
+echo "+ gunicorn -w 3 -b 0.0.0.0:8000 obhapp:app"
+gunicorn -w 3 -b 0.0.0.0:8000 obhapp:app
