@@ -137,3 +137,22 @@
     color: #da3a37;
   }
   
+  .navbar-custom {
+    background-color: #da3a37 !important;
+    color: white !important;
+  }
+  
+  .offcanvas.text-bg-danger {
+    background-color: #da3a37 !important; /* Matches the custom red */
+    color: white !important; /* Ensures text is visible */
+  }
+  
+  .offcanvas .nav-link {
+    color: white !important; /* Sidebar link text color */
+  }
+  
+  .offcanvas .nav-link:hover {
+    color: #FFD700 !important; /* Gold text on hover */
+    background-color: #b22222 !important; /* Darker red hover effect */
+  }
+  

@@ -1,17 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <div class="container py-5">
     <h1 class="text-center mb-4">Gallery</h1>
-    <div class="row d-flex justify-content-center">
+    <div class="row d-flex justify-content-center g-4">
         {% for image in images %}
-        <div class="col-md-3 col-sm-6 mb-4">
-            <div class="card h-100">
-                <div class="image-container">
-                    <img src="/uploads/{{ image['filename'] }}" class="card-img-top img-fluid" alt="image">
-                </div>
-                <div class="card-body text-center">
-                    <p class="card-text">{{ image['desc'] }}</p>
+        <div class="col-md-3 col-sm-6">
+            <div class="card h-100 border-0 shadow">
+                <img 
+                    src="/uploads/{{ image['filename'] }}" 
+                    class="card-img-top img-fluid rounded" 
+                    alt="{{ image['desc'] }}" 
+                    style="height: 200px; object-fit: cover;"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#imageModal{{ loop.index }}"
+                >
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="imageModal{{ loop.index }}" tabindex="-1" aria-labelledby="imageModalLabel{{ loop.index }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel{{ loop.index }}">{{ image['desc'] }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <img 
+                            src="/uploads/{{ image['filename'] }}" 
+                            class="img-fluid w-100 rounded" 
+                            alt="{{ image['desc'] }}"
+                        >
+                    </div>
                 </div>
             </div>
         </div>
