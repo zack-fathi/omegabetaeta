@@ -2,7 +2,7 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE brothers(
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username VARCHAR(20) NOT NULL,
+  username VARCHAR(20) NOT NULL UNIQUE,
   uniqname VARCHAR(20) DEFAULT "N/A",
   fullname VARCHAR(40) NOT NULL,
   profile_picture VARCHAR(64) DEFAULT "default.jpg",
