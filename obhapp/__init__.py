@@ -17,6 +17,21 @@ app.debug = True
 # Load environment variables
 load_dotenv()
 
+@app.context_processor
+def inject_user_roles():
+    """Return the user roles for the current session."""
+    if "user_id" in flask.session:
+        user_id = flask.session["user_id"]
+        con = obhapp.model.get_db()
+        cur = con.execute(
+            "SELECT role_name FROM roles WHERE user_id = ?",
+            (user_id,)
+        )
+        user_roles = {row["role_name"] for row in cur.fetchall()}
+        return {"user_roles": user_roles}
+    return {"user_roles": set()}
+
+
 # Access the service account file path and calendar ID from environment variables
 SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # Path to the service account JSON file
 PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')  # Calendar ID for the private calendar
