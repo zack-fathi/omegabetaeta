@@ -51,6 +51,7 @@ def login():
 def show_portal():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("login"))
+    
     return flask.render_template("portal_index.html")
 
 
@@ -438,3 +439,13 @@ def assign_roles():
         can_change = current_role == 'Admin' or current_role == 'President'
     return flask.render_template('portal_board.html', brothers=active_brothers, roles=roles, can_change=can_change)
 
+@obhapp.app.route('/portal/messages/')
+def show_messages():
+    """Show the contact messages in the portal."""
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("login"))
+    connection = obhapp.model.get_db()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM messages")
+    messages = cursor.fetchall()
+    return flask.render_template('portal_messages.html', messages=messages)
