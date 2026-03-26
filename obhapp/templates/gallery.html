@@ -1,38 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="text-center mb-4">
-        <h1 class="section-title">Gallery</h1>
+<div class="gallery-page">
+    <div class="text-center mb-5">
+        <h1 class="section-title animate-in">Gallery</h1>
         <hr class="section-divider">
     </div>
     {% if images %}
-    <div class="row g-4">
+    <div class="gallery-grid">
         {% for image in images %}
-        <div class="col-lg-3 col-md-4 col-sm-6">
-            <div class="gallery-card" data-bs-toggle="modal" data-bs-target="#imageModal{{ loop.index }}">
-                <img src="/uploads/{{ image['filename'] }}" alt="{{ image['desc'] }}">
-                {% if image['desc'] %}
-                <div class="card-body text-center">
-                    <small>{{ image['desc'] }}</small>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade gallery-modal" id="imageModal{{ loop.index }}" tabindex="-1" aria-labelledby="imageModalLabel{{ loop.index }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="imageModalLabel{{ loop.index }}">{{ image['desc'] }}</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-0">
-                        <img src="/uploads/{{ image['filename'] }}" class="img-fluid w-100" alt="{{ image['desc'] }}">
-                    </div>
-                </div>
-            </div>
+        <div class="gallery-item" data-index="{{ loop.index0 }}">
+            <img src="/uploads/{{ image['filename'] }}" alt="{{ image['desc'] }}">
+            {% if image['desc'] %}
+            <div class="gallery-caption">{{ image['desc'] }}</div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -40,4 +21,132 @@
     <p class="text-center" style="color: var(--obh-text-muted);">No photos yet. Check back soon!</p>
     {% endif %}
 </div>
+
+<!-- Lightbox -->
+<div class="gallery-lightbox" id="galleryLightbox">
+    <button class="lightbox-close" aria-label="Close">&times;</button>
+    <button class="lightbox-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+    <button class="lightbox-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+    <div class="lightbox-content">
+        <img src="" alt="" id="lightboxImg">
+        <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.querySelector('.gallery-grid');
+    if (!grid) return;
+
+    const GAP = 12;
+    const allItems = Array.from(grid.querySelectorAll('.gallery-item'));
+    if (!allItems.length) return;
+
+    const lightbox = document.getElementById('galleryLightbox');
+    const lbImg   = document.getElementById('lightboxImg');
+    const lbCap   = document.getElementById('lightboxCaption');
+    let current = 0;
+
+    const imageData = allItems.map(item => ({
+        src: item.querySelector('img').src,
+        alt: item.querySelector('img').alt
+    }));
+
+    // ── Lightbox ──
+    function openLightbox(index) {
+        current = index;
+        updateLightbox();
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    function updateLightbox() {
+        lbImg.src = imageData[current].src;
+        lbCap.textContent = imageData[current].alt || '';
+        lbCap.style.display = imageData[current].alt ? '' : 'none';
+    }
+    function nextImg() { current = (current + 1) % allItems.length; updateLightbox(); }
+    function prevImg() { current = (current - 1 + allItems.length) % allItems.length; updateLightbox(); }
+
+    allItems.forEach(item =>
+        item.addEventListener('click', () => openLightbox(+item.dataset.index))
+    );
+    lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.querySelector('.lightbox-prev').addEventListener('click', prevImg);
+    lightbox.querySelector('.lightbox-next').addEventListener('click', nextImg);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextImg();
+        if (e.key === 'ArrowLeft') prevImg();
+    });
+
+    // ── Column Layout ──
+    function getNumCols() {
+        if (window.innerWidth <= 480) return 1;
+        if (window.innerWidth <= 768) return 2;
+        return 3;
+    }
+
+    function buildColumns() {
+        const numCols  = getNumCols();
+        const gap      = numCols > 1 ? GAP : 0;
+        const colWidth = (grid.clientWidth - (numCols - 1) * gap) / numCols;
+
+        // Calculate each image's rendered height when fitted to colWidth
+        const itemHeights = allItems.map(item => {
+            const img = item.querySelector('img');
+            const w = img.naturalWidth, h = img.naturalHeight;
+            return (w && h) ? (h / w) * colWidth : colWidth;
+        });
+
+        // Greedy: always assign next image to the shortest column
+        const colHeights = new Array(numCols).fill(0);
+        const colBuckets = Array.from({ length: numCols }, () => []);
+
+        allItems.forEach((item, i) => {
+            const shortest = colHeights.indexOf(Math.min(...colHeights));
+            colBuckets[shortest].push(item);
+            colHeights[shortest] += itemHeights[i] + gap;
+        });
+
+        // Rebuild grid — move existing DOM nodes into column wrappers
+        // (node references and their event listeners are preserved)
+        grid.innerHTML = '';
+        colBuckets.forEach(bucket => {
+            const col = document.createElement('div');
+            col.className = 'gallery-col';
+            bucket.forEach(item => col.appendChild(item));
+            grid.appendChild(col);
+        });
+
+        grid.style.gap = gap + 'px';
+        grid.style.opacity = '1';
+    }
+
+    // Wait until every image has reported its natural dimensions
+    const imgs = allItems.map(item => item.querySelector('img'));
+    Promise.all(
+        imgs.map(img =>
+            (img.complete && img.naturalWidth)
+                ? Promise.resolve()
+                : new Promise(resolve => {
+                    img.addEventListener('load',  resolve);
+                    img.addEventListener('error', resolve);
+                })
+        )
+    ).then(buildColumns);
+
+    // Rebuild on resize (debounced)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(buildColumns, 150);
+    });
+});
+</script>
 {% endblock %}
