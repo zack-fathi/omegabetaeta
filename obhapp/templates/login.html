@@ -2,6 +2,11 @@
 {% block content %}
 <div class="login-form-container py-5 d-flex justify-content-center">
     <div class="col-md-6 col-lg-4">
+        <div class="text-center mb-4">
+            <img src="/static/images/OBHLogo.png" alt="OBH Logo" style="height: 100px; margin-bottom: 1rem;">
+            <h2 style="color: #FFD700;">Member Portal</h2>
+            <p style="color: #999;">Sign in with your fraternity credentials</p>
+        </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <ul class="flashes list-unstyled">
@@ -15,14 +20,14 @@
         <form action="/login/?target=/portal/" method="post" enctype="multipart/form-data" class="login-form">
             <div class="mb-3 form-group">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" name="username" class="form-control" required/>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required/>
             </div>
             <div class="mb-3 form-group">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required/>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required/>
             </div>
             <div class="d-flex justify-content-center">
-                <input type="submit" value="Login" class="btn btn-primary"/>
+                <input type="submit" value="Sign In" class="btn btn-primary w-100"/>
                 <input type="hidden" name="operation" value="login"/>
             </div>
         </form>

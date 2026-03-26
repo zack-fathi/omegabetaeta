@@ -1,40 +1,61 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
+<div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card bg-dark text-white shadow-sm mb-4 border-gold rounded">
-                <div class="row no-gutters">
-                    <!-- Left Column: Profile Picture and Info -->
-                    <div class="col-md-6">
-                        <div class="card-body h-100 d-flex flex-column">
-                            <div class="text-center mb-4">
-                                <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" class="img-fluid rounded">
-                            </div>
-                            <div class="bg-secondary p-4 flex-grow-1 rounded">
-                                <div class="mb-3"><strong>Name:</strong> {{ fullname }}</div>
-                                <div class="mb-3"><strong>Major:</strong> {{ major }}</div>
-                                <div class="mb-3"><strong>Grad Time:</strong> {{ grad_time }}</div>
-                                <div class="mb-3"><strong>Cross Time:</strong> {{ cross_time }}</div>
-                                <div class="mb-3"><strong>Line:</strong> {{ line }}</div>
-                                <div class="mb-3"><strong>Line Number:</strong> {{ line_num }}</div>
-                                <div><strong>Lion Name:</strong> {{ lion_name }}</div>
-                            </div>
-                        </div>
+            <div class="card shadow-sm mb-4" style="border: 2px solid #FFD700; border-radius: 12px; background-color: #2a2a2a;">
+                <div class="row g-0">
+                    <!-- Profile Picture -->
+                    <div class="col-md-5 p-4 text-center d-flex align-items-center justify-content-center">
+                        <img src="/uploads/{{ profile_picture }}" alt="{{ fullname }}" class="img-fluid rounded" style="max-height: 350px; object-fit: cover; border: 3px solid #b22222;">
                     </div>
-                    <!-- Right Column: Profile Description -->
-                    <div class="col-md-6">
-                        <div class="card-body h-100 d-flex flex-column">
-                            <div class="bg-secondary p-4 flex-grow-1 rounded d-flex flex-column">
-                                <div class="text-center mb-4">
-                                    <strong class="h4">About Me</strong>
+                    <!-- Info Section -->
+                    <div class="col-md-7">
+                        <div class="card-body py-4">
+                            <h2 class="card-title mb-3" style="color: #FFD700; font-weight: 700;">{{ fullname }}</h2>
+                            <div style="width: 60px; height: 3px; background-color: #b22222; margin-bottom: 1.5rem;"></div>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <small style="color: #999;">Major</small>
+                                    <p class="mb-0">{{ major }}</p>
                                 </div>
-                                <div class="flex-grow-1">{{ desc }}</div>
+                                <div class="col-6 mb-3">
+                                    <small style="color: #999;">Graduation</small>
+                                    <p class="mb-0">{{ grad_time }}</p>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small style="color: #999;">Line</small>
+                                    <p class="mb-0">{{ line_name }}</p>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small style="color: #999;">Line Number</small>
+                                    <p class="mb-0">{{ line_num }}</p>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small style="color: #999;">Cross Time</small>
+                                    <p class="mb-0">{{ cross_time }}</p>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small style="color: #999;">Lion Name</small>
+                                    <p class="mb-0">{{ lion_name }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- About Section -->
+                {% if desc and desc != 'N/A' %}
+                <div class="px-4 pb-4">
+                    <div style="background-color: #333; border-radius: 10px; padding: 1.5rem;">
+                        <h5 style="color: #FFD700;">About Me</h5>
+                        <p class="mb-0">{{ desc }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="text-center">
+                <a href="/brothers/" class="btn btn-primary">Back to Brothers</a>
             </div>
         </div>
     </div>
