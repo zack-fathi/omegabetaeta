@@ -517,37 +517,107 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ─── Calendar ─── */
+.calendar-hero {
+  text-align: center;
+  padding: 4rem 1.5rem 2rem;
+}
+
+.calendar-hero .lead {
+  max-width: 550px;
+  margin: 0 auto;
+  color: var(--obh-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
 .calendar-card {
   background: var(--obh-surface);
   border: 1px solid var(--obh-border);
-  border-radius: 8px;
+  border-radius: 10px;
+  padding: 2rem;
   overflow: hidden;
 }
 
-.calendar-card .card-header {
-  background: var(--obh-red);
-  border-bottom: none;
-  padding: 1rem;
+/* FullCalendar Dark Theme */
+.fc {
+  --fc-border-color: var(--obh-border);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: var(--obh-surface-light);
+  --fc-list-event-hover-bg-color: var(--obh-surface-light);
+  --fc-today-bg-color: rgba(201, 168, 76, 0.08);
+  --fc-event-bg-color: var(--obh-red);
+  --fc-event-border-color: var(--obh-red-dark);
+  --fc-event-text-color: #fff;
+  --fc-button-bg-color: var(--obh-surface-light);
+  --fc-button-border-color: var(--obh-border);
+  --fc-button-text-color: var(--obh-text);
+  --fc-button-hover-bg-color: var(--obh-red);
+  --fc-button-hover-border-color: var(--obh-red);
+  --fc-button-active-bg-color: var(--obh-red);
+  --fc-button-active-border-color: var(--obh-red-dark);
 }
 
-.calendar-card .card-header h2 {
-  color: white;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+.fc .fc-col-header-cell {
+  background: var(--obh-surface-light);
 }
 
-.calendar-card .card-body {
-  background: white;
-  padding: 1.5rem;
+.fc .fc-col-header-cell-cushion {
+  color: var(--obh-gold) !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none !important;
+}
+
+.fc .fc-daygrid-day-number {
+  color: var(--obh-text-muted) !important;
+  text-decoration: none !important;
+  font-size: 0.85rem;
+}
+
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: var(--obh-gold) !important;
+  font-weight: 700;
 }
 
 .fc a {
-  color: var(--obh-red) !important;
+  color: var(--obh-text) !important;
+  text-decoration: none !important;
 }
 
 .fc-toolbar-title {
-  color: var(--obh-red) !important;
+  color: var(--obh-gold) !important;
   font-family: 'Playfair Display', serif !important;
+  font-size: 1.4rem !important;
+}
+
+.fc .fc-button {
+  border-radius: 4px !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fc .fc-button:focus {
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2) !important;
+}
+
+.fc .fc-button-active {
+  background: var(--obh-red) !important;
+  border-color: var(--obh-red) !important;
+}
+
+.fc .fc-daygrid-day:hover {
+  background: var(--obh-surface-light);
+}
+
+.fc .fc-scrollgrid {
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 /* ─── Footer ─── */
