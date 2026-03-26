@@ -176,11 +176,12 @@ def show_portal_directory():
         "ORDER BY line ASC, line_num ASC;",
     )
     brothers = cur.fetchall()
-    last_line = brothers[-1]["line"]
     line_dict = {}
-    for i in range(int(last_line) + 1):
-        line = line_int_to_line[str(i)]
-        line_dict[line] = [brother for brother in brothers if brother["line"] == i]
+    if brothers:
+        last_line = brothers[-1]["line"]
+        for i in range(int(last_line) + 1):
+            line = line_int_to_line[str(i)]
+            line_dict[line] = [brother for brother in brothers if brother["line"] == i]
 
     context["brothers"] = line_dict
     return flask.render_template("portal_directory.html", **context)
