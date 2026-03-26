@@ -686,6 +686,99 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+/* ─── Help Page ─── */
+.help-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.help-section {
+  background: var(--portal-surface-light);
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.help-section h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--portal-gold);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.help-section h4 i {
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+.help-section p,
+.help-section li {
+  color: var(--portal-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.help-section strong {
+  color: var(--portal-text);
+}
+
+.help-section code {
+  background: var(--portal-surface);
+  color: var(--portal-gold);
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+
+.help-section ol,
+.help-section ul {
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.help-section li {
+  margin-bottom: 0.3rem;
+}
+
+.help-section .portal-table {
+  margin-top: 0.75rem;
+}
+
+.help-tip {
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--portal-gold);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.help-tip i {
+  font-size: 0.9rem;
+}
+
+.help-badge {
+  background: var(--portal-red);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .portal-main {

@@ -1,0 +1,181 @@
+{% extends 'portal_base.html' %}
+{% block content %}
+<div class="container mt-2">
+    <h2 class="portal-heading text-center">Help &amp; Guide</h2>
+
+    <div class="help-content">
+
+        <!-- Getting Started -->
+        <div class="help-section">
+            <h4><i class="fas fa-sign-in-alt"></i> Logging In</h4>
+            <ol>
+                <li>Click <strong>Portal</strong> in the navigation bar or go directly to <code>/portal/</code>.</li>
+                <li>Enter your <strong>username</strong> (first and last name, lowercase, no spaces — e.g. <code>jawadalsahlani</code>) and <strong>password</strong>.</li>
+                <li>Your default password is <code>password</code>. <strong>Change it immediately after your first login.</strong></li>
+            </ol>
+        </div>
+
+        <!-- Portal Home -->
+        <div class="help-section">
+            <h4><i class="fas fa-home"></i> Portal Home</h4>
+            <p>After logging in you'll see:</p>
+            <ul>
+                <li>A welcome message with your name.</li>
+                <li>The <strong>Fraternity Calendar</strong> with upcoming events, meetings, and socials.</li>
+            </ul>
+            <p>Use the <strong>☰ menu button</strong> (top left) to open the sidebar. Your <strong>profile badge</strong> (top right) links to your account settings.</p>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <div class="help-section">
+            <h4><i class="fas fa-bars"></i> Sidebar Navigation</h4>
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>What It Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Portal Home</strong></td><td>Calendar and welcome page</td></tr>
+                    <tr><td><strong>Messages</strong></td><td>View contact form submissions <em>(Board only)</em></td></tr>
+                    <tr><td><strong>Recruits</strong></td><td>View and manage recruit applications</td></tr>
+                    <tr><td><strong>Directory</strong></td><td>Browse all brothers organized by line</td></tr>
+                    <tr><td><strong>Log</strong></td><td>View the change log of all portal actions</td></tr>
+                    <tr><td><strong>Board</strong></td><td>View and assign board roles</td></tr>
+                    <tr><td><strong>Files</strong></td><td>Opens the shared Google Drive folder</td></tr>
+                    <tr><td><strong>Upload</strong></td><td>Upload photos to the public gallery</td></tr>
+                    <tr><td><strong>Help</strong></td><td>This page</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Changing Password -->
+        <div class="help-section">
+            <h4><i class="fas fa-key"></i> Changing Your Password</h4>
+            <ol>
+                <li>Click your <strong>profile badge</strong> (top right) to go to your Account page.</li>
+                <li>Scroll down to <strong>Change Password</strong>.</li>
+                <li>Enter your current password, then your new password twice.</li>
+                <li>Click <strong>Change Password</strong>.</li>
+            </ol>
+            <div class="help-tip">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Do this on your first login.</strong> The default password is the same for everyone.
+            </div>
+        </div>
+
+        <!-- Editing Profile -->
+        <div class="help-section">
+            <h4><i class="fas fa-user-edit"></i> Editing Your Profile</h4>
+            <ol>
+                <li>Go to your <strong>Account</strong> page (click your name in the top right).</li>
+                <li>You can update:</li>
+            </ol>
+            <ul>
+                <li><strong>Username</strong> — your login name</li>
+                <li><strong>Full Name</strong> — displayed across the site</li>
+                <li><strong>Profile Picture</strong> — upload a photo of yourself</li>
+                <li><strong>Major</strong> — your field of study</li>
+                <li><strong>Job</strong> — your current job or internship</li>
+                <li><strong>Description</strong> — a short bio shown on your profile page</li>
+                <li><strong>Contacts</strong> — how people can reach you (e.g. Instagram, phone, email)</li>
+                <li><strong>Grad Time</strong> — your expected graduation month/year</li>
+                <li><strong>Active</strong> — whether you're currently active</li>
+            </ul>
+            <p>Click <strong>Update Profile</strong> to save. Your photo and name appear on the public <strong>Brothers</strong> page and in the portal <strong>Directory</strong>.</p>
+        </div>
+
+        <!-- Directory -->
+        <div class="help-section">
+            <h4><i class="fas fa-address-book"></i> Directory</h4>
+            <p>Lists every brother organized by line (Founding Line, Beta Line, etc.).</p>
+            <p>Click any brother's name to see their full profile: photo, major, line info, lion name, description, and contact info.</p>
+        </div>
+
+        <!-- Recruits -->
+        <div class="help-section">
+            <h4><i class="fas fa-user-plus"></i> Recruits</h4>
+            <p>All brothers can view the list of people who applied through the public <strong>Apply</strong> page.</p>
+            <p>If you have the right role (Admin, President, or Director of Recruitment), you can also:</p>
+            <ul>
+                <li><strong>Set Line Number and Lion Name</strong> for each recruit</li>
+                <li><strong>Accept</strong> a recruit (mark them as approved)</li>
+                <li><strong>Unaccept</strong> a recruit (undo acceptance)</li>
+                <li><strong>Remove</strong> a recruit (delete their application)</li>
+                <li><strong>Move Accepted Recruits to Brothers</strong> — creates accounts for all accepted recruits with a default password</li>
+            </ul>
+        </div>
+
+        <!-- Board -->
+        <div class="help-section">
+            <h4><i class="fas fa-crown"></i> Board</h4>
+            <p>Shows all current officer roles and who holds them.</p>
+            <p>If you are the <strong>President</strong> or <strong>Admin</strong>:</p>
+            <ol>
+                <li>Use the dropdown next to each role to select a new brother.</li>
+                <li>Click <strong>Assign Roles</strong> to save.</li>
+            </ol>
+        </div>
+
+        <!-- Upload -->
+        <div class="help-section">
+            <h4><i class="fas fa-upload"></i> Upload Photos</h4>
+            <ol>
+                <li>Go to <strong>Upload</strong> in the sidebar.</li>
+                <li>Choose an image file and add a description.</li>
+                <li>Click <strong>Upload</strong>.</li>
+            </ol>
+            <p>The photo will appear on the public <strong>Gallery</strong> page.</p>
+        </div>
+
+        <!-- Log -->
+        <div class="help-section">
+            <h4><i class="fas fa-history"></i> Log</h4>
+            <p>Shows a history of all actions taken in the portal — profile edits, recruit changes, role assignments, etc. This is view-only.</p>
+        </div>
+
+        <!-- Messages -->
+        <div class="help-section">
+            <h4><i class="fas fa-envelope"></i> Messages <span class="help-badge">Board Only</span></h4>
+            <p>If you're a board member (Admin, President, Vice President, or Director of External), you can view messages submitted through the public <strong>Contact</strong> page.</p>
+        </div>
+
+        <!-- Public Pages -->
+        <div class="help-section">
+            <h4><i class="fas fa-globe"></i> Public Website Pages</h4>
+            <p>These pages are visible to everyone (no login required):</p>
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Home</strong></td><td>Landing page with carousel and welcome message</td></tr>
+                    <tr><td><strong>About</strong></td><td>Chapter history, mission, and values</td></tr>
+                    <tr><td><strong>Brothers</strong></td><td>Active brothers with photos and bios</td></tr>
+                    <tr><td><strong>Gallery</strong></td><td>Photo gallery (uploaded from the portal)</td></tr>
+                    <tr><td><strong>Calendar</strong></td><td>Public events calendar</td></tr>
+                    <tr><td><strong>Contact</strong></td><td>Contact form (messages go to portal)</td></tr>
+                    <tr><td><strong>Donate</strong></td><td>Donation info and Venmo QR</td></tr>
+                    <tr><td><strong>Apply</strong></td><td>Recruitment application form</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tips -->
+        <div class="help-section">
+            <h4><i class="fas fa-lightbulb"></i> Quick Tips</h4>
+            <ul>
+                <li><strong>Forgot your password?</strong> Ask a brother with Admin access to reset it in the database.</li>
+                <li><strong>Profile picture not showing?</strong> Make sure you uploaded an image file (PNG, JPG) on the Account page.</li>
+                <li><strong>Can't see Messages or change Recruits/Board?</strong> These features are restricted to specific board roles.</li>
+                <li><strong>Files link</strong> opens an external Google Drive — bookmark it for quick access.</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

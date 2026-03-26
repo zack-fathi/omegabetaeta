@@ -451,3 +451,9 @@ def show_messages():
     cursor.execute("SELECT * FROM messages")
     messages = cursor.fetchall()
     return flask.render_template('portal_messages.html', messages=messages)
+
+@obhapp.app.route('/portal/help/')
+def show_portal_help():
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    return flask.render_template("portal_help.html")
