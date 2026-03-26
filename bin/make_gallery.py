@@ -19,6 +19,8 @@ with open(sql_file_path, 'w') as file:
     for filename in image_files:
         # Description is filename without extension
         desc = Path(filename).stem
+        if desc == 'default':
+            continue  # Skip default.jpg since it's not an actual gallery image
         
         # Create the SQL insert statement
         sql = (
