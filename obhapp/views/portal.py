@@ -364,6 +364,15 @@ def logout():
 
 @obhapp.app.route('/portal/upload/', methods=['GET', 'POST'])
 def upload():
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    # Board-only access
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    role = cur.fetchone()
+    if not role or role["role_name"] not in ["Admin", "President", "Vice President", "Director of External"]:
+        flask.flash("You don't have permission to upload.", "error")
+        return flask.redirect(flask.url_for("show_portal"))
     if flask.request.method == 'POST':
         description = flask.request.form['description']
         file = flask.request.files['profile_picture']
