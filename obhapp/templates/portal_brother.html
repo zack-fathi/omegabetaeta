@@ -1,16 +1,16 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-2">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card shadow-sm mb-4" style="border: 2px solid #da3a37; border-radius: 10px;">
+            <div class="portal-profile-card mb-4">
                 <div class="row g-0">
                     <div class="col-md-5 text-center p-4">
-                        <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+                        <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" class="img-fluid profile-img">
                     </div>
                     <div class="col-md-7">
-                        <div class="card-body">
-                            <h3 class="card-title" style="color: #da3a37;">{{ fullname }}</h3>
+                        <div class="card-body p-4">
+                            <h3>{{ fullname }}</h3>
                             <hr>
                             <p><strong>Username:</strong> {{ username }}</p>
                             <p><strong>Uniqname:</strong> {{ uniqname }}</p>
@@ -31,14 +31,14 @@
                     </div>
                 </div>
                 {% if desc and desc != 'N/A' %}
-                <div class="card-footer bg-light p-4">
-                    <h5 style="color: #da3a37;">About</h5>
+                <div class="about-footer p-4">
+                    <h5>About</h5>
                     <p>{{ desc }}</p>
                 </div>
                 {% endif %}
             </div>
             <div class="text-center">
-                <a href="/portal/directory/" class="btn" style="background-color: #da3a37; color: white;">Back to Directory</a>
+                <a href="/portal/directory/" class="btn btn-portal">Back to Directory</a>
             </div>
         </div>
     </div>

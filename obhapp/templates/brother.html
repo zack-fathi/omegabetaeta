@@ -1,44 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container py-4">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card shadow-sm mb-4" style="border: 2px solid #FFD700; border-radius: 12px; background-color: #2a2a2a;">
+            <div class="profile-card mb-4">
                 <div class="row g-0">
                     <!-- Profile Picture -->
                     <div class="col-md-5 p-4 text-center d-flex align-items-center justify-content-center">
-                        <img src="/uploads/{{ profile_picture }}" alt="{{ fullname }}" class="img-fluid rounded" style="max-height: 350px; object-fit: cover; border: 3px solid #b22222;">
+                        <img src="/uploads/{{ profile_picture }}" alt="{{ fullname }}" class="img-fluid profile-image">
                     </div>
                     <!-- Info Section -->
                     <div class="col-md-7">
-                        <div class="card-body py-4">
-                            <h2 class="card-title mb-3" style="color: #FFD700; font-weight: 700;">{{ fullname }}</h2>
-                            <div style="width: 60px; height: 3px; background-color: #b22222; margin-bottom: 1.5rem;"></div>
+                        <div class="card-body py-4 px-4">
+                            <h2 class="section-title" style="font-size:1.75rem;">{{ fullname }}</h2>
+                            <hr class="section-divider" style="margin:0 0 1.5rem;">
                             <div class="row">
                                 <div class="col-6 mb-3">
-                                    <small style="color: #999;">Major</small>
-                                    <p class="mb-0">{{ major }}</p>
+                                    <span class="profile-label">Major</span>
+                                    <p class="profile-value">{{ major }}</p>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <small style="color: #999;">Graduation</small>
-                                    <p class="mb-0">{{ grad_time }}</p>
+                                    <span class="profile-label">Graduation</span>
+                                    <p class="profile-value">{{ grad_time }}</p>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <small style="color: #999;">Line</small>
-                                    <p class="mb-0">{{ line_name }}</p>
+                                    <span class="profile-label">Line</span>
+                                    <p class="profile-value">{{ line_name }}</p>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <small style="color: #999;">Line Number</small>
-                                    <p class="mb-0">{{ line_num }}</p>
+                                    <span class="profile-label">Line Number</span>
+                                    <p class="profile-value">{{ line_num }}</p>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <small style="color: #999;">Cross Time</small>
-                                    <p class="mb-0">{{ cross_time }}</p>
+                                    <span class="profile-label">Cross Time</span>
+                                    <p class="profile-value">{{ cross_time }}</p>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <small style="color: #999;">Lion Name</small>
-                                    <p class="mb-0">{{ lion_name }}</p>
+                                    <span class="profile-label">Lion Name</span>
+                                    <p class="profile-value">{{ lion_name }}</p>
                                 </div>
                             </div>
                         </div>
@@ -47,15 +47,15 @@
                 <!-- About Section -->
                 {% if desc and desc != 'N/A' %}
                 <div class="px-4 pb-4">
-                    <div style="background-color: #333; border-radius: 10px; padding: 1.5rem;">
-                        <h5 style="color: #FFD700;">About Me</h5>
-                        <p class="mb-0">{{ desc }}</p>
+                    <div class="about-block">
+                        <h5>About Me</h5>
+                        <p class="mb-0" style="color: var(--obh-text-muted);">{{ desc }}</p>
                     </div>
                 </div>
                 {% endif %}
             </div>
             <div class="text-center">
-                <a href="/brothers/" class="btn btn-primary">Back to Brothers</a>
+                <a href="/brothers/" class="btn btn-obh-outline">Back to Brothers</a>
             </div>
         </div>
     </div>

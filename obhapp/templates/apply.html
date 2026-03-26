@@ -1,26 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="login-form-container py-5 d-flex justify-content-center align-items-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="form-description text-center mb-4">
-            <h2>Apply to Join Us</h2>
-            <p>Fill out the form below to apply for membership. We look forward to reviewing your application and welcoming you to our community.</p>
+<div class="obh-form-container">
+    <div class="obh-form">
+        <div class="text-center mb-4">
+            <h2 class="section-title" style="font-size:1.75rem;">Apply to Join Us</h2>
+            <hr class="section-divider">
+            <p style="color: var(--obh-text-muted);">Fill out the form below to apply for membership. We look forward to reviewing your application and welcoming you to our community.</p>
         </div>
-        <form action="/apply/" method="post" enctype="multipart/form-data" class="apply-form">
-            <div class="form-group mb-3">
+        <form action="/apply/" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
                 <label for="fullname" class="form-label">Full Name</label>
                 <input type="text" id="fullname" name="fullname" class="form-control" required/>
             </div>
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label for="uniqname" class="form-label">Uniqname</label>
                 <input type="text" id="uniqname" name="uniqname" class="form-control" required/>
             </div>
-            <div class="form-group mb-3">
+            <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" name="email" class="form-control" required/>
             </div>
             <div class="d-flex justify-content-center">
-                <input type="submit" name="signup" class="btn btn-primary" value="Sign Up"/>
+                <input type="submit" name="signup" class="btn btn-obh w-100" value="Sign Up"/>
                 <input type="hidden" name="operation" value="create"/>
             </div>
         </form>
