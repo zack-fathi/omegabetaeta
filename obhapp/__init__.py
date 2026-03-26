@@ -2,9 +2,9 @@
 import flask
 from dotenv import load_dotenv
 import os
-import requests
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
+
+# Load environment variables before anything else
+load_dotenv()
 
 # app is a single object used by all the code modules in this package
 app = flask.Flask(__name__)  # pylint: disable=invalid-name
@@ -14,8 +14,6 @@ app.config.from_object('obhapp.config')
 
 app.debug = True
 
-# Load environment variables
-load_dotenv()
 
 @app.context_processor
 def inject_user_roles():
@@ -32,37 +30,39 @@ def inject_user_roles():
     return {"user_roles": set()}
 
 
-# Access the service account file path and calendar ID from environment variables
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')  # Path to the service account JSON file
-PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')  # Calendar ID for the private calendar
+# Google Calendar integration (optional for local development)
+SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
+PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')
+GOOGLE_CALENDAR_ENABLED = bool(SERVICE_ACCOUNT_FILE and PORTAL_CALENDAR_ID)
 
-# Ensure necessary environment variables are set
-if not SERVICE_ACCOUNT_FILE or not PORTAL_CALENDAR_ID:
-    raise EnvironmentError("SERVICE_ACCOUNT_FILE or PORTAL_CALENDAR_ID not set in the environment variables.")
+if not GOOGLE_CALENDAR_ENABLED:
+    print("WARNING: Google Calendar not configured. Calendar events will be empty.")
+    print("Set SERVICE_ACCOUNT_FILE and PORTAL_CALENDAR_ID in .env to enable.")
+
 
 @app.route('/get-events', methods=['GET'])
 def get_events():
     """Return the events for the calendar using a service account."""
+    if not GOOGLE_CALENDAR_ENABLED:
+        return flask.jsonify([])
+
     try:
-        # Set up credentials using the service account JSON file
+        from google.oauth2 import service_account
+        from googleapiclient.discovery import build
+
         SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
         credentials = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_FILE, scopes=SCOPES
         )
-
-        # Build the calendar service
         service = build('calendar', 'v3', credentials=credentials)
-
-        # Fetch events from the calendar
         events_result = service.events().list(calendarId=PORTAL_CALENDAR_ID).execute()
         events = events_result.get('items', [])
-
         return flask.jsonify(events)
 
     except Exception as e:
-        # Log the error for debugging
         print(f"Error fetching events: {e}")
         return flask.jsonify({'error': str(e)}), 500
+
 
 # Ignore coding style violations for these imports
 import obhapp.views  # noqa: E402  pylint: disable=wrong-import-position

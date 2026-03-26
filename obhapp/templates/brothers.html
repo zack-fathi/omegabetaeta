@@ -2,18 +2,20 @@
 {% block content %}
     <main>
         <section class="gallery">
-            <div class="container">
-                <h1 class="text-center mb-4">Active Brothers</h1>
+            <div class="container py-4">
+                <h1 class="text-center mb-2" style="color: #FFD700; font-weight: 700;">Active Brothers</h1>
+                <div style="width: 80px; height: 3px; background-color: #b22222; margin: 0 auto 2rem;"></div>
                 <div class="row">
                     {% for brother in brothers %}
-                    <div class="col-md-3 mb-4">
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <a href="/brothers/{{ brother['username'] }}/" class="link-no-style">
-                            <div class="gallery-item card bg-dark text-white h-100">
-                                <img class="card-img-top" src="/uploads/{{ brother.profile_picture }}" alt="{{ brother.fullname }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ brother.fullname }}</h5>
-                                    <p class="card-text">{{ brother.line_name }}</p>
-                                    <p class="card-text">{{ brother.uniqname }}</p>
+                            <div class="gallery-item card h-100" style="background-color: #2a2a2a; border: 1px solid #444; transition: transform 0.2s, box-shadow 0.2s;">
+                                <div style="height: 220px; overflow: hidden;">
+                                    <img class="card-img-top" src="/uploads/{{ brother.profile_picture }}" alt="{{ brother.fullname }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div class="card-body text-center" style="background-color: #b22222;">
+                                    <h5 class="card-title mb-1" style="color: white; font-weight: 600;">{{ brother.fullname }}</h5>
+                                    <p class="card-text mb-0" style="color: #FFD700; font-size: 0.9rem;">{{ brother.line_name }}</p>
                                 </div>
                             </div>
                         </a>

@@ -80,27 +80,27 @@
     </header>
 
     <!-- Remove the 'container' class from 'main-info' -->
-    <div class="main-info mt-4">{% block content %}{% endblock %}</div>
+    <div class="main-info mt-0">{% block content %}{% endblock %}</div>
 
-    <footer class="bg-dark text-white py-3 mt-auto">
+    <footer class="bg-dark text-white py-4 mt-auto">
       <div class="container text-center">
-        <div class="footer-container d-flex justify-content-center mb-2">
+        <div class="footer-container d-flex justify-content-center mb-3">
           <a
             href="https://www.instagram.com/omegabetaeta/?hl=en"
-            class="social-icon mx-2"
+            class="social-icon mx-3"
             target="_blank"
           >
-            <i class="fab fa-instagram"></i>
+            <i class="fab fa-instagram fa-lg"></i>
           </a>
           <a
             href="https://www.youtube.com/@OmegaBetaEta"
-            class="social-icon mx-2"
+            class="social-icon mx-3"
             target="_blank"
           >
-            <i class="fab fa-youtube"></i>
+            <i class="fab fa-youtube fa-lg"></i>
           </a>
         </div>
-        <div>&copy; Omega Beta Eta Arab Fraternity Incorporated.</div>
+        <div style="color: #999; font-size: 0.9rem;">&copy; {{ now().year if now is defined else '2024' }} Omega Beta Eta Arab Fraternity Incorporated.</div>
       </div>
     </footer>
 

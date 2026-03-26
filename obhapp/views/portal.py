@@ -45,12 +45,13 @@ def login():
     else:
         flask.flash('Incorrect password', 'error')
         return flask.redirect(flask.url_for('show_login'))
-    return flask.redirect(flask.request.args.get('target'))
+    target = flask.request.args.get('target', flask.url_for('show_portal'))
+    return flask.redirect(target)
 
 @obhapp.app.route('/portal/')
 def show_portal():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     
     return flask.render_template("portal_index.html")
 
@@ -166,7 +167,7 @@ def change_password():
 @obhapp.app.route('/portal/directory/')
 def show_portal_directory():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     user_id = flask.session['user_id']
     context = {"user_id": user_id}
     con = obhapp.model.get_db()
@@ -202,7 +203,7 @@ def show_directory_brother(name):
 @obhapp.app.route('/portal/log/')
 def show_portal_log():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
     cur = con.execute(
         "SELECT * FROM change_log "
@@ -215,7 +216,7 @@ def show_portal_log():
 @obhapp.app.route('/portal/recruits/')
 def show_portal_recruits():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
 
     # only show certain buttons if user has the right permissions
@@ -242,7 +243,7 @@ def show_portal_recruits():
 @obhapp.app.route('/portal/recruits/accept', methods=['POST'])
 def accept_recruit():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     uniqname = flask.request.json['id']
     line_num = flask.request.json['line_num']
     lion_name = flask.request.json['lion_name']
@@ -262,7 +263,7 @@ def accept_recruit():
 @obhapp.app.route('/portal/recruits/unaccept', methods=['POST'])
 def unaccept_recruit():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     uniqname = flask.request.json['id']
     con = obhapp.model.get_db()
     con.execute(
@@ -280,7 +281,7 @@ def unaccept_recruit():
 @obhapp.app.route('/portal/recruits/remove/', methods=['POST'])
 def remove_recruit():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     uniqname = flask.request.json['id']
     con = obhapp.model.get_db()
     con.execute(
@@ -298,7 +299,7 @@ def remove_recruit():
 @obhapp.app.route('/portal/recruits/move/', methods=['POST'])
 def move_recruits():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
     cur = con.execute(
         "SELECT * FROM recruits "
@@ -398,7 +399,7 @@ def get_active_brothers():
 @obhapp.app.route('/portal/board/', methods=['GET', 'POST'])
 def assign_roles():
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     if flask.request.method == 'POST':
         # Handle role assignment logic
         role_assignments = flask.request.form.to_dict()
@@ -443,7 +444,7 @@ def assign_roles():
 def show_messages():
     """Show the contact messages in the portal."""
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("login"))
+        return flask.redirect(flask.url_for("show_login"))
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM messages")

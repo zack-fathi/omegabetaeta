@@ -1,53 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Parent container for carousel and card -->
-<div class="carousel-card-container">
-    <!-- Carousel -->
-    <div class="carousel-container">
-        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-
-            <!-- Carousel Inner -->
-            <div class="carousel-inner">
-                {% for image in images %}
-                <div class="carousel-item {% if loop.first %}active{% endif %}">
+<!-- Carousel -->
+<div class="carousel-container">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-inner">
+            {% for image in images %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div style="position: relative;">
                     <img src="{{ url_for('static', filename=image) }}" class="d-block w-100" alt="Slide {{ loop.index }}">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, transparent 50%, rgba(34,34,34,0.9));"></div>
                 </div>
-                {% endfor %}
             </div>
-
-            <!-- Controls -->
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </a>
+            {% endfor %}
         </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
     </div>
 </div>
 
-
-    <!-- Overlay Card -->
-    <div class="welcome-card-container">
-        <div class="card welcome-card">
-            <div class="card-body text-center">
-                <h1 class="card-title">Welcome to Omega Beta Eta!</h1>
-                <p class="card-text">
-                    Omega Beta Eta was established in 2018 to create a space that celebrates Arab culture while fostering leadership, academic excellence, and lifelong friendships. Our mission is to inspire growth, connection, and service. Through cultural events, academic initiatives, and philanthropy, Omega Beta Eta continues to leave a lasting impact. From organizing fundraisers to supporting local charities, our members are committed to giving back.
-                </p>
-                <h2>Join Us</h2>
-                <p class="card-text">
-                    Interested in joining Omega Beta Eta? We’re always looking for passionate individuals ready to embrace our mission. Learn more on our <a href="/apply/" class="link-no-style">Apply</a> page.
-                </p>
-            </div>
+<!-- Welcome Card -->
+<div class="welcome-card-container">
+    <div class="card welcome-card">
+        <div class="card-body text-center px-4 py-5">
+            <h1 class="card-title mb-3" style="font-weight: 700;">Welcome to Omega Beta Eta!</h1>
+            <div style="width: 80px; height: 3px; background-color: #FFD700; margin: 0 auto 1.5rem;"></div>
+            <p class="card-text" style="max-width: 700px; margin: 0 auto 1.5rem; line-height: 1.8;">
+                Omega Beta Eta was established in 2018 to create a space that celebrates Arab culture while fostering leadership, academic excellence, and lifelong friendships. Our mission is to inspire growth, connection, and service. Through cultural events, academic initiatives, and philanthropy, Omega Beta Eta continues to leave a lasting impact.
+            </p>
+            <div style="width: 60px; height: 2px; background-color: #FFD700; margin: 0 auto 1.5rem;"></div>
+            <h3 style="color: #FFD700;">Join Us</h3>
+            <p class="card-text">
+                Interested in joining Omega Beta Eta? We are always looking for passionate individuals ready to embrace our mission.
+            </p>
+            <a href="/apply/" class="btn mt-2" style="background-color: #FFD700; color: #222; font-weight: 600; padding: 10px 30px;">Apply Now</a>
         </div>
     </div>
-</div>
-
-<!-- Optional: Other content below -->
-<div class="container mt-5">
 </div>
 {% endblock %}

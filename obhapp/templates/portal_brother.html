@@ -1,7 +1,46 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-Name: {{ fullname }}
-<br>
-User ID: {{ user_id }}
-
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm mb-4" style="border: 2px solid #da3a37; border-radius: 10px;">
+                <div class="row g-0">
+                    <div class="col-md-5 text-center p-4">
+                        <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h3 class="card-title" style="color: #da3a37;">{{ fullname }}</h3>
+                            <hr>
+                            <p><strong>Username:</strong> {{ username }}</p>
+                            <p><strong>Uniqname:</strong> {{ uniqname }}</p>
+                            <p><strong>Major:</strong> {{ major }}</p>
+                            <p><strong>Line:</strong> {{ line_name }}</p>
+                            <p><strong>Line Number:</strong> {{ line_num }}</p>
+                            <p><strong>Lion Name:</strong> {{ lion_name }}</p>
+                            <p><strong>Cross Time:</strong> {{ cross_time }}</p>
+                            <p><strong>Grad Time:</strong> {{ grad_time }}</p>
+                            <p><strong>Campus:</strong> {{ campus }}</p>
+                            {% if contacts and contacts != 'N/A' %}
+                            <p><strong>Contacts:</strong> {{ contacts }}</p>
+                            {% endif %}
+                            {% if job and job != 'N/A' %}
+                            <p><strong>Job:</strong> {{ job }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if desc and desc != 'N/A' %}
+                <div class="card-footer bg-light p-4">
+                    <h5 style="color: #da3a37;">About</h5>
+                    <p>{{ desc }}</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="text-center">
+                <a href="/portal/directory/" class="btn" style="background-color: #da3a37; color: white;">Back to Directory</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
