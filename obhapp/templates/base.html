@@ -3,7 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ΩBH</title>
+    <title>{% block title %}Omega Beta Eta — Arab Fraternity{% endblock %}</title>
+
+    <!-- SEO -->
+    <meta name="description" content="{% block meta_description %}Omega Beta Eta is an Arab fraternity founded in 2018, fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.{% endblock %}" />
+    <meta name="keywords" content="Omega Beta Eta, Arab fraternity, OBH, Greek life, Arab culture, brotherhood, leadership" />
+    <meta name="author" content="Jawad Alsahlani" />
+    <link rel="canonical" href="{{ request.url }}" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.url }}" />
+    <meta property="og:title" content="{% block og_title %}Omega Beta Eta — Arab Fraternity{% endblock %}" />
+    <meta property="og:description" content="{% block og_description %}Omega Beta Eta is an Arab fraternity fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.{% endblock %}" />
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.png', _external=True) }}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Omega Beta Eta — Arab Fraternity" />
+    <meta name="twitter:description" content="Arab fraternity fostering leadership, academic excellence, cultural pride, and lifelong brotherhood." />
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/og-image.png', _external=True) }}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/OBHLogo.png') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Omega Beta Eta",
+      "url": "{{ request.host_url }}",
+      "logo": "{{ url_for('static', filename='images/OBHLogo.png', _external=True) }}",
+      "description": "Arab fraternity founded in 2018, fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.",
+      "foundingDate": "2018",
+      "sameAs": [
+        "https://www.instagram.com/omegabetaeta/",
+        "https://www.youtube.com/@OmegaBetaEta"
+      ],
+      "creator": {
+        "@type": "Person",
+        "name": "Jawad Alsahlani",
+        "url": "https://javvad.dev"
+      }
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,6 +78,7 @@
       type="text/css"
       href="{{ url_for('static', filename='css/main.css') }}"
     />
+
   </head>
   <body>
 
@@ -82,6 +132,7 @@
           </a>
         </div>
         <p class="copyright mb-0">&copy; {{ now().year if now is defined else '2024' }} Omega Beta Eta Arab Fraternity Incorporated.</p>
+        <p class="credit mb-0">Built by <a href="https://javvad.dev" target="_blank" rel="noopener">Jawad Alsahlani</a></p>
       </div>
     </footer>
 
