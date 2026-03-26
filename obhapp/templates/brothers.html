@@ -1,28 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-    <main>
-        <section class="gallery">
-            <div class="container py-4">
-                <h1 class="text-center mb-2" style="color: #FFD700; font-weight: 700;">Active Brothers</h1>
-                <div style="width: 80px; height: 3px; background-color: #b22222; margin: 0 auto 2rem;"></div>
-                <div class="row">
-                    {% for brother in brothers %}
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <a href="/brothers/{{ brother['username'] }}/" class="link-no-style">
-                            <div class="gallery-item card h-100" style="background-color: #2a2a2a; border: 1px solid #444; transition: transform 0.2s, box-shadow 0.2s;">
-                                <div style="height: 220px; overflow: hidden;">
-                                    <img class="card-img-top" src="/uploads/{{ brother.profile_picture }}" alt="{{ brother.fullname }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                </div>
-                                <div class="card-body text-center" style="background-color: #b22222;">
-                                    <h5 class="card-title mb-1" style="color: white; font-weight: 600;">{{ brother.fullname }}</h5>
-                                    <p class="card-text mb-0" style="color: #FFD700; font-size: 0.9rem;">{{ brother.line_name }}</p>
-                                </div>
-                            </div>
-                        </a>
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="section-title">Active Brothers</h1>
+        <hr class="section-divider">
+    </div>
+    <div class="row g-4">
+        {% for brother in brothers %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <a href="/brothers/{{ brother['username'] }}/" class="link-no-style">
+                <div class="obh-card h-100">
+                    <div class="card-img-container">
+                        <img src="/uploads/{{ brother.profile_picture }}" alt="{{ brother.fullname }}">
                     </div>
-                    {% endfor %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ brother.fullname }}</h5>
+                        <p class="card-subtitle mb-0">{{ brother.line_name }}</p>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

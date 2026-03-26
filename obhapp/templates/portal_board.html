@@ -1,48 +1,49 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-    <section class="Roles mb-4">
-        <h2 class="mb-4">Assign Roles to Active Brothers</h2>
+    <section class="mb-4">
+        <h2 class="portal-heading">Assign Roles to Active Brothers</h2>
         <form action="{{ url_for('assign_roles') }}" method="POST">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Role</th>
-                        <th>Current</th>
-                        <th>User ID</th>
-                        {% if can_change %}
-                        <th>Select New</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for role in roles %}
-                    <tr id="role-{{ role['role_name'] }}">
-                        <td>{{ role['role_name'] }}</td>
-                        <td>{{ role['username'] }}</td>
-                        <td>{{ role['user_id'] }}</td>
-                        {% if can_change %}
-                        <td>
-                            {% if role['role_name'] != "Admin" %}
-                                <select name="{{ role['role_name'] }}" id="{{ role['role_name'] }}">
-                                    <option value="">--Select Brother--</option>
-                                    {% for brother in brothers %}
-                                    <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
-                                    {% endfor %}
-                                </select>
+            <div class="table-responsive">
+                <table class="portal-table">
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Current</th>
+                            <th>User ID</th>
+                            {% if can_change %}
+                            <th>Select New</th>
                             {% endif %}
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for role in roles %}
+                        <tr id="role-{{ role['role_name'] }}">
+                            <td><strong>{{ role['role_name'] }}</strong></td>
+                            <td>{{ role['username'] }}</td>
+                            <td>{{ role['user_id'] }}</td>
+                            {% if can_change %}
+                            <td>
+                                {% if role['role_name'] != "Admin" %}
+                                    <select name="{{ role['role_name'] }}" id="{{ role['role_name'] }}" class="form-select form-select-sm">
+                                        <option value="">--Select Brother--</option>
+                                        {% for brother in brothers %}
+                                        <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
             {% if can_change %}
-            <div class="form-actions text-center mt-4">
-                <input type="submit" value="Assign Roles">
+            <div class="text-center mt-4">
+                <input type="submit" class="btn btn-portal" value="Assign Roles">
             </div>
             {% endif %}
         </form>
     </section>
-
 {% endblock %}

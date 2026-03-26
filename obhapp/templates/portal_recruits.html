@@ -1,81 +1,80 @@
 {% extends 'portal_base.html' %} {% block content %}
-<section class="recruits mb-4">
-  <h2 class="mb-4">Recruits</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Full Name</th>
-        <th>Uniqname</th>
-        <th>Email</th>
-        {% if can_change %}
-        <th>Line Number</th>
-        <th>Lion Name</th>
-        <th>Actions</th>
-        {% endif %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for recruit in recruits %}
-      <tr id="recruit-{{ recruit.uniqname }}">
-        <td>{{ recruit.fullname }}</td>
-        <td>{{ recruit.uniqname }}</td>
-        <td>{{ recruit.email }}</td>
-        {% if can_change %}
-        <td>
-          <input
-            type="number"
-            class="form-control line-num"
-            data-id="{{ recruit.uniqname }}"
-            value="{{ recruit.line_num }}"
-          />
-        </td>
-        <td>
-          <input
-            type="text"
-            class="form-control lion-name"
-            data-id="{{ recruit.uniqname }}"
-            value="{{ recruit.lion_name }}"
-          />
-        </td>
-        <td>
-          {% if recruit.accept %}
-          <button
-            class="btn accepted-btn"
-            data-id="{{ recruit.uniqname }}"
-            style="background-color: grey; color: black"
-          >
-            Accepted
-          </button>
-          {% else %}
-          <button
-            class="btn accept-btn"
-            data-id="{{ recruit.uniqname }}"
-            style="background-color: green; color: white"
-          >
-            Accept
-          </button>
+<section class="mb-4">
+  <h2 class="portal-heading">Recruits</h2>
+  <div class="table-responsive">
+    <table class="portal-table">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Uniqname</th>
+          <th>Email</th>
+          {% if can_change %}
+          <th>Line Number</th>
+          <th>Lion Name</th>
+          <th>Actions</th>
           {% endif %}
-          <button
-            class="btn remove-btn"
-            data-id="{{ recruit.uniqname }}"
-            style="background-color: red; color: white"
-          >
-            X
-          </button>
-        </td>
-        {% endif %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </tr>
+      </thead>
+      <tbody>
+        {% for recruit in recruits %}
+        <tr id="recruit-{{ recruit.uniqname }}">
+          <td>{{ recruit.fullname }}</td>
+          <td>{{ recruit.uniqname }}</td>
+          <td>{{ recruit.email }}</td>
+          {% if can_change %}
+          <td>
+            <input
+              type="number"
+              class="form-control form-control-sm line-num"
+              data-id="{{ recruit.uniqname }}"
+              value="{{ recruit.line_num }}"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              class="form-control form-control-sm lion-name"
+              data-id="{{ recruit.uniqname }}"
+              value="{{ recruit.lion_name }}"
+            />
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              {% if recruit.accept %}
+              <button
+                class="btn btn-portal-muted btn-portal-sm accepted-btn"
+                data-id="{{ recruit.uniqname }}"
+              >
+                Accepted
+              </button>
+              {% else %}
+              <button
+                class="btn btn-portal-success btn-portal-sm accept-btn"
+                data-id="{{ recruit.uniqname }}"
+              >
+                Accept
+              </button>
+              {% endif %}
+              <button
+                class="btn btn-portal-danger btn-portal-sm remove-btn"
+                data-id="{{ recruit.uniqname }}"
+              >
+                &times;
+              </button>
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% if can_change %}
-  <button
-    id="move-recruits-btn"
-    class="btn"
-    style="background-color: #da3a37; color: white"
-  >
-    Move Accepted Recruits to Brothers
-  </button>
+  <div class="mt-3">
+    <button id="move-recruits-btn" class="btn btn-portal">
+      Move Accepted Recruits to Brothers
+    </button>
+  </div>
   {% endif %}
 </section>
 
@@ -99,10 +98,7 @@
               data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
               success: function(response) {
                   if (response.success) {
-                      $button.removeClass('accept-btn').addClass('accepted-btn').text('Accepted').css({
-                          "background-color": "grey",
-                          "color": "black"
-                      });
+                      $button.removeClass('accept-btn btn-portal-success').addClass('accepted-btn btn-portal-muted').text('Accepted');
                   }
               }
           });
@@ -119,10 +115,7 @@
               data: JSON.stringify({ id: id }),
               success: function(response) {
                   if (response.success) {
-                      $button.removeClass('accepted-btn').addClass('accept-btn').text('Accept').css({
-                          "background-color": "green",
-                          "color": "white"
-                      });
+                      $button.removeClass('accepted-btn btn-portal-muted').addClass('accept-btn btn-portal-success').text('Accept');
                   }
               }
           });

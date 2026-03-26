@@ -1,0 +1,463 @@
+/* =============================================
+   Omega Beta Eta — Portal Styles
+   ============================================= */
+
+:root {
+  --portal-bg: #f4f6f9;
+  --portal-surface: #ffffff;
+  --portal-sidebar: #1a1a2e;
+  --portal-sidebar-hover: #16213e;
+  --portal-red: #9b2335;
+  --portal-red-dark: #7a1c2a;
+  --portal-red-light: #c03040;
+  --portal-gold: #c9a84c;
+  --portal-text: #333333;
+  --portal-text-muted: #6c757d;
+  --portal-border: #e2e8f0;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--portal-bg);
+  color: var(--portal-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
+
+.link-no-style {
+  text-decoration: none;
+  color: inherit;
+}
+.link-no-style:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ─── Top Navbar ─── */
+.portal-navbar {
+  background: var(--portal-sidebar) !important;
+  border-bottom: 2px solid var(--portal-red);
+  padding: 0.6rem 1.5rem;
+}
+
+.portal-navbar .navbar-toggler {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.35rem 0.6rem;
+}
+
+.portal-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(201,168,76,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* ─── Sidebar / Offcanvas ─── */
+.portal-sidebar {
+  background: var(--portal-sidebar) !important;
+  color: white !important;
+  border-right: 2px solid var(--portal-red);
+  width: 280px;
+}
+
+.portal-sidebar .offcanvas-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem 1.5rem;
+}
+
+.portal-sidebar .sidebar-logo {
+  max-height: 120px;
+  opacity: 0.95;
+  transition: opacity 0.3s;
+}
+
+.portal-sidebar .sidebar-logo:hover {
+  opacity: 1;
+}
+
+.portal-sidebar .sidebar-link {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 6px;
+  margin: 0.1rem 0.75rem;
+  transition: all 0.25s ease;
+}
+
+.portal-sidebar .sidebar-link:hover {
+  color: white !important;
+  background: var(--portal-red) !important;
+  transform: none;
+  font-size: 0.9rem;
+}
+
+.portal-sidebar .nav-item {
+  margin: 0 !important;
+}
+
+/* ─── Main Content ─── */
+.portal-main {
+  padding: 1.5rem 2rem;
+  background: var(--portal-bg);
+  min-height: 100vh;
+}
+
+/* ─── Profile Badge ─── */
+.profile-badge {
+  display: flex;
+  align-items: center;
+  background: var(--portal-sidebar);
+  color: white;
+  padding: 0.5rem 1rem 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  gap: 0.75rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-badge:hover {
+  background: var(--portal-red);
+  box-shadow: 0 4px 12px rgba(155, 35, 53, 0.25);
+}
+
+.profile-badge .profile-pic {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-badge .profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-badge .profile-name {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+}
+
+/* ─── Portal Card ─── */
+.portal-card {
+  background: var(--portal-surface);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--portal-border);
+}
+
+/* ─── Welcome Banner ─── */
+.portal-welcome {
+  background: linear-gradient(135deg, var(--portal-red), var(--portal-red-dark));
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.portal-welcome h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.portal-welcome p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── Section Headings ─── */
+.portal-heading {
+  color: var(--portal-red);
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--portal-border);
+}
+
+/* ─── Tables ─── */
+.portal-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.portal-table thead th {
+  background: var(--portal-sidebar);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.85rem 1rem;
+  border: none;
+}
+
+.portal-table thead th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.portal-table thead th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.portal-table tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--portal-border);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.portal-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.portal-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ─── Buttons ─── */
+.btn-portal {
+  background: var(--portal-red);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.btn-portal:hover {
+  background: var(--portal-red-dark);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 35, 53, 0.25);
+}
+
+.btn-portal-sm {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.btn-portal-success {
+  background: #2d8a4e;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.btn-portal-success:hover {
+  background: #236b3d;
+  color: white;
+}
+
+.btn-portal-danger {
+  background: #dc3545;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.btn-portal-danger:hover {
+  background: #b52d3a;
+  color: white;
+}
+
+.btn-portal-muted {
+  background: #6c757d;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.btn-portal-muted:hover {
+  background: #5a6268;
+  color: white;
+}
+
+/* ─── Forms ─── */
+.portal-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.portal-form label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--portal-text);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.portal-form .form-control {
+  border: 1px solid var(--portal-border);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.portal-form .form-control:focus {
+  border-color: var(--portal-red);
+  box-shadow: 0 0 0 3px rgba(155, 35, 53, 0.12);
+}
+
+/* ─── Directory Cards ─── */
+.directory-card {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-left: 3px solid var(--portal-red);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.directory-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left-color: var(--portal-gold);
+}
+
+.directory-card h6 {
+  margin-bottom: 0.15rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.directory-card small {
+  color: var(--portal-text-muted);
+}
+
+/* ─── Category Titles ─── */
+.portal-category-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--portal-red);
+  margin-bottom: 1rem;
+}
+
+/* ─── Brother Detail ─── */
+.portal-profile-card {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.portal-profile-card .profile-img {
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.portal-profile-card h3 {
+  color: var(--portal-red);
+  font-family: 'Playfair Display', serif;
+}
+
+.portal-profile-card .about-footer {
+  background: #f8f9fa;
+  border-top: 1px solid var(--portal-border);
+}
+
+.portal-profile-card .about-footer h5 {
+  color: var(--portal-red);
+  font-family: 'Playfair Display', serif;
+}
+
+/* ─── Alerts ─── */
+.alert {
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* ─── Upload card ─── */
+.portal-upload-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ─── FullCalendar ─── */
+.portal-calendar-card {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.portal-calendar-card .card-header {
+  background: var(--portal-red);
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+}
+
+.portal-calendar-card .card-header h2 {
+  color: white;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.portal-calendar-card .card-body {
+  padding: 1.5rem;
+}
+
+.fc a {
+  color: var(--portal-red) !important;
+}
+
+.fc-toolbar-title {
+  color: var(--portal-red) !important;
+  font-family: 'Playfair Display', serif !important;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .portal-main {
+    padding: 1rem;
+  }
+  .portal-welcome h1 {
+    font-size: 1.35rem;
+  }
+}

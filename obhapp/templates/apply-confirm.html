@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container py-5 d-flex justify-content-center align-items-center">
-    <div class="col-md-8 col-lg-6 text-center">
-        <div style="font-size: 4rem; color: #FFD700; margin-bottom: 1rem;">
+<div class="confirmation-page">
+    <div class="text-center">
+        <div class="confirmation-icon">
             <i class="fas fa-check-circle"></i>
         </div>
         <h1 class="mb-3">Thank You for Applying!</h1>
-        <p class="mb-4">Your application has been submitted successfully. We will be in contact soon.</p>
-        <a href="/" class="btn btn-primary">Return Home</a>
+        <p class="mb-4" style="color: var(--obh-text-muted);">Your application has been submitted successfully. We will be in contact soon.</p>
+        <a href="/" class="btn btn-obh">Return Home</a>
     </div>
 </div>
 {% endblock %}

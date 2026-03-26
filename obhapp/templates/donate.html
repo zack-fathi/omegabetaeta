@@ -1,30 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="login-form-container py-5 d-flex justify-content-center align-items-center">
-  <div class="col-md-6 col-lg-5">
-    <div class="form-description text-center mb-4">
-      <h2>Support Omega Beta Eta</h2>
-      <p>
-        Your contributions help us uphold our values and support our initiatives.
-        Thank you for your generosity! To donate, please use the Venmo handle below,
-        or scan the QR Code below.
-      </p>
-    </div>
+<div class="donate-section">
+  <div class="text-center" style="max-width: 500px;">
+    <h2 class="section-title" style="font-size:1.75rem;">Support Omega Beta Eta</h2>
+    <hr class="section-divider">
+    <p style="color: var(--obh-text-muted); margin-bottom: 2rem;">
+      Your contributions help us uphold our values and support our initiatives.
+      Thank you for your generosity!
+    </p>
 
-    <div class="venmo-details mb-4 text-center">
-      <h3 class="mb-3" style="color: #FFD700;">@OBHUMICH</h3>
-      <p style="color: white;">
-        Open your Venmo app, search for <strong>@OBHUMICH</strong>, and send your donation securely.
-      </p>
-    </div>
+    <h3 class="mb-3">@OBHUMICH</h3>
+    <p style="color: var(--obh-text-muted);">
+      Open your Venmo app, search for <strong style="color: var(--obh-text);">@OBHUMICH</strong>, and send your donation securely.
+    </p>
 
-    <div class="venmo-qr mb-4 text-center">
+    <div class="venmo-qr my-4">
       <img
         src="{{ url_for('static', filename='images/OBH_VENMO_QR_CODE.jpg') }}"
         alt="Venmo QR Code"
         class="img-fluid"
       />
-      <p class="mt-2" style="color: white;">Scan this QR code with the Venmo app.</p>
+      <p class="mt-2" style="color: var(--obh-text-muted); font-size: 0.9rem;">Scan this QR code with the Venmo app.</p>
     </div>
   </div>
 </div>

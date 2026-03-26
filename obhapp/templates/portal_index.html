@@ -1,17 +1,14 @@
 {% extends 'portal_base.html' %} {% block content %}
-<!-- Welcome Section with Original Styling -->
-<section class="welcome mb-4">
+<section class="portal-welcome">
   <h1>Welcome back, {{ session.get('name') }}!</h1>
   <p>Stay updated with the latest fraternity news and events.</p>
 </section>
 
-<!-- Calendar Section -->
-<section class="card mb-4">
+<section class="portal-calendar-card">
   <div class="card-header text-center">
     <h2 class="mb-0">Fraternity Calendar</h2>
   </div>
-  <div class="card-body text-center">
-    <!-- FullCalendar here -->
+  <div class="card-body">
     <div id="calendar"></div>
   </div>
 </section>
