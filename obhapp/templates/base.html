@@ -150,6 +150,14 @@
       window.addEventListener('scroll', function() {
         document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 10);
       });
+      (function() {
+        var path = window.location.pathname;
+        document.querySelectorAll('.site-nav .nav-link').forEach(function(link) {
+          if (path === link.getAttribute('href') || (link.getAttribute('href') !== '/' && path.startsWith(link.getAttribute('href')))) {
+            link.classList.add('active');
+          }
+        });
+      })();
     </script>
   </body>
 </html>

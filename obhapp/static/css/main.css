@@ -145,11 +145,13 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-50%);
 }
 
-.site-nav .nav-link:hover {
+.site-nav .nav-link:hover,
+.site-nav .nav-link.active {
   color: var(--obh-gold) !important;
 }
 
-.site-nav .nav-link:hover::after {
+.site-nav .nav-link:hover::after,
+.site-nav .nav-link.active::after {
   width: 60%;
 }
 

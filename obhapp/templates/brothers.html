@@ -10,7 +10,7 @@
     <div class="brothers-search-wrap">
         <div class="brothers-search">
             <i class="fas fa-search"></i>
-            <input type="text" id="brothersSearch" placeholder="Search by name, lion name, or line #..." autocomplete="off">
+            <input type="text" id="brothersSearch" placeholder="Search by name, lion name, or line..." autocomplete="off">
         </div>
     </div>
 
@@ -23,7 +23,7 @@
            href="/brothers/{{ bro['username'] }}/"
            data-name="{{ bro['fullname']|lower }}"
            data-lion="{{ (bro['lion_name'] or '')|lower }}"
-           data-linenum="{{ bro['line_num'] }}">
+           data-line="{{ (bro['line_name'] or '')|lower }}">
             <div class="brothers-card">
                 <div class="brothers-card-img">
                     <img src="/uploads/{{ bro.profile_picture or 'default.jpg' }}" alt="{{ bro.fullname }}">
@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', function() {
         cards.forEach(function(card) {
             const name = card.dataset.name;
             const lion = card.dataset.lion;
-            const linenum = card.dataset.linenum;
+            const line = card.dataset.line;
 
-            const matchSearch = !query || name.includes(query) || lion.includes(query) || linenum === query;
+            const matchSearch = !query || name.includes(query) || lion.includes(query) || line.includes(query);
 
             card.style.display = matchSearch ? '' : 'none';
             if (matchSearch) visible++;
