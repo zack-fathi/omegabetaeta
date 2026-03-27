@@ -235,11 +235,23 @@ def show_portal_recruits():
         can_change = role in ["Admin", "President", "Director of Recruitment"]
 
     cur = con.execute(
-        "SELECT fullname, uniqname, email, accept, line_num, lion_name, accept FROM recruits "
+        "SELECT fullname, uniqname, email, accept, line_num, lion_name FROM recruits "
+        "WHERE deleted = 0 "
     )
     recruits = cur.fetchall()
-    context = {"recruits": recruits}
-    return flask.render_template("portal_recruits.html", **context, can_change=can_change)
+
+    cur = con.execute(
+        "SELECT fullname, uniqname, email, line_num, lion_name FROM recruits "
+        "WHERE deleted = 1 "
+    )
+    deleted_recruits = cur.fetchall()
+
+    return flask.render_template(
+        "portal_recruits.html",
+        recruits=recruits,
+        deleted_recruits=deleted_recruits,
+        can_change=can_change
+    )
 
 @obhapp.app.route('/portal/recruits/accept', methods=['POST'])
 def accept_recruit():
@@ -286,7 +298,7 @@ def remove_recruit():
     uniqname = flask.request.json['id']
     con = obhapp.model.get_db()
     con.execute(
-        "DELETE FROM recruits WHERE uniqname = ?",
+        "UPDATE recruits SET deleted = 1, accept = 0 WHERE uniqname = ?",
         (uniqname,)
     )
     con.execute(
@@ -295,18 +307,64 @@ def remove_recruit():
         (flask.session["user_id"], f"Recruit {uniqname} deleted")
     )
     con.commit()
-    return flask.jsonify(success=True)
+    # Return recruit data so it can be added to deleted section
+    cur = con.execute(
+        "SELECT fullname, uniqname, email, line_num, lion_name FROM recruits WHERE uniqname = ?",
+        (uniqname,)
+    )
+    recruit = cur.fetchone()
+    return flask.jsonify(success=True, recruit=dict(recruit) if recruit else None)
+
+@obhapp.app.route('/portal/recruits/restore/', methods=['POST'])
+def restore_recruit():
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    uniqname = flask.request.json['id']
+    con = obhapp.model.get_db()
+    con.execute(
+        "UPDATE recruits SET deleted = 0, accept = 0 WHERE uniqname = ?",
+        (uniqname,)
+    )
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) "
+        "VALUES(?, ?) ",
+        (flask.session["user_id"], f"Recruit {uniqname} restored")
+    )
+    con.commit()
+    # Return recruit data so it can be added back to active section
+    cur = con.execute(
+        "SELECT fullname, uniqname, email, accept, line_num, lion_name FROM recruits WHERE uniqname = ?",
+        (uniqname,)
+    )
+    recruit = cur.fetchone()
+    return flask.jsonify(success=True, recruit=dict(recruit) if recruit else None)
 
 @obhapp.app.route('/portal/recruits/move/', methods=['POST'])
 def move_recruits():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
+
+    # Check that no recruits are still pending (neither accepted nor deleted)
+    cur = con.execute(
+        "SELECT COUNT(*) as cnt FROM recruits WHERE accept = 0 AND deleted = 0"
+    )
+    pending = cur.fetchone()["cnt"]
+    if pending > 0:
+        return flask.jsonify(
+            success=False,
+            error=f"{pending} recruit(s) still pending. Accept or delete all recruits before moving to brothers."
+        )
+
     cur = con.execute(
         "SELECT * FROM recruits "
-        "WHERE accept = 1 "
+        "WHERE accept = 1 AND deleted = 0"
     )
     rec = cur.fetchall()
+
+    if not rec:
+        return flask.jsonify(success=False, error="No accepted recruits to move.")
+
     for recruit in rec:
         time_made = datetime.now()
         reference = datetime(2018, 1, 1)
@@ -351,7 +409,7 @@ def move_recruits():
         con.commit()
 
     con.execute(
-        "DELETE FROM recruits WHERE accept = 1"
+        "DELETE FROM recruits WHERE accept = 1 AND deleted = 0"
     )
     con.commit()
 
@@ -510,9 +568,8 @@ def gallery_reorder():
 def get_active_brothers():
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
-    cursor.execute("SELECT user_id, fullname FROM brothers WHERE active = 1")
+    cursor.execute("SELECT user_id, fullname, profile_picture FROM brothers WHERE active = 1 ORDER BY fullname")
     brothers = cursor.fetchall()
-    #print(brothers)
     return brothers
 
 @obhapp.app.route('/portal/board/', methods=['GET', 'POST'])
@@ -522,42 +579,163 @@ def assign_roles():
     if flask.request.method == 'POST':
         # Handle role assignment logic
         role_assignments = flask.request.form.to_dict()
-        print(role_assignments)
         connection = obhapp.model.get_db()
         cursor = connection.cursor()
-        for role, user_id in role_assignments.items():
-            if user_id:
-                cursor.execute("UPDATE roles SET user_id = ? WHERE role_name = ?", (user_id, role))
+        for role_id_str, value in role_assignments.items():
+            if not value:
+                continue  # "No change" selected — skip
+            if value == 'CLEAR':
+                cursor.execute("UPDATE roles SET user_id = NULL WHERE role_id = ?", (role_id_str,))
+            else:
+                cursor.execute("UPDATE roles SET user_id = ? WHERE role_id = ?", (value, role_id_str))
         connection.commit()
 
         cursor.execute(
             "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
-            (flask.session["user_id"], f"{flask.session['name']} updated roles"),
+            (flask.session["user_id"], f"{flask.session['name']} updated board roles"),
         )
-
         connection.commit()
 
+        flask.flash("Board roles updated successfully.", "success")
         return flask.redirect(flask.url_for('assign_roles'))
 
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
-    cursor.execute("SELECT role_name, user_id FROM roles")
+
+    # Get board roles (non-Admin)
+    cursor.execute(
+        "SELECT r.role_id, r.role_name, r.user_id, b.fullname, b.profile_picture "
+        "FROM roles r LEFT JOIN brothers b ON r.user_id = b.user_id "
+        "WHERE r.role_name != 'Admin' "
+        "ORDER BY r.role_id"
+    )
     roles = cursor.fetchall()
-    for role in roles:
-        cursor.execute("SELECT username FROM brothers WHERE user_id = ?", (role['user_id'],))
-        role_user = cursor.fetchone()
-        if role_user:
-            role_user = role_user['username']
-        role["username"] = role_user
+
+    # Get admins
+    cursor.execute(
+        "SELECT r.role_id, r.user_id, b.fullname, b.profile_picture, b.username "
+        "FROM roles r JOIN brothers b ON r.user_id = b.user_id "
+        "WHERE r.role_name = 'Admin' "
+        "ORDER BY b.fullname"
+    )
+    admins = cursor.fetchall()
+
     active_brothers = get_active_brothers()
-    cursor.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session['user_id'],))
+
+    # All brothers for admin assignment (admins can be inactive alumni)
+    cursor.execute("SELECT user_id, fullname FROM brothers ORDER BY fullname")
+    all_brothers = cursor.fetchall()
+
+    # Check if current user can edit
     can_change = False
-    current_role = cursor.fetchone()
-    if current_role:
-        current_role = current_role["role_name"]
-        can_change = current_role == 'Admin' or current_role == 'President'
-    return flask.render_template('portal_board.html', brothers=active_brothers, roles=roles, can_change=can_change)
+    is_admin = False
+    cursor.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session['user_id'],))
+    user_roles = [row["role_name"] for row in cursor.fetchall()]
+    if 'Admin' in user_roles or 'President' in user_roles:
+        can_change = True
+    if 'Admin' in user_roles:
+        is_admin = True
+
+    return flask.render_template(
+        'portal_board.html',
+        brothers=active_brothers,
+        all_brothers=all_brothers,
+        roles=roles,
+        admins=admins,
+        can_change=can_change,
+        is_admin=is_admin
+    )
+
+
+@obhapp.app.route('/portal/board/admin/add/', methods=['POST'])
+def add_admin():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if 'Admin' not in user_roles:
+        return flask.jsonify(success=False, error="Only admins can manage admins"), 403
+
+    data = flask.request.get_json()
+    new_admin_id = data.get('user_id')
+    if not new_admin_id:
+        return flask.jsonify(success=False, error="No user specified"), 400
+
+    # Check user exists
+    cur = con.execute("SELECT fullname, profile_picture, username FROM brothers WHERE user_id = ?", (new_admin_id,))
+    brother = cur.fetchone()
+    if not brother:
+        return flask.jsonify(success=False, error="User not found"), 404
+
+    # Check not already admin
+    cur = con.execute("SELECT role_id FROM roles WHERE role_name = 'Admin' AND user_id = ?", (new_admin_id,))
+    if cur.fetchone():
+        return flask.jsonify(success=False, error="Already an admin"), 400
+
+    con.execute("INSERT INTO roles (role_name, user_id) VALUES ('Admin', ?)", (new_admin_id,))
+    con.commit()
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"{flask.session['name']} added {brother['fullname']} as Admin")
+    )
+    con.commit()
+
+    # Get the new role_id
+    cur = con.execute("SELECT role_id FROM roles WHERE role_name = 'Admin' AND user_id = ?", (new_admin_id,))
+    role = cur.fetchone()
+
+    return flask.jsonify(
+        success=True,
+        role_id=role["role_id"],
+        fullname=brother["fullname"],
+        profile_picture=brother["profile_picture"],
+        username=brother["username"]
+    )
+
+
+@obhapp.app.route('/portal/board/admin/remove/', methods=['POST'])
+def remove_admin():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if 'Admin' not in user_roles:
+        return flask.jsonify(success=False, error="Only admins can manage admins"), 403
+
+    data = flask.request.get_json()
+    role_id = data.get('role_id')
+    if not role_id:
+        return flask.jsonify(success=False, error="No role specified"), 400
+
+    # Prevent removing yourself if you're the last admin
+    cur = con.execute("SELECT COUNT(*) as cnt FROM roles WHERE role_name = 'Admin'")
+    count = cur.fetchone()["cnt"]
+    cur = con.execute("SELECT user_id FROM roles WHERE role_id = ?", (role_id,))
+    target = cur.fetchone()
+    if not target:
+        return flask.jsonify(success=False, error="Role not found"), 404
+
+    if count <= 1:
+        return flask.jsonify(success=False, error="Cannot remove the last admin"), 400
+
+    # Get name for log
+    cur = con.execute("SELECT fullname FROM brothers WHERE user_id = ?", (target["user_id"],))
+    brother = cur.fetchone()
+
+    con.execute("DELETE FROM roles WHERE role_id = ?", (role_id,))
+    con.commit()
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"{flask.session['name']} removed {brother['fullname']} from Admin")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
 
 @obhapp.app.route('/portal/messages/')
 def show_messages():

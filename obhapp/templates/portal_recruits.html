@@ -1,153 +1,417 @@
-{% extends 'portal_base.html' %} {% block content %}
-<section class="mb-4">
-  <h2 class="portal-heading">Recruits</h2>
-  <div class="table-responsive">
-    <table class="portal-table">
-      <thead>
-        <tr>
-          <th>Full Name</th>
-          <th>Uniqname</th>
-          <th>Email</th>
-          {% if can_change %}
-          <th>Line Number</th>
-          <th>Lion Name</th>
-          <th>Actions</th>
-          {% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for recruit in recruits %}
-        <tr id="recruit-{{ recruit.uniqname }}">
-          <td>{{ recruit.fullname }}</td>
-          <td>{{ recruit.uniqname }}</td>
-          <td>{{ recruit.email }}</td>
-          {% if can_change %}
-          <td>
-            <input
-              type="number"
-              class="form-control form-control-sm line-num"
-              data-id="{{ recruit.uniqname }}"
-              value="{{ recruit.line_num }}"
-            />
-          </td>
-          <td>
-            <input
-              type="text"
-              class="form-control form-control-sm lion-name"
-              data-id="{{ recruit.uniqname }}"
-              value="{{ recruit.lion_name }}"
-            />
-          </td>
-          <td>
-            <div class="d-flex gap-1">
-              {% if recruit.accept %}
-              <button
-                class="btn btn-portal-muted btn-portal-sm accepted-btn"
-                data-id="{{ recruit.uniqname }}"
-              >
-                Accepted
-              </button>
-              {% else %}
-              <button
-                class="btn btn-portal-success btn-portal-sm accept-btn"
-                data-id="{{ recruit.uniqname }}"
-              >
-                Accept
-              </button>
-              {% endif %}
-              <button
-                class="btn btn-portal-danger btn-portal-sm remove-btn"
-                data-id="{{ recruit.uniqname }}"
-              >
-                &times;
-              </button>
+{% extends 'portal_base.html' %}
+{% block content %}
+<div class="container-fluid recruits-manage">
+  <h2 class="portal-heading text-center">Recruits</h2>
+
+  <!-- Active Recruits Section -->
+  <section class="recruits-section">
+    <div class="recruits-section-header">
+      <h4><i class="fas fa-user-plus me-2"></i>Current Recruits <span class="recruit-count">({{ recruits|length }})</span></h4>
+      {% if can_change %}
+      <p class="recruits-hint">Accept or delete every recruit before moving them to brothers.</p>
+      {% endif %}
+    </div>
+
+    {% if recruits %}
+    <div class="recruits-list" id="recruitsList">
+      {% for recruit in recruits %}
+      <div class="recruit-card {% if recruit.accept %}recruit-accepted{% endif %}" id="recruit-{{ recruit.uniqname }}" data-uniqname="{{ recruit.uniqname }}">
+        <div class="recruit-card-main">
+          <div class="recruit-identity">
+            <div class="recruit-avatar">
+              <i class="fas fa-user"></i>
             </div>
-          </td>
+            <div class="recruit-info">
+              <span class="recruit-name">{{ recruit.fullname }}</span>
+              <span class="recruit-detail"><i class="fas fa-id-badge me-1"></i>{{ recruit.uniqname }}</span>
+              <span class="recruit-detail"><i class="fas fa-envelope me-1"></i>{{ recruit.email }}</span>
+            </div>
+          </div>
+
+          {% if can_change %}
+          <div class="recruit-fields">
+            <div class="recruit-field">
+              <label>Line #</label>
+              <input type="number" class="form-control form-control-sm recruit-line-num" data-id="{{ recruit.uniqname }}" value="{{ recruit.line_num }}" placeholder="—">
+            </div>
+            <div class="recruit-field">
+              <label>Lion Name</label>
+              <input type="text" class="form-control form-control-sm recruit-lion-name" data-id="{{ recruit.uniqname }}" value="{{ recruit.lion_name }}" placeholder="—">
+            </div>
+          </div>
+
+          <div class="recruit-actions">
+            {% if recruit.accept %}
+            <button class="btn btn-portal-muted btn-portal-sm accepted-btn" data-id="{{ recruit.uniqname }}" title="Click to unaccept">
+              <i class="fas fa-check me-1"></i>Accepted
+            </button>
+            {% else %}
+            <button class="btn btn-portal-success btn-portal-sm accept-btn" data-id="{{ recruit.uniqname }}">
+              <i class="fas fa-check me-1"></i>Accept
+            </button>
+            {% endif %}
+            <button class="btn btn-portal-danger btn-portal-sm remove-btn" data-id="{{ recruit.uniqname }}" title="Delete recruit">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
           {% endif %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+        </div>
+
+        {% if recruit.accept %}
+        <div class="recruit-status-bar accepted">
+          <i class="fas fa-check-circle me-1"></i>Accepted
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if can_change %}
+    <div class="recruits-move-section mt-3">
+      <button id="move-recruits-btn" class="btn btn-portal">
+        <i class="fas fa-arrow-right me-2"></i>Move Accepted Recruits to Brothers
+      </button>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="recruits-empty">
+      <i class="fas fa-inbox"></i>
+      <p>No active recruits.</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Deleted Recruits Section -->
   {% if can_change %}
-  <div class="mt-3">
-    <button id="move-recruits-btn" class="btn btn-portal">
-      Move Accepted Recruits to Brothers
-    </button>
-  </div>
+  <section class="recruits-section mt-4">
+    <div class="recruits-section-header">
+      <div class="d-flex align-items-center gap-2">
+        <h4><i class="fas fa-trash-alt me-2"></i>Deleted Recruits <span class="deleted-count">({{ deleted_recruits|length }})</span></h4>
+        {% if deleted_recruits %}
+        <button class="btn-toggle-deleted" onclick="toggleDeleted()" id="toggleDeletedBtn">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        {% endif %}
+      </div>
+      <p class="recruits-hint">Previously removed recruits can be restored here.</p>
+    </div>
+
+    <div id="deletedList" class="recruits-list deleted-list" style="display:none;">
+      {% for recruit in deleted_recruits %}
+      <div class="recruit-card recruit-deleted" id="deleted-{{ recruit.uniqname }}" data-uniqname="{{ recruit.uniqname }}">
+        <div class="recruit-card-main">
+          <div class="recruit-identity">
+            <div class="recruit-avatar deleted-avatar">
+              <i class="fas fa-user-slash"></i>
+            </div>
+            <div class="recruit-info">
+              <span class="recruit-name">{{ recruit.fullname }}</span>
+              <span class="recruit-detail"><i class="fas fa-id-badge me-1"></i>{{ recruit.uniqname }}</span>
+            </div>
+          </div>
+          <div class="recruit-actions">
+            <button class="btn btn-portal-success btn-portal-sm restore-btn" data-id="{{ recruit.uniqname }}" title="Restore recruit">
+              <i class="fas fa-undo me-1"></i>Restore
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% if not deleted_recruits %}
+      <div class="recruits-empty deleted-empty">
+        <p>No deleted recruits.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
   {% endif %}
-</section>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="gallery-toast"></div>
 
 <script>
-  $(document).ready(function() {
-      $(document).on('click', '.accept-btn', function() {
-          var $button = $(this);
-          var id = $button.data('id');
-          var line_num = $('#recruit-' + id).find('.line-num').val();
-          var lion_name = $('#recruit-' + id).find('.lion-name').val();
+function toggleDeleted() {
+  const list = document.getElementById('deletedList');
+  const btn = document.getElementById('toggleDeletedBtn');
+  if (list.style.display === 'none') {
+    list.style.display = 'block';
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+  } else {
+    list.style.display = 'none';
+    btn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+  }
+}
 
-          if (!line_num || !lion_name || line_num == "None" || lion_name == "None") {
-              alert('Please fill in both Line Number and Lion Name before accepting the recruit.');
-              return;
-          }
+function showToast(message, isError) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'gallery-toast show' + (isError ? ' error' : '');
+  setTimeout(() => { toast.className = 'gallery-toast'; }, 2500);
+}
 
-          $.ajax({
-              type: 'POST',
-              url: '{{ url_for('accept_recruit') }}',
-              contentType: 'application/json',
-              data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
-              success: function(response) {
-                  if (response.success) {
-                      $button.removeClass('accept-btn btn-portal-success').addClass('accepted-btn btn-portal-muted').text('Accepted');
-                  }
-              }
-          });
-      });
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text || '';
+  return div.innerHTML;
+}
 
-      $(document).on('click', '.accepted-btn', function() {
-          var $button = $(this);
-          var id = $button.data('id');
+function updateCounts() {
+  const active = document.querySelectorAll('#recruitsList .recruit-card').length;
+  const deleted = document.querySelectorAll('#deletedList .recruit-card').length;
+  document.querySelector('.recruit-count').textContent = '(' + active + ')';
+  const dc = document.querySelector('.deleted-count');
+  if (dc) dc.textContent = '(' + deleted + ')';
+}
 
-          $.ajax({
-              type: 'POST',
-              url: '{{ url_for('unaccept_recruit') }}',
-              contentType: 'application/json',
-              data: JSON.stringify({ id: id }),
-              success: function(response) {
-                  if (response.success) {
-                      $button.removeClass('accepted-btn btn-portal-muted').addClass('accept-btn btn-portal-success').text('Accept');
-                  }
-              }
-          });
-      });
+$(document).ready(function() {
+    // Accept recruit
+    $(document).on('click', '.accept-btn', function() {
+        var $button = $(this);
+        var id = $button.data('id');
+        var $card = $('#recruit-' + id);
+        var line_num = $card.find('.recruit-line-num').val();
+        var lion_name = $card.find('.recruit-lion-name').val();
 
-      $('.remove-btn').click(function() {
-          var id = $(this).data('id');
-          $.ajax({
-              type: 'POST',
-              url: '{{ url_for('remove_recruit') }}',
-              contentType: 'application/json',
-              data: JSON.stringify({ id: id }),
-              success: function(response) {
-                  if (response.success) {
-                      $('#recruit-' + id).remove();
-                  }
-              }
-          });
-      });
+        if (!line_num || !lion_name || line_num == "None" || lion_name == "None") {
+            showToast('Please fill in both Line Number and Lion Name first.', true);
+            return;
+        }
 
-      $('#move-recruits-btn').click(function() {
-          $.ajax({
-              type: 'POST',
-              url: '{{ url_for('move_recruits') }}',
-              success: function(response) {
-                  if (response.success) {
-                      alert('Accepted recruits moved to brothers!');
-                      location.reload();
-                  }
-              }
-          });
-      });
-  });
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('accept_recruit') }}',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
+            success: function(response) {
+                if (response.success) {
+                    $button.removeClass('accept-btn btn-portal-success')
+                           .addClass('accepted-btn btn-portal-muted')
+                           .attr('title', 'Click to unaccept')
+                           .html('<i class="fas fa-check me-1"></i>Accepted');
+                    $card.addClass('recruit-accepted');
+                    // Add status bar
+                    if (!$card.find('.recruit-status-bar').length) {
+                        $card.append('<div class="recruit-status-bar accepted"><i class="fas fa-check-circle me-1"></i>Accepted</div>');
+                    }
+                    showToast('Recruit accepted');
+                }
+            }
+        });
+    });
+
+    // Unaccept recruit
+    $(document).on('click', '.accepted-btn', function() {
+        var $button = $(this);
+        var id = $button.data('id');
+        var $card = $('#recruit-' + id);
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('unaccept_recruit') }}',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id }),
+            success: function(response) {
+                if (response.success) {
+                    $button.removeClass('accepted-btn btn-portal-muted')
+                           .addClass('accept-btn btn-portal-success')
+                           .removeAttr('title')
+                           .html('<i class="fas fa-check me-1"></i>Accept');
+                    $card.removeClass('recruit-accepted');
+                    $card.find('.recruit-status-bar').remove();
+                    showToast('Recruit unaccepted');
+                }
+            }
+        });
+    });
+
+    // Delete recruit (soft delete)
+    $(document).on('click', '.remove-btn', function() {
+        var id = $(this).data('id');
+        if (!confirm('Delete this recruit? They can be restored later.')) return;
+
+        var $card = $('#recruit-' + id);
+        $card.css({ opacity: 0.5, pointerEvents: 'none' });
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('remove_recruit') }}',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id }),
+            success: function(response) {
+                if (response.success) {
+                    $card.slideUp(300, function() {
+                        $(this).remove();
+                        updateCounts();
+                        checkEmpty();
+                    });
+                    // Add to deleted list
+                    if (response.recruit) {
+                        addToDeletedList(response.recruit);
+                    }
+                    showToast('Recruit deleted');
+                } else {
+                    $card.css({ opacity: 1, pointerEvents: '' });
+                }
+            }
+        });
+    });
+
+    // Restore recruit
+    $(document).on('click', '.restore-btn', function() {
+        var id = $(this).data('id');
+        var $card = $('#deleted-' + id);
+        $card.css({ opacity: 0.5, pointerEvents: 'none' });
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('restore_recruit') }}',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id }),
+            success: function(response) {
+                if (response.success) {
+                    $card.slideUp(300, function() {
+                        $(this).remove();
+                        updateCounts();
+                    });
+                    // Add back to active list
+                    if (response.recruit) {
+                        addToActiveList(response.recruit);
+                    }
+                    showToast('Recruit restored');
+                } else {
+                    $card.css({ opacity: 1, pointerEvents: '' });
+                    showToast(response.error || 'Failed to restore', true);
+                }
+            }
+        });
+    });
+
+    // Move accepted to brothers
+    $('#move-recruits-btn').click(function() {
+        var $btn = $(this);
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Processing...');
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('move_recruits') }}',
+            success: function(response) {
+                if (response.success) {
+                    showToast('Accepted recruits moved to brothers!');
+                    setTimeout(function() { location.reload(); }, 1000);
+                } else {
+                    showToast(response.error || 'Failed to move recruits', true);
+                    $btn.prop('disabled', false).html('<i class="fas fa-arrow-right me-2"></i>Move Accepted Recruits to Brothers');
+                }
+            },
+            error: function() {
+                showToast('Network error', true);
+                $btn.prop('disabled', false).html('<i class="fas fa-arrow-right me-2"></i>Move Accepted Recruits to Brothers');
+            }
+        });
+    });
+});
+
+function addToDeletedList(recruit) {
+    var list = document.getElementById('deletedList');
+    if (!list) return;
+    var empty = list.querySelector('.deleted-empty');
+    if (empty) empty.remove();
+
+    var card = document.createElement('div');
+    card.className = 'recruit-card recruit-deleted';
+    card.id = 'deleted-' + recruit.uniqname;
+    card.dataset.uniqname = recruit.uniqname;
+    card.innerHTML = `
+        <div class="recruit-card-main">
+            <div class="recruit-identity">
+                <div class="recruit-avatar deleted-avatar">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                <div class="recruit-info">
+                    <span class="recruit-name">${escapeHtml(recruit.fullname)}</span>
+                    <span class="recruit-detail"><i class="fas fa-id-badge me-1"></i>${escapeHtml(recruit.uniqname)}</span>
+                </div>
+            </div>
+            <div class="recruit-actions">
+                <button class="btn btn-portal-success btn-portal-sm restore-btn" data-id="${escapeHtml(recruit.uniqname)}" title="Restore recruit">
+                    <i class="fas fa-undo me-1"></i>Restore
+                </button>
+            </div>
+        </div>
+    `;
+    list.appendChild(card);
+    // Show the section if it was hidden
+    list.style.display = 'block';
+    var btn = document.getElementById('toggleDeletedBtn');
+    if (btn) btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+}
+
+function addToActiveList(recruit) {
+    var list = document.getElementById('recruitsList');
+    if (!list) {
+        // Create the list if it doesn't exist (was empty)
+        var section = document.querySelector('.recruits-section');
+        var empty = section.querySelector('.recruits-empty');
+        if (empty) empty.remove();
+        list = document.createElement('div');
+        list.className = 'recruits-list';
+        list.id = 'recruitsList';
+        section.querySelector('.recruits-section-header').after(list);
+    }
+    var empty = list.closest('.recruits-section').querySelector('.recruits-empty');
+    if (empty) empty.remove();
+
+    var card = document.createElement('div');
+    card.className = 'recruit-card';
+    card.id = 'recruit-' + recruit.uniqname;
+    card.dataset.uniqname = recruit.uniqname;
+    card.innerHTML = `
+        <div class="recruit-card-main">
+            <div class="recruit-identity">
+                <div class="recruit-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="recruit-info">
+                    <span class="recruit-name">${escapeHtml(recruit.fullname)}</span>
+                    <span class="recruit-detail"><i class="fas fa-id-badge me-1"></i>${escapeHtml(recruit.uniqname)}</span>
+                    <span class="recruit-detail"><i class="fas fa-envelope me-1"></i>${escapeHtml(recruit.email)}</span>
+                </div>
+            </div>
+            <div class="recruit-fields">
+                <div class="recruit-field">
+                    <label>Line #</label>
+                    <input type="number" class="form-control form-control-sm recruit-line-num" data-id="${escapeHtml(recruit.uniqname)}" value="${recruit.line_num || ''}" placeholder="—">
+                </div>
+                <div class="recruit-field">
+                    <label>Lion Name</label>
+                    <input type="text" class="form-control form-control-sm recruit-lion-name" data-id="${escapeHtml(recruit.uniqname)}" value="${escapeHtml(recruit.lion_name) || ''}" placeholder="—">
+                </div>
+            </div>
+            <div class="recruit-actions">
+                <button class="btn btn-portal-success btn-portal-sm accept-btn" data-id="${escapeHtml(recruit.uniqname)}">
+                    <i class="fas fa-check me-1"></i>Accept
+                </button>
+                <button class="btn btn-portal-danger btn-portal-sm remove-btn" data-id="${escapeHtml(recruit.uniqname)}" title="Delete recruit">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    list.appendChild(card);
+}
+
+function checkEmpty() {
+    var list = document.getElementById('recruitsList');
+    if (list && list.children.length === 0) {
+        var section = list.closest('.recruits-section');
+        list.remove();
+        var empty = document.createElement('div');
+        empty.className = 'recruits-empty';
+        empty.innerHTML = '<i class="fas fa-inbox"></i><p>No active recruits.</p>';
+        section.querySelector('.recruits-section-header').after(empty);
+    }
+}
 </script>
 {% endblock %}

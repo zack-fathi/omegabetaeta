@@ -99,23 +99,35 @@
             <p>All brothers can view the list of people who applied through the public <a href="/apply/">Apply</a> page.</p>
             <p>If you have the right role (Admin, President, or Director of Recruitment), you can also:</p>
             <ul>
-                <li><strong>Set Line Number and Lion Name</strong> for each recruit</li>
-                <li><strong>Accept</strong> a recruit (mark them as approved)</li>
-                <li><strong>Unaccept</strong> a recruit (undo acceptance)</li>
-                <li><strong>Remove</strong> a recruit (delete their application)</li>
-                <li><strong>Move Accepted Recruits to Brothers</strong> — creates accounts for all accepted recruits with a default password</li>
+                <li><strong>Set Line Number and Lion Name</strong> — fill these in before accepting a recruit</li>
+                <li><strong>Accept / Unaccept</strong> — toggle a recruit's acceptance status (both fields must be filled first)</li>
+                <li><strong>Delete</strong> — soft-deletes a recruit (moves them to the Deleted section). This action is logged.</li>
+                <li><strong>Deleted Recruits section</strong> — expand the section at the bottom to see all previously deleted recruits</li>
+                <li><strong>Restore</strong> — bring a deleted recruit back to the active list. This action is also logged.</li>
+                <li><strong>Move Accepted Recruits to Brothers</strong> — creates accounts for all accepted recruits with a default password. <em>Every recruit must be either accepted or deleted first</em> — the button will not proceed if any recruits are still pending.</li>
             </ul>
+            <p><strong>Re-applicants:</strong> If someone who was previously deleted applies again with the same uniqname, they will automatically reappear as a new pending recruit.</p>
         </div>
 
         <!-- Board -->
         <div class="help-section">
             <h4><i class="fas fa-crown"></i> <a href="/portal/board/">Board</a></h4>
-            <p>Shows all current officer roles and who holds them.</p>
-            <p>If you are the <strong>President</strong> or <strong>Admin</strong>:</p>
+            <p>Shows all current officer roles and who holds them, along with site administrators.</p>
+            <p><strong>Assigning board roles</strong> (President or Admin only):</p>
             <ol>
-                <li>Use the dropdown next to each role to select a new brother.</li>
-                <li>Click <strong>Assign Roles</strong> to save.</li>
+                <li>Each role is shown as a card with the current holder's name and photo.</li>
+                <li>Use the dropdown on any role to select a new <strong>active brother</strong>, or choose <em>Remove current holder</em> to clear the position.</li>
+                <li>Click <strong>Save Board Roles</strong> to apply all changes at once.</li>
             </ol>
+            <p><strong>Managing administrators</strong> (Admin only):</p>
+            <ul>
+                <li><strong>Add an admin</strong> — select any brother from the dropdown and click <strong>Add Admin</strong>.</li>
+                <li><strong>Remove an admin</strong> — click the <i class="fas fa-times"></i> button on an admin's card. You cannot remove the last admin.</li>
+            </ul>
+            <div class="help-tip">
+                <i class="fas fa-info-circle"></i>
+                Only active brothers appear in board role dropdowns. Admins can be any brother (including inactive/alumni) since they maintain the site.
+            </div>
         </div>
 
         <!-- Gallery Management -->

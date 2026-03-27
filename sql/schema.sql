@@ -28,6 +28,7 @@ CREATE TABLE recruits(
   line_num INTEGER,
   lion_name TEXT,
   accept BIT DEFAULT 0,
+  deleted BIT DEFAULT 0,
   PRIMARY KEY(uniqname)
 );
 
