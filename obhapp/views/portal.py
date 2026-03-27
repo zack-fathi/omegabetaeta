@@ -170,9 +170,11 @@ def show_portal_directory():
         return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT user_id, fullname, username, line, line_num, lion_name, uniqname, "
-        "profile_picture, active "
-        "FROM brothers ORDER BY line ASC, line_num ASC;",
+        "SELECT b.user_id, b.fullname, b.username, b.line, b.line_num, "
+        "ln.name AS lion_name, b.uniqname, b.profile_picture, b.active "
+        "FROM brothers b "
+        "LEFT JOIN lion_names ln ON b.lion_name_id = ln.lion_name_id "
+        "ORDER BY b.line ASC, b.line_num ASC;",
     )
     brothers = cur.fetchall()
 
@@ -207,7 +209,10 @@ def show_directory_brother(name):
         return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT * FROM brothers WHERE username = ?",
+        "SELECT b.*, ln.name AS lion_name "
+        "FROM brothers b "
+        "LEFT JOIN lion_names ln ON b.lion_name_id = ln.lion_name_id "
+        "WHERE b.username = ?",
         (name,)
     )
     bro = cur.fetchone()
@@ -218,6 +223,10 @@ def show_directory_brother(name):
     bro["line_name"] = line_int_to_line[str(bro["line"])]
     bro['grad_time_display'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
 
+    # Get all lion names for dropdown
+    cur = con.execute("SELECT lion_name_id, name FROM lion_names ORDER BY name")
+    lion_names = cur.fetchall()
+
     # Check permissions
     can_edit = False
     cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
@@ -227,7 +236,7 @@ def show_directory_brother(name):
                                       "Director of External"]):
         can_edit = True
 
-    return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit)
+    return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit, lion_names=lion_names)
 
 @obhapp.app.route('/portal/directory/<name>/edit/', methods=['POST'])
 def edit_member(name):
@@ -263,7 +272,7 @@ def edit_member(name):
     grad_time = flask.request.form['grad_time']
     line = flask.request.form['line']
     line_num = flask.request.form['line_num']
-    lion_name = flask.request.form['lion_name']
+    lion_name_id = flask.request.form['lion_name_id']
     active = flask.request.form.get('active', 0)
 
     file = flask.request.files.get("profile_picture")
@@ -279,10 +288,10 @@ def edit_member(name):
     con.execute('''
         UPDATE brothers SET username = ?, fullname = ?, uniqname = ?, profile_picture = ?,
         major = ?, job = ?, desc = ?, contacts = ?, campus = ?, cross_time = ?,
-        grad_time = ?, line = ?, line_num = ?, lion_name = ?, active = ?
+        grad_time = ?, line = ?, line_num = ?, lion_name_id = ?, active = ?
         WHERE user_id = ?
     ''', (new_username, fullname, uniqname, uuid_basename, major, job, desc, contacts,
-          campus, cross_time, grad_time, line, line_num, lion_name, active, bro['user_id']))
+          campus, cross_time, grad_time, line, line_num, lion_name_id, active, bro['user_id']))
 
     con.execute(
         "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
@@ -367,22 +376,33 @@ def show_portal_recruits():
         can_change = role in ["Admin", "President", "Director of Recruitment"]
 
     cur = con.execute(
-        "SELECT fullname, uniqname, email, accept, line_num, lion_name FROM recruits "
-        "WHERE deleted = 0 "
+        "SELECT r.fullname, r.uniqname, r.email, r.accept, r.line_num, "
+        "ln.name AS lion_name, r.lion_name_id "
+        "FROM recruits r "
+        "LEFT JOIN lion_names ln ON r.lion_name_id = ln.lion_name_id "
+        "WHERE r.deleted = 0 "
     )
     recruits = cur.fetchall()
 
     cur = con.execute(
-        "SELECT fullname, uniqname, email, line_num, lion_name FROM recruits "
-        "WHERE deleted = 1 "
+        "SELECT r.fullname, r.uniqname, r.email, r.line_num, "
+        "ln.name AS lion_name, r.lion_name_id "
+        "FROM recruits r "
+        "LEFT JOIN lion_names ln ON r.lion_name_id = ln.lion_name_id "
+        "WHERE r.deleted = 1 "
     )
     deleted_recruits = cur.fetchall()
+
+    # Get all lion names for dropdown
+    cur = con.execute("SELECT lion_name_id, name FROM lion_names ORDER BY name")
+    all_lion_names = cur.fetchall()
 
     return flask.render_template(
         "portal_recruits.html",
         recruits=recruits,
         deleted_recruits=deleted_recruits,
-        can_change=can_change
+        can_change=can_change,
+        lion_names=all_lion_names
     )
 
 @obhapp.app.route('/portal/recruits/accept', methods=['POST'])
@@ -391,11 +411,11 @@ def accept_recruit():
         return flask.redirect(flask.url_for("show_login"))
     uniqname = flask.request.json['id']
     line_num = flask.request.json['line_num']
-    lion_name = flask.request.json['lion_name']
+    lion_name_id = flask.request.json['lion_name_id']
     con = obhapp.model.get_db()
     con.execute(
-        "UPDATE recruits SET line_num = ?, lion_name = ?, accept = 1 WHERE uniqname = ?",
-        (line_num, lion_name, uniqname)
+        "UPDATE recruits SET line_num = ?, lion_name_id = ?, accept = 1 WHERE uniqname = ?",
+        (line_num, lion_name_id, uniqname)
     )
     con.execute(
         "INSERT INTO change_log(user_id, desc) "
@@ -441,7 +461,11 @@ def remove_recruit():
     con.commit()
     # Return recruit data so it can be added to deleted section
     cur = con.execute(
-        "SELECT fullname, uniqname, email, line_num, lion_name FROM recruits WHERE uniqname = ?",
+        "SELECT r.fullname, r.uniqname, r.email, r.line_num, "
+        "ln.name AS lion_name, r.lion_name_id "
+        "FROM recruits r "
+        "LEFT JOIN lion_names ln ON r.lion_name_id = ln.lion_name_id "
+        "WHERE r.uniqname = ?",
         (uniqname,)
     )
     recruit = cur.fetchone()
@@ -465,7 +489,11 @@ def restore_recruit():
     con.commit()
     # Return recruit data so it can be added back to active section
     cur = con.execute(
-        "SELECT fullname, uniqname, email, accept, line_num, lion_name FROM recruits WHERE uniqname = ?",
+        "SELECT r.fullname, r.uniqname, r.email, r.accept, r.line_num, "
+        "ln.name AS lion_name, r.lion_name_id "
+        "FROM recruits r "
+        "LEFT JOIN lion_names ln ON r.lion_name_id = ln.lion_name_id "
+        "WHERE r.uniqname = ?",
         (uniqname,)
     )
     recruit = cur.fetchone()
@@ -529,9 +557,9 @@ def move_recruits():
         password_db_string = "$".join([algorithm, salt, password_hash])
 
         con.execute(
-            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, lion_name, cross_time, active) "
+            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, lion_name_id, cross_time, active) "
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, 1); ",
-            (username, password_db_string, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name"], cross_time)
+            (username, password_db_string, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name_id"], cross_time)
         )
         con.execute(
             "INSERT INTO change_log(user_id, desc) "
@@ -910,6 +938,160 @@ def show_messages():
     cursor.execute("SELECT * FROM messages")
     messages = cursor.fetchall()
     return flask.render_template('portal_messages.html', messages=messages)
+
+@obhapp.app.route('/portal/lion-names/')
+def show_lion_names():
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    con = obhapp.model.get_db()
+
+    # Get all lion names with their brothers
+    cur = con.execute("SELECT lion_name_id, name, meaning FROM lion_names")
+    lion_names_raw = cur.fetchall()
+
+    # Hardcoded founding-line order: Aklaaf first, Dhergham last
+    FOUNDING_ORDER = [
+        "Aklaaf", "Haidar", "Abbas", "Furhud", "Hamza",
+        "Sarem", "Usayd", "Hareth", "Shibel", "Rebaal",
+        "Layth", "Feras", "Dhergham",
+    ]
+    order_map = {name: i for i, name in enumerate(FOUNDING_ORDER)}
+    lion_names = sorted(
+        lion_names_raw,
+        key=lambda ln: (order_map.get(ln["name"], len(FOUNDING_ORDER)), ln["name"])
+    )
+
+    # Get brothers grouped by lion_name_id, sorted by line (oldest first)
+    cur = con.execute(
+        "SELECT b.fullname, b.username, b.profile_picture, b.lion_name_id, b.active, "
+        "b.line, b.line_num "
+        "FROM brothers b WHERE b.lion_name_id IS NOT NULL "
+        "ORDER BY b.line ASC, b.line_num ASC"
+    )
+    all_brothers = cur.fetchall()
+
+    # Build a dict of lion_name_id -> list of brothers
+    brothers_by_lion = {}
+    for bro in all_brothers:
+        lid = bro["lion_name_id"]
+        if lid not in brothers_by_lion:
+            brothers_by_lion[lid] = []
+        brothers_by_lion[lid].append(dict(bro))
+
+    # Check permissions
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    can_edit = any(r in user_roles for r in ["Admin", "President"])
+
+    return flask.render_template(
+        "portal_lion_names.html",
+        lion_names=lion_names,
+        brothers_by_lion=brothers_by_lion,
+        can_edit=can_edit
+    )
+
+@obhapp.app.route('/portal/lion-names/edit/', methods=['POST'])
+def edit_lion_name():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President"]):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    lion_name_id = data.get("lion_name_id")
+    meaning = data.get("meaning", "")
+
+    if not lion_name_id:
+        return flask.jsonify(success=False, error="No lion name specified"), 400
+
+    con.execute("UPDATE lion_names SET meaning = ? WHERE lion_name_id = ?", (meaning, lion_name_id))
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Edited lion name meaning (ID: {lion_name_id})")
+    )
+    con.commit()
+    return flask.jsonify(success=True)
+
+@obhapp.app.route('/portal/lion-names/add/', methods=['POST'])
+def add_lion_name():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President"]):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    name = (data.get("name") or "").strip()
+    meaning = (data.get("meaning") or "").strip()
+
+    if not name:
+        return flask.jsonify(success=False, error="Name is required"), 400
+
+    # Check uniqueness
+    cur = con.execute("SELECT lion_name_id FROM lion_names WHERE name = ?", (name,))
+    if cur.fetchone():
+        return flask.jsonify(success=False, error="A lion name with that name already exists"), 400
+
+    con.execute("INSERT INTO lion_names(name, meaning) VALUES(?, ?)", (name, meaning))
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Added lion name: {name}")
+    )
+    con.commit()
+
+    cur = con.execute("SELECT lion_name_id FROM lion_names WHERE name = ?", (name,))
+    new_id = cur.fetchone()["lion_name_id"]
+
+    return flask.jsonify(success=True, lion_name_id=new_id, name=name, meaning=meaning)
+
+@obhapp.app.route('/portal/lion-names/delete/', methods=['POST'])
+def delete_lion_name():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President"]):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    lion_name_id = data.get("lion_name_id")
+    if not lion_name_id:
+        return flask.jsonify(success=False, error="No lion name specified"), 400
+
+    # Get the name for logging
+    cur = con.execute("SELECT name FROM lion_names WHERE lion_name_id = ?", (lion_name_id,))
+    row = cur.fetchone()
+    if not row:
+        return flask.jsonify(success=False, error="Lion name not found"), 404
+    lion_name = row["name"]
+
+    # Check if any brothers or recruits still reference this lion name
+    cur = con.execute("SELECT COUNT(*) as cnt FROM brothers WHERE lion_name_id = ?", (lion_name_id,))
+    bro_count = cur.fetchone()["cnt"]
+    cur = con.execute("SELECT COUNT(*) as cnt FROM recruits WHERE lion_name_id = ?", (lion_name_id,))
+    rec_count = cur.fetchone()["cnt"]
+    if bro_count > 0 or rec_count > 0:
+        return flask.jsonify(
+            success=False,
+            error=f"Cannot delete '{lion_name}' — it is assigned to {bro_count} brother(s) and {rec_count} recruit(s). Reassign them first."
+        ), 400
+
+    con.execute("DELETE FROM lion_names WHERE lion_name_id = ?", (lion_name_id,))
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Deleted lion name: {lion_name} (ID: {lion_name_id})")
+    )
+    con.commit()
+    return flask.jsonify(success=True)
 
 @obhapp.app.route('/portal/help/')
 def show_portal_help():

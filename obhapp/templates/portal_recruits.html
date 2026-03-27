@@ -36,7 +36,12 @@
             </div>
             <div class="recruit-field">
               <label>Lion Name</label>
-              <input type="text" class="form-control form-control-sm recruit-lion-name" data-id="{{ recruit.uniqname }}" value="{{ recruit.lion_name }}" placeholder="—">
+              <select class="form-control form-control-sm recruit-lion-name" data-id="{{ recruit.uniqname }}">
+                <option value="">—</option>
+                {% for ln in lion_names %}
+                <option value="{{ ln.lion_name_id }}" {% if recruit.lion_name_id == ln.lion_name_id %}selected{% endif %}>{{ ln.name }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
 
@@ -172,9 +177,9 @@ $(document).ready(function() {
         var id = $button.data('id');
         var $card = $('#recruit-' + id);
         var line_num = $card.find('.recruit-line-num').val();
-        var lion_name = $card.find('.recruit-lion-name').val();
+        var lion_name_id = $card.find('.recruit-lion-name').val();
 
-        if (!line_num || !lion_name || line_num == "None" || lion_name == "None") {
+        if (!line_num || !lion_name_id || line_num == "None" || lion_name_id == "") {
             showToast('Please fill in both Line Number and Lion Name first.', true);
             return;
         }
@@ -183,7 +188,7 @@ $(document).ready(function() {
             type: 'POST',
             url: '{{ url_for('accept_recruit') }}',
             contentType: 'application/json',
-            data: JSON.stringify({ id: id, line_num: line_num, lion_name: lion_name }),
+            data: JSON.stringify({ id: id, line_num: line_num, lion_name_id: lion_name_id }),
             success: function(response) {
                 if (response.success) {
                     $button.removeClass('accept-btn btn-portal-success')

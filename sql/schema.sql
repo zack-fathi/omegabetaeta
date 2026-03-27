@@ -1,5 +1,11 @@
 PRAGMA foreign_keys = ON;
 
+CREATE TABLE lion_names(
+  lion_name_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  meaning TEXT DEFAULT ''
+);
+
 CREATE TABLE brothers(
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username VARCHAR(20) NOT NULL UNIQUE,
@@ -16,8 +22,9 @@ CREATE TABLE brothers(
   grad_time DATE DEFAULT NULL,
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
-  lion_name TEXT NOT NULL,
-  active BIT DEFAULT 0
+  lion_name_id INTEGER,
+  active BIT DEFAULT 0,
+  FOREIGN KEY (lion_name_id) REFERENCES lion_names(lion_name_id)
 );
 
 CREATE TABLE recruits(
@@ -26,10 +33,11 @@ CREATE TABLE recruits(
   email VARCHAR(20) NOT NULL, 
   campus VARCHAR(40) NOT NULL,
   line_num INTEGER,
-  lion_name TEXT,
+  lion_name_id INTEGER,
   accept BIT DEFAULT 0,
   deleted BIT DEFAULT 0,
-  PRIMARY KEY(uniqname)
+  PRIMARY KEY(uniqname),
+  FOREIGN KEY (lion_name_id) REFERENCES lion_names(lion_name_id)
 );
 
 CREATE TABLE gallery(

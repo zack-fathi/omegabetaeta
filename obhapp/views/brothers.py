@@ -8,28 +8,27 @@ from obhapp.utils import line_int_to_line
 def show_brothers():
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, username, line, line_num, lion_name, uniqname, profile_picture FROM brothers "
-        "WHERE active = 1 "
-        "ORDER BY line ASC, line_num ASC;",
+        "SELECT b.fullname, b.username, b.line, b.line_num, ln.name AS lion_name, "
+        "b.uniqname, b.profile_picture "
+        "FROM brothers b "
+        "LEFT JOIN lion_names ln ON b.lion_name_id = ln.lion_name_id "
+        "WHERE b.active = 1 "
+        "ORDER BY b.fullname ASC;",
     )
     brothers = cur.fetchall()
-    line_dict = {}
-    if brothers:
-        last_line = brothers[-1]["line"]
-        for i in range(int(last_line) + 1):
-            members = [bro for bro in brothers if bro["line"] == i]
-            if members:
-                line_name = line_int_to_line[str(i)]
-                line_dict[line_name] = members
 
-    return flask.render_template("brothers.html", brothers=line_dict)
+    return flask.render_template("brothers.html", brothers=brothers)
 
 @obhapp.app.route('/brothers/<name>/')
 def show_brother(name):
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, uniqname, profile_picture, major, desc, campus, contacts, cross_time, grad_time, line, line_num, lion_name FROM brothers "
-        "WHERE username = ? ",
+        "SELECT b.fullname, b.uniqname, b.profile_picture, b.major, b.desc, "
+        "b.campus, b.contacts, b.cross_time, b.grad_time, b.line, b.line_num, "
+        "ln.name AS lion_name "
+        "FROM brothers b "
+        "LEFT JOIN lion_names ln ON b.lion_name_id = ln.lion_name_id "
+        "WHERE b.username = ? ",
         (name, )
     )
     bro = cur.fetchone()
