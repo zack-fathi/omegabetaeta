@@ -3,23 +3,6 @@
 <div class="container-fluid lion-names-manage">
   <h2 class="portal-heading text-center">Lion Names</h2>
 
-  {% if can_edit %}
-  <div class="lion-names-add-section mb-4">
-    <h5><i class="fas fa-plus-circle me-2"></i>Add New Lion Name</h5>
-    <div class="d-flex gap-2 align-items-end flex-wrap">
-      <div class="form-group">
-        <label for="newLionName">Name</label>
-        <input type="text" class="form-control" id="newLionName" placeholder="Lion name">
-      </div>
-      <div class="form-group flex-grow-1">
-        <label for="newLionMeaning">Meaning</label>
-        <input type="text" class="form-control" id="newLionMeaning" placeholder="Meaning (optional)">
-      </div>
-      <button class="btn btn-portal" id="addLionNameBtn"><i class="fas fa-plus me-1"></i>Add</button>
-    </div>
-  </div>
-  {% endif %}
-
   <div class="lion-names-list" id="lionNamesList">
     {% for ln in lion_names %}
     <div class="lion-name-card" data-id="{{ ln.lion_name_id }}">
@@ -72,6 +55,24 @@
     </div>
     {% endfor %}
   </div>
+
+    {% if can_edit %}
+  <div class="lion-names-add-section mb-4">
+    <h5><i class="fas fa-plus-circle me-2"></i>Add New Lion Name</h5>
+    <div class="d-flex gap-2 align-items-end flex-wrap">
+      <div class="form-group">
+        <label for="newLionName">Name</label>
+        <input type="text" class="form-control" id="newLionName" placeholder="Lion name">
+      </div>
+      <div class="form-group flex-grow-1">
+        <label for="newLionMeaning">Meaning</label>
+        <input type="text" class="form-control" id="newLionMeaning" placeholder="Meaning (optional)">
+      </div>
+      <button class="btn btn-portal" id="addLionNameBtn"><i class="fas fa-plus me-1"></i>Add</button>
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 
 <!-- Toast -->

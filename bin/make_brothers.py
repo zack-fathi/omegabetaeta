@@ -1,6 +1,9 @@
 
 import uuid
 import hashlib
+import sqlite3
+
+DB_PATH = 'var/obhapp.sqlite3'
 
 def line_to_cross_time(i):
     return "SP' 20" + str(18 + i)
@@ -134,7 +137,7 @@ bros = {
 ],
 }
 
-
+# Build brother records
 brothers = []
 for key in bros.keys():
     ln = 0
@@ -145,7 +148,6 @@ for key in bros.keys():
         ln += 1
         if bro == "X":
             continue
-        # Split "Full Name, Lion Name" on comma delimiter
         parts = bro.split(',', 1)
         if len(parts) == 2:
             full_name = parts[0].strip()
@@ -159,34 +161,43 @@ for key in bros.keys():
                 "a": a
             })
 
+# Connect to the database and look up lion_name_id mapping
+conn = sqlite3.connect(DB_PATH)
+conn.row_factory = sqlite3.Row
+cur = conn.execute("SELECT lion_name_id, name FROM lion_names")
+lion_name_map = {row["name"]: row["lion_name_id"] for row in cur.fetchall()}
 
-# Define the path to the SQL file
-sql_file_path = 'sql/insert_brothers.sql'
-
-new_password = "password"
 algorithm = 'sha512'
+new_password = "password"
 
-# Open the SQL file for writing
-with open(sql_file_path, 'w') as file:
-    for b in brothers:
-        new_salt = uuid.uuid4().hex
-        new_hash_obj = hashlib.new(algorithm)
-        new_hash_obj.update((new_salt + new_password).encode('utf-8'))
-        new_password_hash = new_hash_obj.hexdigest()
-        new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
+for b in brothers:
+    new_salt = uuid.uuid4().hex
+    new_hash_obj = hashlib.new(algorithm)
+    new_hash_obj.update((new_salt + new_password).encode('utf-8'))
+    new_password_hash = new_hash_obj.hexdigest()
+    password_db = "$".join([algorithm, new_salt, new_password_hash])
 
-        username = b["f"].lower().replace(" ", "")
+    username = b["f"].lower().replace(" ", "")
+    lion_name_id = lion_name_map.get(b["lion"])
+    if lion_name_id is None:
+        print(f"WARNING: Lion name '{b['lion']}' not found in lion_names table, skipping {b['f']}")
+        continue
 
-        desc = f"Hello, my name is {b['f']} and I am a brother of OBH.\n\n I crossed {line_to_cross_time(b['l'])} and am part of the {line_int_to_line[str(b['l'])]} as line number {b['ln']}.\n You can contact me at {b['u']}@umich.edu for further questions."
+    desc = (
+        f"Hello, my name is {b['f']} and I am a brother of OBH."
+        f" I crossed {line_to_cross_time(b['l'])} and am part of the "
+        f"{line_int_to_line[str(b['l'])]} as line number {b['ln']}."
+        f" You can contact me at {b['u']}@umich.edu for further questions."
+    )
 
-        # Create the SQL insert statement
-        sql = (
-            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, cross_time, lion_name, active, desc) "
-            f'VALUES("{username}", "{new_password_db_string}", "{b["u"]}", "{b["f"]}", {b["l"]}, {b["ln"]}, "{line_to_cross_time(b["l"])}", "{b["lion"]}", {b["a"]}, "{desc}");\n'
+    conn.execute(
+        "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, "
+        "cross_time, lion_name_id, active, desc) "
+        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (username, password_db, b["u"], b["f"], b["l"], b["ln"],
+         line_to_cross_time(b["l"]), lion_name_id, b["a"], desc)
+    )
 
-        )
-
-        # Write the SQL statement to the file
-        file.write(sql)
-
-print(f"SQL insert statements have been written to {sql_file_path}")
+conn.commit()
+conn.close()
+print(f"Inserted {len(brothers)} brothers directly into {DB_PATH}")

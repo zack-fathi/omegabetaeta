@@ -949,11 +949,11 @@ def show_lion_names():
     cur = con.execute("SELECT lion_name_id, name, meaning FROM lion_names")
     lion_names_raw = cur.fetchall()
 
-    # Hardcoded founding-line order: Aklaaf first, Dhergham last
+    # Hardcoded founding-line order: Hareth (Fraternal Father), then Aklaaf through Dhergham
     FOUNDING_ORDER = [
-        "Aklaaf", "Haidar", "Abbas", "Furhud", "Hamza",
-        "Sarem", "Usayd", "Hareth", "Shibel", "Rebaal",
-        "Layth", "Feras", "Dhergham",
+        "Hareth", "Aklaaf", "Haidar", "Abbas", "Furhud", "Hamza",
+        "Sarem", "Usayd", "Feras", "Asrul", "Layth", "Baqer",
+        "Shibel", "Bassel", "Muthafar", "Rebaal", "Dhergham",
     ]
     order_map = {name: i for i, name in enumerate(FOUNDING_ORDER)}
     lion_names = sorted(
