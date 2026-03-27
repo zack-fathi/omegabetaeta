@@ -1,7 +1,10 @@
 import flask
 import obhapp
 import os
+import logging
 from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
 
 
 def _get_calendar_service():
@@ -22,6 +25,7 @@ def _fetch_events(calendar_ids, time_min, time_max):
     """Fetch events from one or more Google Calendars."""
     service = _get_calendar_service()
     if not service:
+        logger.error("Calendar service unavailable — SERVICE_ACCOUNT_FILE not set")
         return []
     events = []
     for cal_id in calendar_ids:
@@ -43,8 +47,8 @@ def _fetch_events(calendar_ids, time_min, time_max):
                     'end': end,
                     'url': item.get('htmlLink', ''),
                 })
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error("Failed to fetch events from calendar %s: %s", cal_id, e)
     return events
 
 
@@ -66,9 +70,12 @@ def api_calendar_events():
         start = (now - timedelta(days=60)).isoformat() + 'Z'
         end = (now + timedelta(days=120)).isoformat() + 'Z'
     else:
-        if not start.endswith('Z'):
+        # FullCalendar sends full ISO timestamps (e.g. 2026-03-01T00:00:00-05:00)
+        # or plain dates (2026-03-01). Google Calendar API accepts both as-is.
+        # Only append Z for bare dates with no time component.
+        if 'T' not in start:
             start += 'T00:00:00Z'
-        if not end.endswith('Z'):
+        if 'T' not in end:
             end += 'T00:00:00Z'
 
     cal_ids = []
