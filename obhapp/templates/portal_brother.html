@@ -89,6 +89,48 @@
             <button class="btn btn-portal" onclick="toggleEdit()"><i class="fas fa-pen me-1"></i>Edit Member</button>
             {% endif %}
         </div>
+
+        {% if can_manage_passwords %}
+        <!-- Password Management Section -->
+        <div class="member-profile-card mt-3">
+            <div class="member-profile-header">
+                <h5 style="margin:0;"><i class="fas fa-key me-2"></i>Password Management</h5>
+            </div>
+            <div class="member-profile-body">
+                <div class="member-detail-grid">
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-envelope me-1"></i>Email Sent</span>
+                        <span class="detail-value">
+                            {% if brother.email_sent %}
+                            <span style="color: var(--portal-success);"><i class="fas fa-check-circle me-1"></i>Yes</span>
+                            {% else %}
+                            <span style="color: var(--portal-danger);"><i class="fas fa-times-circle me-1"></i>No</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-lock me-1"></i>Password Changed</span>
+                        <span class="detail-value">
+                            {% if brother.password_changed %}
+                            <span style="color: var(--portal-success);"><i class="fas fa-check-circle me-1"></i>Yes</span>
+                            {% else %}
+                            <span style="color: var(--portal-danger);"><i class="fas fa-times-circle me-1"></i>No (using default)</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-portal" id="sendPasswordBtn" onclick="sendPassword('{{ brother.username }}')">
+                        <i class="fas fa-paper-plane me-1"></i>Generate &amp; Send New Default Password
+                    </button>
+                    <p style="font-size: 0.8em; color: var(--portal-text-muted); margin-top: 8px;">
+                        This will generate a new random password, reset the "password changed" flag, and email it to {{ brother.uniqname }}@umich.edu.
+                    </p>
+                </div>
+                <div id="passwordAlert" style="display:none;" class="alert mt-2"></div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Edit Mode -->
@@ -202,6 +244,41 @@ function toggleEdit() {
         edit.style.display = 'none';
         view.style.display = '';
     }
+}
+
+function sendPassword(username) {
+    if (!confirm('Generate a new default password and send it to this brother? This will reset their password.')) return;
+    var btn = document.getElementById('sendPasswordBtn');
+    var alert = document.getElementById('passwordAlert');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+    alert.style.display = 'none';
+
+    fetch('/portal/directory/' + encodeURIComponent(username) + '/send-password/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        alert.style.display = '';
+        if (data.success) {
+            alert.className = 'alert alert-success mt-2';
+            alert.textContent = data.message;
+            setTimeout(function() { location.reload(); }, 1500);
+        } else {
+            alert.className = 'alert alert-danger mt-2';
+            alert.textContent = data.error || 'Failed';
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Generate & Send New Default Password';
+    })
+    .catch(function() {
+        alert.style.display = '';
+        alert.className = 'alert alert-danger mt-2';
+        alert.textContent = 'Network error';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Generate & Send New Default Password';
+    });
 }
 </script>
 {% endblock %}

@@ -1,11 +1,28 @@
 import uuid
 import hashlib
 import pathlib
+import secrets
 import flask
 import obhapp
 from datetime import datetime
 import obhapp.model
 from obhapp.utils import line_int_to_line
+from obhapp.email_utils import (
+    send_default_password_email,
+    send_message_reply_email,
+)
+
+
+@obhapp.app.before_request
+def check_forced_password_change():
+    """Redirect to forced password change page if user hasn't changed default password."""
+    if flask.session.get("force_password_change"):
+        allowed_endpoints = {
+            'force_change_password', 'logout', 'static', 'uploaded_file',
+            'show_login', 'login', 'show_index',
+        }
+        if flask.request.endpoint and flask.request.endpoint not in allowed_endpoints:
+            return flask.redirect(flask.url_for('force_change_password'))
 
 
 
@@ -24,7 +41,7 @@ def login():
         return flask.redirect(flask.url_for('show_login'))
     connection = obhapp.model.get_db()
     cur = connection.execute(
-        "SELECT user_id, password, profile_picture, fullname FROM brothers "
+        "SELECT user_id, password, profile_picture, fullname, password_changed FROM brothers "
         "WHERE username = ? ",
         (username,)
     )
@@ -45,6 +62,12 @@ def login():
     else:
         flask.flash('Incorrect password', 'error')
         return flask.redirect(flask.url_for('show_login'))
+
+    # If password hasn't been changed from default, force a change
+    if not user["password_changed"]:
+        flask.session["force_password_change"] = True
+        return flask.redirect(flask.url_for('force_change_password'))
+
     target = flask.request.args.get('target', flask.url_for('show_portal'))
     return flask.redirect(target)
 
@@ -52,8 +75,58 @@ def login():
 def show_portal():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("show_login"))
+    if flask.session.get("force_password_change"):
+        return flask.redirect(flask.url_for("force_change_password"))
     
     return flask.render_template("portal_index.html")
+
+
+@obhapp.app.route('/portal/force-change-password/', methods=['GET', 'POST'])
+def force_change_password():
+    """Force a user to change their default password before accessing the portal."""
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    if not flask.session.get("force_password_change"):
+        return flask.redirect(flask.url_for("show_portal"))
+
+    if flask.request.method == 'POST':
+        new_password = flask.request.form.get('new_password', '')
+        confirm_password = flask.request.form.get('confirm_new_password', '')
+
+        if not new_password or len(new_password) < 6:
+            flask.flash('Password must be at least 6 characters.', 'error')
+            return flask.redirect(flask.url_for('force_change_password'))
+
+        if new_password != confirm_password:
+            flask.flash('Passwords do not match.', 'error')
+            return flask.redirect(flask.url_for('force_change_password'))
+
+        user_id = flask.session['user_id']
+        conn = obhapp.model.get_db()
+
+        algorithm = 'sha512'
+        new_salt = uuid.uuid4().hex
+        hash_obj = hashlib.new(algorithm)
+        hash_obj.update((new_salt + new_password).encode('utf-8'))
+        new_password_hash = hash_obj.hexdigest()
+        new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
+
+        conn.execute(
+            "UPDATE brothers SET password = ?, password_changed = 1, default_password = NULL "
+            "WHERE user_id = ?",
+            (new_password_db_string, user_id)
+        )
+        conn.execute(
+            "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+            (user_id, "Changed default password on first login")
+        )
+        conn.commit()
+
+        flask.session.pop("force_password_change", None)
+        flask.flash('Password changed successfully! Welcome to the portal.', 'success')
+        return flask.redirect(flask.url_for('show_portal'))
+
+    return flask.render_template("portal_force_password.html")
 
 
 @obhapp.app.route('/portal/account/', methods=['GET', 'POST'])
@@ -150,7 +223,7 @@ def change_password():
     new_password_hash = new_hash_obj.hexdigest()
     new_password_db_string = "$".join([algorithm, new_salt, new_password_hash])
 
-    cursor.execute('UPDATE brothers SET password = ? WHERE user_id = ?', (new_password_db_string, user_id))
+    cursor.execute('UPDATE brothers SET password = ?, password_changed = 1, default_password = NULL WHERE user_id = ?', (new_password_db_string, user_id))
     conn.commit()
 
     cursor.execute(
@@ -163,6 +236,149 @@ def change_password():
 
 
     return flask.jsonify({"success": "Password changed successfully."}), 200
+
+
+def _generate_default_password():
+    """Generate an 8-digit random numeric password."""
+    return ''.join([str(secrets.randbelow(10)) for _ in range(8)])
+
+
+def _set_default_password(con, user_id):
+    """Generate, hash, and store a default password for a brother. Returns (plaintext_password, username, fullname, email)."""
+    plain_pw = _generate_default_password()
+    algorithm = 'sha512'
+    salt = uuid.uuid4().hex
+    hash_obj = hashlib.new(algorithm)
+    hash_obj.update((salt + plain_pw).encode('utf-8'))
+    password_hash = hash_obj.hexdigest()
+    password_db_string = "$".join([algorithm, salt, password_hash])
+
+    con.execute(
+        "UPDATE brothers SET password = ?, default_password = ?, password_changed = 0 "
+        "WHERE user_id = ?",
+        (password_db_string, plain_pw, user_id)
+    )
+    cur = con.execute(
+        "SELECT username, fullname, uniqname FROM brothers WHERE user_id = ?",
+        (user_id,)
+    )
+    bro = cur.fetchone()
+    email = f"{bro['uniqname']}@umich.edu" if bro['uniqname'] and bro['uniqname'] != 'N/A' else None
+    return plain_pw, bro['username'], bro['fullname'], email
+
+
+@obhapp.app.route('/portal/directory/<name>/send-password/', methods=['POST'])
+def send_brother_password(name):
+    """Generate a new default password for a brother and email it."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+
+    # Check permissions — Admin or President only
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President"]):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    cur = con.execute("SELECT user_id, fullname, uniqname FROM brothers WHERE username = ?", (name,))
+    bro = cur.fetchone()
+    if not bro:
+        return flask.jsonify(success=False, error="Member not found"), 404
+
+    plain_pw, username, fullname, email = _set_default_password(con, bro['user_id'])
+
+    if not email:
+        con.commit()
+        return flask.jsonify(success=False, error="Brother has no uniqname set — cannot send email"), 400
+
+    sent = send_default_password_email(email, fullname, username, plain_pw)
+    if sent:
+        con.execute(
+            "UPDATE brothers SET email_sent = 1 WHERE user_id = ?",
+            (bro['user_id'],)
+        )
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"{'Sent' if sent else 'Generated'} default password for {fullname}")
+    )
+    con.commit()
+
+    return flask.jsonify(
+        success=True,
+        email_sent=sent,
+        message=f"Password {'sent to ' + email if sent else 'generated (email failed)'}"
+    )
+
+
+@obhapp.app.route('/portal/directory/send-all-passwords/', methods=['POST'])
+def send_all_passwords():
+    """Send default passwords to all brothers who haven't been emailed yet."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+
+    # Check permissions — Admin or President only
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President"]):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    cur = con.execute(
+        "SELECT user_id, fullname, uniqname, username FROM brothers "
+        "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+    )
+    unsent_brothers = cur.fetchall()
+
+    if not unsent_brothers:
+        return flask.jsonify(success=False, error="No brothers pending email")
+
+    sent_count = 0
+    failed_count = 0
+    for bro in unsent_brothers:
+        plain_pw, username, fullname, email = _set_default_password(con, bro['user_id'])
+        if email:
+            sent = send_default_password_email(email, fullname, username, plain_pw)
+            if sent:
+                con.execute("UPDATE brothers SET email_sent = 1 WHERE user_id = ?", (bro['user_id'],))
+                sent_count += 1
+            else:
+                failed_count += 1
+        else:
+            failed_count += 1
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Bulk sent default passwords: {sent_count} sent, {failed_count} failed")
+    )
+    con.commit()
+
+    return flask.jsonify(
+        success=True,
+        sent=sent_count,
+        failed=failed_count,
+        message=f"Sent {sent_count} email(s), {failed_count} failed"
+    )
+
+
+@obhapp.app.route('/portal/directory/unsent-brothers/')
+def get_unsent_brothers():
+    """Get list of brothers who haven't been sent their password email."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    con = obhapp.model.get_db()
+
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President"]):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    cur = con.execute(
+        "SELECT user_id, fullname, username, uniqname FROM brothers "
+        "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+    )
+    brothers = [dict(row) for row in cur.fetchall()]
+    return flask.jsonify(success=True, brothers=brothers, count=len(brothers))
 
 @obhapp.app.route('/portal/directory/')
 def show_portal_directory():
@@ -188,17 +404,31 @@ def show_portal_directory():
 
     # Check permissions
     can_edit = False
+    can_manage_passwords = False
     cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
     user_roles = [row["role_name"] for row in cur.fetchall()]
     if any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
                                       "External Vice President", "Director of Recruitment",
                                       "Director of External"]):
         can_edit = True
+    if any(r in user_roles for r in ["Admin", "President"]):
+        can_manage_passwords = True
+
+    # Count unsent password emails for the badge
+    unsent_count = 0
+    if can_manage_passwords:
+        cur = con.execute(
+            "SELECT COUNT(*) as cnt FROM brothers "
+            "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+        )
+        unsent_count = cur.fetchone()["cnt"]
 
     context = {
         "brothers": line_dict,
         "all_brothers": [dict(b) for b in brothers],
         "can_edit": can_edit,
+        "can_manage_passwords": can_manage_passwords,
+        "unsent_count": unsent_count,
         "line_map": line_int_to_line,
     }
     return flask.render_template("portal_directory.html", **context)
@@ -229,14 +459,18 @@ def show_directory_brother(name):
 
     # Check permissions
     can_edit = False
+    can_manage_passwords = False
     cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
     user_roles = [row["role_name"] for row in cur.fetchall()]
     if any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
                                       "External Vice President", "Director of Recruitment",
                                       "Director of External"]):
         can_edit = True
+    if any(r in user_roles for r in ["Admin", "President"]):
+        can_manage_passwords = True
 
-    return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit, lion_names=lion_names)
+    return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit,
+                                 can_manage_passwords=can_manage_passwords, lion_names=lion_names)
 
 @obhapp.app.route('/portal/directory/<name>/edit/', methods=['POST'])
 def edit_member(name):
@@ -549,18 +783,35 @@ def move_recruits():
             )
         username = temp_user
 
+        # Generate default password instead of hardcoded "password"
+        plain_pw = _generate_default_password()
         algorithm = 'sha512'
         salt = uuid.uuid4().hex
         hash_obj = hashlib.new(algorithm)
-        hash_obj.update((salt + "password").encode('utf-8'))
+        hash_obj.update((salt + plain_pw).encode('utf-8'))
         password_hash = hash_obj.hexdigest()
         password_db_string = "$".join([algorithm, salt, password_hash])
 
         con.execute(
-            "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, lion_name_id, cross_time, active) "
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, 1); ",
-            (username, password_db_string, recruit["uniqname"], recruit["fullname"], line, recruit["line_num"], recruit["lion_name_id"], cross_time)
+            "INSERT INTO brothers(username, password, default_password, password_changed, "
+            "uniqname, fullname, line, line_num, lion_name_id, cross_time, active) "
+            "VALUES(?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 1); ",
+            (username, password_db_string, plain_pw, recruit["uniqname"],
+             recruit["fullname"], line, recruit["line_num"], recruit["lion_name_id"], cross_time)
         )
+
+        # Send default password email to the new brother
+        email = f"{recruit['uniqname']}@umich.edu" if recruit['uniqname'] else None
+        email_sent = False
+        if email:
+            email_sent = send_default_password_email(email, recruit["fullname"], username, plain_pw)
+
+        # Update email_sent status
+        cur = con.execute("SELECT user_id FROM brothers WHERE username = ?", (username,))
+        new_bro = cur.fetchone()
+        if new_bro and email_sent:
+            con.execute("UPDATE brothers SET email_sent = 1 WHERE user_id = ?", (new_bro['user_id'],))
+
         con.execute(
             "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
@@ -935,9 +1186,57 @@ def show_messages():
         return flask.redirect(flask.url_for("show_login"))
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM messages")
+    cursor.execute(
+        "SELECT m.*, b.fullname as replier_name "
+        "FROM messages m "
+        "LEFT JOIN brothers b ON m.replied_by = b.user_id "
+        "ORDER BY m.created_at DESC"
+    )
     messages = cursor.fetchall()
     return flask.render_template('portal_messages.html', messages=messages)
+
+
+@obhapp.app.route('/portal/messages/<int:message_id>/reply/', methods=['POST'])
+def reply_to_message(message_id):
+    """Reply to a contact message via email."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT * FROM messages WHERE id = ?", (message_id,))
+    msg = cur.fetchone()
+    if not msg:
+        return flask.jsonify(success=False, error="Message not found"), 404
+
+    data = flask.request.get_json()
+    reply_text = (data.get('reply_text') or '').strip()
+    if not reply_text:
+        return flask.jsonify(success=False, error="Reply cannot be empty"), 400
+
+    # Get replier name
+    cur = con.execute("SELECT fullname FROM brothers WHERE user_id = ?", (flask.session["user_id"],))
+    replier = cur.fetchone()
+    replier_name = replier["fullname"] if replier else "ΩBH Member"
+
+    sent = send_message_reply_email(
+        msg['email'], msg['name'], msg['subject'], reply_text, replier_name
+    )
+
+    if not sent:
+        return flask.jsonify(success=False, error="Failed to send email. Check email configuration."), 500
+
+    con.execute(
+        "UPDATE messages SET reply_text = ?, replied_at = CURRENT_TIMESTAMP, replied_by = ? "
+        "WHERE id = ?",
+        (reply_text, flask.session["user_id"], message_id)
+    )
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Replied to message from {msg['name']} (subject: {msg['subject']})")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True, message="Reply sent successfully")
 
 @obhapp.app.route('/portal/lion-names/')
 def show_lion_names():

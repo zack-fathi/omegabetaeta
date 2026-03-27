@@ -24,6 +24,20 @@
         </div>
     </div>
 
+    {% if can_manage_passwords and unsent_count > 0 %}
+    <!-- Password Management Banner -->
+    <div class="alert" style="background: var(--portal-surface-light); border: 1px solid var(--portal-gold); border-radius: 8px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <i class="fas fa-envelope" style="color: var(--portal-gold); margin-right: 8px;"></i>
+            <strong>{{ unsent_count }}</strong> brother{{ 's' if unsent_count != 1 else '' }} ha{{ 've' if unsent_count != 1 else 's' }}n't been sent login credentials yet.
+        </div>
+        <button class="btn btn-portal" id="sendAllPasswordsBtn" onclick="sendAllPasswords()">
+            <i class="fas fa-paper-plane me-1"></i>Send All Default Passwords
+        </button>
+    </div>
+    <div id="sendAllAlert" style="display:none;" class="alert mb-3"></div>
+    {% endif %}
+
     <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -144,5 +158,44 @@ document.addEventListener('DOMContentLoaded', function() {
     lineFilter.addEventListener('change', filterDirectory);
     statusFilter.addEventListener('change', filterDirectory);
 });
+
+function sendAllPasswords() {
+    if (!confirm('Send default passwords to all brothers who haven\'t received one yet? This will generate new passwords and email them.')) return;
+    var btn = document.getElementById('sendAllPasswordsBtn');
+    var alert = document.getElementById('sendAllAlert');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+    if (alert) alert.style.display = 'none';
+
+    fetch('/portal/directory/send-all-passwords/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (alert) {
+            alert.style.display = '';
+            if (data.success) {
+                alert.className = 'alert alert-success mb-3';
+                alert.textContent = data.message;
+                setTimeout(function() { location.reload(); }, 2000);
+            } else {
+                alert.className = 'alert alert-danger mb-3';
+                alert.textContent = data.error || 'Failed';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Send All Default Passwords';
+            }
+        }
+    })
+    .catch(function() {
+        if (alert) {
+            alert.style.display = '';
+            alert.className = 'alert alert-danger mb-3';
+            alert.textContent = 'Network error';
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Send All Default Passwords';
+    });
+}
 </script>
 {% endblock %}
