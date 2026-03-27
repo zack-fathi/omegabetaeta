@@ -1,0 +1,464 @@
+{% extends "portal_base.html" %}
+
+{% block content %}
+<div class="container-fluid gallery-manage">
+  <h2 class="portal-heading text-center">Manage Gallery</h2>
+
+  <!-- Upload Section -->
+  <div class="gallery-upload-zone" id="uploadZone">
+    <div class="upload-zone-inner">
+      <i class="fas fa-cloud-upload-alt upload-zone-icon"></i>
+      <p class="upload-zone-text">Drag & drop photos here, or <span class="upload-zone-browse">browse</span></p>
+      <p class="upload-zone-hint">PNG, JPG, JPEG, GIF — up to 16 MB</p>
+      <input type="file" id="fileInput" multiple accept="image/*" hidden>
+    </div>
+  </div>
+
+  <!-- Upload Queue -->
+  <div id="uploadQueue" class="upload-queue" style="display:none;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="upload-queue-title"><i class="fas fa-list me-2"></i>Upload Queue</h5>
+      <button class="btn btn-portal btn-portal-sm" id="uploadAllBtn" onclick="uploadAll()">
+        <i class="fas fa-upload me-1"></i> Upload All
+      </button>
+    </div>
+    <div id="uploadItems"></div>
+  </div>
+
+  <!-- Gallery Grid -->
+  <div class="gallery-manage-header">
+    <h5 class="gallery-section-title"><i class="fas fa-images me-2"></i>Gallery Photos <span class="photo-count">({{ images|length }})</span></h5>
+    <p class="gallery-hint"><i class="fas fa-grip-vertical me-1"></i>Drag to reorder &bull; Click description to edit</p>
+  </div>
+
+  <div id="galleryGrid" class="gallery-manage-grid">
+    {% for image in images %}
+    <div class="gallery-manage-item" data-filename="{{ image['filename'] }}">
+      <div class="gallery-item-drag-handle">
+        <i class="fas fa-grip-vertical"></i>
+      </div>
+      <div class="gallery-item-thumb">
+        <img src="/uploads/{{ image['filename'] }}" alt="{{ image['desc'] }}" loading="lazy">
+      </div>
+      <div class="gallery-item-info">
+        <input
+          type="text"
+          class="gallery-item-desc"
+          value="{{ image['desc'] }}"
+          data-filename="{{ image['filename'] }}"
+          placeholder="Add description..."
+          spellcheck="false"
+        >
+        <div class="gallery-item-meta">
+          <span class="order-badge">#{{ loop.index }}</span>
+        </div>
+      </div>
+      <div class="gallery-item-actions">
+        <button class="btn-gallery-delete" onclick="deleteImage('{{ image['filename'] }}', this)" title="Delete photo">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if not images %}
+  <div class="gallery-empty">
+    <i class="fas fa-camera-retro"></i>
+    <p>No photos yet. Upload some above!</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="gallery-toast"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // ── Upload Zone ──
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput = document.getElementById('fileInput');
+  const uploadQueue = document.getElementById('uploadQueue');
+  const uploadItems = document.getElementById('uploadItems');
+
+  uploadZone.addEventListener('click', () => fileInput.click());
+
+  uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+  });
+
+  uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('drag-over');
+  });
+
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  fileInput.addEventListener('change', () => {
+    handleFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  // ── Drag-and-drop reorder ──
+  initSortable();
+
+  // ── Inline description editing ──
+  document.querySelectorAll('.gallery-item-desc').forEach(input => {
+    input.addEventListener('change', function() {
+      saveDescription(this.dataset.filename, this.value);
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  });
+});
+
+// ── File handling ──
+const pendingFiles = [];
+
+function handleFiles(files) {
+  const queue = document.getElementById('uploadQueue');
+  const items = document.getElementById('uploadItems');
+
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const id = 'upload-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+    pendingFiles.push({ id, file });
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const item = document.createElement('div');
+      item.className = 'upload-queue-item';
+      item.id = id;
+      item.innerHTML = `
+        <div class="upload-queue-thumb">
+          <img src="${e.target.result}" alt="Preview">
+        </div>
+        <div class="upload-queue-info">
+          <span class="upload-queue-name">${escapeHtml(file.name)}</span>
+          <input type="text" class="upload-queue-desc" placeholder="Enter description..." data-id="${id}">
+        </div>
+        <div class="upload-queue-status">
+          <span class="upload-status-pending">Pending</span>
+        </div>
+        <button class="upload-queue-remove" onclick="removeFromQueue('${id}')">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      items.appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  queue.style.display = 'block';
+}
+
+function removeFromQueue(id) {
+  const idx = pendingFiles.findIndex(f => f.id === id);
+  if (idx !== -1) pendingFiles.splice(idx, 1);
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  if (pendingFiles.length === 0) {
+    document.getElementById('uploadQueue').style.display = 'none';
+  }
+}
+
+async function uploadAll() {
+  const btn = document.getElementById('uploadAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+
+  const toUpload = [...pendingFiles];
+  for (const item of toUpload) {
+    const el = document.getElementById(item.id);
+    const descInput = el ? el.querySelector('.upload-queue-desc') : null;
+    const description = descInput ? descInput.value : '';
+    const statusEl = el ? el.querySelector('.upload-queue-status') : null;
+
+    if (statusEl) statusEl.innerHTML = '<span class="upload-status-uploading"><i class="fas fa-spinner fa-spin"></i></span>';
+
+    const formData = new FormData();
+    formData.append('file', item.file);
+    formData.append('description', description);
+
+    try {
+      const res = await fetch('/portal/gallery/upload/', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        if (statusEl) statusEl.innerHTML = '<span class="upload-status-done"><i class="fas fa-check"></i></span>';
+        addImageToGrid(data.filename, data.description, data.sort_order);
+        // Remove from pending
+        const idx = pendingFiles.findIndex(f => f.id === item.id);
+        if (idx !== -1) pendingFiles.splice(idx, 1);
+        // Fade out after a moment
+        setTimeout(() => { if (el) el.classList.add('fade-out'); }, 600);
+        setTimeout(() => { if (el) el.remove(); }, 900);
+      } else {
+        if (statusEl) statusEl.innerHTML = `<span class="upload-status-error" title="${escapeHtml(data.error || 'Error')}"><i class="fas fa-exclamation-triangle"></i></span>`;
+      }
+    } catch (err) {
+      if (statusEl) statusEl.innerHTML = '<span class="upload-status-error"><i class="fas fa-exclamation-triangle"></i></span>';
+    }
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-upload me-1"></i> Upload All';
+
+  if (pendingFiles.length === 0) {
+    setTimeout(() => { document.getElementById('uploadQueue').style.display = 'none'; }, 1000);
+  }
+
+  updatePhotoCount();
+  showToast('Photos uploaded successfully');
+}
+
+function addImageToGrid(filename, description, sortOrder) {
+  const grid = document.getElementById('galleryGrid');
+  const empty = document.querySelector('.gallery-empty');
+  if (empty) empty.remove();
+
+  const count = grid.children.length + 1;
+  const item = document.createElement('div');
+  item.className = 'gallery-manage-item gallery-item-new';
+  item.dataset.filename = filename;
+  item.innerHTML = `
+    <div class="gallery-item-drag-handle">
+      <i class="fas fa-grip-vertical"></i>
+    </div>
+    <div class="gallery-item-thumb">
+      <img src="/uploads/${encodeURIComponent(filename)}" alt="${escapeHtml(description)}" loading="lazy">
+    </div>
+    <div class="gallery-item-info">
+      <input type="text" class="gallery-item-desc" value="${escapeHtml(description)}" data-filename="${escapeHtml(filename)}" placeholder="Add description..." spellcheck="false">
+      <div class="gallery-item-meta">
+        <span class="order-badge">#${count}</span>
+      </div>
+    </div>
+    <div class="gallery-item-actions">
+      <button class="btn-gallery-delete" onclick="deleteImage('${escapeHtml(filename)}', this)" title="Delete photo">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  `;
+  grid.appendChild(item);
+
+  // Attach description save handler
+  const descInput = item.querySelector('.gallery-item-desc');
+  descInput.addEventListener('change', function() {
+    saveDescription(this.dataset.filename, this.value);
+  });
+  descInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') this.blur();
+  });
+}
+
+// ── Delete ──
+async function deleteImage(filename, btn) {
+  if (!confirm('Delete this photo? This cannot be undone.')) return;
+
+  const item = btn.closest('.gallery-manage-item');
+  item.classList.add('gallery-item-deleting');
+
+  try {
+    const res = await fetch('/portal/gallery/delete/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename })
+    });
+    const data = await res.json();
+    if (data.success) {
+      item.classList.add('fade-out');
+      setTimeout(() => {
+        item.remove();
+        updateOrderBadges();
+        updatePhotoCount();
+        if (document.getElementById('galleryGrid').children.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'gallery-empty';
+          empty.innerHTML = '<i class="fas fa-camera-retro"></i><p>No photos yet. Upload some above!</p>';
+          document.querySelector('.gallery-manage-grid').after(empty);
+        }
+      }, 300);
+      showToast('Photo deleted');
+    } else {
+      item.classList.remove('gallery-item-deleting');
+      showToast('Failed to delete: ' + (data.error || 'Unknown error'), true);
+    }
+  } catch (err) {
+    item.classList.remove('gallery-item-deleting');
+    showToast('Network error', true);
+  }
+}
+
+// ── Edit description ──
+async function saveDescription(filename, description) {
+  try {
+    const res = await fetch('/portal/gallery/edit/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, description })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Description saved');
+    } else {
+      showToast('Failed to save', true);
+    }
+  } catch (err) {
+    showToast('Network error', true);
+  }
+}
+
+// ── Reorder (drag and drop) ──
+function initSortable() {
+  const grid = document.getElementById('galleryGrid');
+  let dragItem = null;
+  let placeholder = null;
+
+  grid.addEventListener('dragstart', (e) => {
+    const item = e.target.closest('.gallery-manage-item');
+    if (!item) return;
+    dragItem = item;
+    dragItem.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    // Create invisible drag image
+    const ghost = document.createElement('div');
+    ghost.style.opacity = '0';
+    document.body.appendChild(ghost);
+    e.dataTransfer.setDragImage(ghost, 0, 0);
+    setTimeout(() => ghost.remove(), 0);
+  });
+
+  grid.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!dragItem) return;
+
+    const afterElement = getDragAfterElement(grid, e.clientY);
+    if (afterElement) {
+      grid.insertBefore(dragItem, afterElement);
+    } else {
+      grid.appendChild(dragItem);
+    }
+  });
+
+  grid.addEventListener('dragend', () => {
+    if (dragItem) {
+      dragItem.classList.remove('dragging');
+      dragItem = null;
+      saveOrder();
+      updateOrderBadges();
+    }
+  });
+
+  // Make items draggable via handle
+  grid.querySelectorAll('.gallery-manage-item').forEach(item => {
+    const handle = item.querySelector('.gallery-item-drag-handle');
+    handle.addEventListener('mousedown', () => {
+      item.setAttribute('draggable', 'true');
+    });
+    item.addEventListener('dragend', () => {
+      item.setAttribute('draggable', 'false');
+    });
+  });
+
+  // Touch support for mobile reorder
+  let touchItem = null;
+  let touchStartY = 0;
+  let touchClone = null;
+
+  grid.addEventListener('touchstart', (e) => {
+    const handle = e.target.closest('.gallery-item-drag-handle');
+    if (!handle) return;
+    touchItem = handle.closest('.gallery-manage-item');
+    touchStartY = e.touches[0].clientY;
+    touchItem.classList.add('dragging');
+  }, { passive: true });
+
+  grid.addEventListener('touchmove', (e) => {
+    if (!touchItem) return;
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    const afterElement = getDragAfterElement(grid, y);
+    if (afterElement) {
+      grid.insertBefore(touchItem, afterElement);
+    } else {
+      grid.appendChild(touchItem);
+    }
+  }, { passive: false });
+
+  grid.addEventListener('touchend', () => {
+    if (touchItem) {
+      touchItem.classList.remove('dragging');
+      touchItem = null;
+      saveOrder();
+      updateOrderBadges();
+    }
+  });
+}
+
+function getDragAfterElement(container, y) {
+  const elements = [...container.querySelectorAll('.gallery-manage-item:not(.dragging)')];
+  return elements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset, element: child };
+    }
+    return closest;
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+async function saveOrder() {
+  const items = document.querySelectorAll('#galleryGrid .gallery-manage-item');
+  const order = [...items].map(item => item.dataset.filename);
+
+  try {
+    const res = await fetch('/portal/gallery/reorder/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Order saved');
+    }
+  } catch (err) {
+    showToast('Failed to save order', true);
+  }
+}
+
+// ── Helpers ──
+function updateOrderBadges() {
+  document.querySelectorAll('#galleryGrid .gallery-manage-item').forEach((item, i) => {
+    const badge = item.querySelector('.order-badge');
+    if (badge) badge.textContent = '#' + (i + 1);
+  });
+}
+
+function updatePhotoCount() {
+  const count = document.querySelectorAll('#galleryGrid .gallery-manage-item').length;
+  const el = document.querySelector('.photo-count');
+  if (el) el.textContent = '(' + count + ')';
+}
+
+function showToast(message, isError) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'gallery-toast show' + (isError ? ' error' : '');
+  setTimeout(() => { toast.className = 'gallery-toast'; }, 2500);
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+</script>
+{% endblock %}
