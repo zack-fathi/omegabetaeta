@@ -2,6 +2,7 @@ import flask
 from datetime import datetime
 import obhapp
 from obhapp.utils import line_int_to_line
+from obhapp.email_utils import send_application_confirmation_email
 
 
 @obhapp.app.route('/brothers/')
@@ -72,6 +73,9 @@ def apply_rec():
             "VALUES(?, ?, ?, ?) ",
             (uniqname, fullname, email, "Ann Arbor")
         )
+
+    # Send confirmation email
+    send_application_confirmation_email(email, fullname)
 
     return flask.render_template("apply-confirm.html")
     

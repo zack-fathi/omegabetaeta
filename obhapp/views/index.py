@@ -3,6 +3,7 @@ import obhapp
 import os
 import logging
 from datetime import datetime, timedelta
+from obhapp.email_utils import send_contact_confirmation_email
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +139,9 @@ def show_contact():
             (name, email, subject, message)
         )
         con.commit()
+
+        # Send confirmation email  
+        send_contact_confirmation_email(email, name)
 
         flask.flash('Your message has been saved successfully!', 'success')
         return flask.redirect(flask.url_for('contact_thank_you'))

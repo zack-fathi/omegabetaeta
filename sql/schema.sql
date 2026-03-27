@@ -24,6 +24,9 @@ CREATE TABLE brothers(
   line_num INTEGER NOT NULL,
   lion_name_id INTEGER,
   active BIT DEFAULT 0,
+  default_password TEXT DEFAULT NULL,
+  password_changed BIT DEFAULT 0,
+  email_sent BIT DEFAULT 0,
   FOREIGN KEY (lion_name_id) REFERENCES lion_names(lion_name_id)
 );
 
@@ -69,5 +72,9 @@ CREATE TABLE messages (
     email TEXT NOT NULL,
     subject TEXT NOT NULL,
     message TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    reply_text TEXT DEFAULT NULL,
+    replied_at DATETIME DEFAULT NULL,
+    replied_by INTEGER DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (replied_by) REFERENCES brothers(user_id)
 );

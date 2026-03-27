@@ -2,6 +2,7 @@
 import uuid
 import hashlib
 import sqlite3
+import secrets
 
 DB_PATH = 'var/obhapp.sqlite3'
 
@@ -168,12 +169,13 @@ cur = conn.execute("SELECT lion_name_id, name FROM lion_names")
 lion_name_map = {row["name"]: row["lion_name_id"] for row in cur.fetchall()}
 
 algorithm = 'sha512'
-new_password = "password"
 
 for b in brothers:
+    # Generate random 8-digit default password
+    default_pw = ''.join([str(secrets.randbelow(10)) for _ in range(8)])
     new_salt = uuid.uuid4().hex
     new_hash_obj = hashlib.new(algorithm)
-    new_hash_obj.update((new_salt + new_password).encode('utf-8'))
+    new_hash_obj.update((new_salt + default_pw).encode('utf-8'))
     new_password_hash = new_hash_obj.hexdigest()
     password_db = "$".join([algorithm, new_salt, new_password_hash])
 
@@ -191,10 +193,11 @@ for b in brothers:
     )
 
     conn.execute(
-        "INSERT INTO brothers(username, password, uniqname, fullname, line, line_num, "
+        "INSERT INTO brothers(username, password, default_password, password_changed, email_sent, "
+        "uniqname, fullname, line, line_num, "
         "cross_time, lion_name_id, active, desc) "
-        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        (username, password_db, b["u"], b["f"], b["l"], b["ln"],
+        "VALUES(?, ?, ?, 0, 0, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (username, password_db, default_pw, b["u"], b["f"], b["l"], b["ln"],
          line_to_cross_time(b["l"]), lion_name_id, b["a"], desc)
     )
 

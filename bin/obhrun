@@ -1,4 +1,12 @@
+
 #!/bin/bash
+# DEVELOPMENT RUN SCRIPT
+# Runs the Flask app in debug mode for development.
+# Usage: ./bin/obhrun
+#
+# - Checks for the database file
+# - Kills any process on port 8000 (for convenience)
+# - Starts Flask's built-in debug server on port 8000
 
 #Setting the path for sqlite database
 DB_PATH="var/obhapp.sqlite3"
