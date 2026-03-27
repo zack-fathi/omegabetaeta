@@ -1,26 +1,101 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 brothers-directory">
     <div class="text-center mb-4">
         <h1 class="section-title">Active Brothers</h1>
         <hr class="section-divider">
     </div>
-    <div class="row g-4">
-        {% for brother in brothers %}
-        <div class="col-lg-3 col-md-4 col-sm-6">
-            <a href="/brothers/{{ brother['username'] }}/" class="link-no-style">
-                <div class="obh-card h-100">
-                    <div class="card-img-container">
-                        <img src="/uploads/{{ brother.profile_picture }}" alt="{{ brother.fullname }}">
+
+    <!-- Search -->
+    <div class="brothers-search-wrap">
+        <div class="brothers-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="brothersSearch" placeholder="Search by name, lion name, or line #..." autocomplete="off">
+        </div>
+        <select id="lineFilter" class="brothers-filter-select">
+            <option value="">All Lines</option>
+            {% for line_name in brothers.keys() %}
+            <option value="{{ line_name }}">{{ line_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="brothers-results-count" id="resultsCount"></div>
+
+    <!-- Grouped by line -->
+    {% for line_name, members in brothers.items() %}
+    {% if members %}
+    <section class="brothers-line-section" data-line="{{ line_name }}">
+        <h4 class="brothers-line-title">{{ line_name }}</h4>
+        <div class="brothers-grid">
+            {% for bro in members %}
+            <a class="link-no-style brothers-card-link"
+               href="/brothers/{{ bro['username'] }}/"
+               data-name="{{ bro['fullname']|lower }}"
+               data-lion="{{ (bro['lion_name'] or '')|lower }}"
+               data-linenum="{{ bro['line_num'] }}"
+               data-line="{{ line_name }}">
+                <div class="brothers-card">
+                    <div class="brothers-card-img">
+                        <img src="/uploads/{{ bro.profile_picture or 'default.jpg' }}" alt="{{ bro.fullname }}">
                     </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ brother.fullname }}</h5>
-                        <p class="card-subtitle mb-0">{{ brother.line_name }}</p>
+                    <div class="brothers-card-body">
+                        <span class="brothers-card-name">{{ bro.fullname }}</span>
+                        <span class="brothers-card-detail">#{{ bro.line_num }} · {{ bro.lion_name or '—' }}</span>
                     </div>
                 </div>
             </a>
+            {% endfor %}
         </div>
-        {% endfor %}
+    </section>
+    {% endif %}
+    {% endfor %}
+
+    <div class="brothers-no-results" id="noResults" style="display:none;">
+        <i class="fas fa-search"></i>
+        <p>No brothers match your search.</p>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('brothersSearch');
+    const lineFilter = document.getElementById('lineFilter');
+    const cards = document.querySelectorAll('.brothers-card-link');
+    const sections = document.querySelectorAll('.brothers-line-section');
+    const noResults = document.getElementById('noResults');
+    const resultsCount = document.getElementById('resultsCount');
+
+    function filterBrothers() {
+        const query = searchInput.value.toLowerCase().trim();
+        const lineVal = lineFilter.value;
+        let visible = 0;
+
+        cards.forEach(function(card) {
+            const name = card.dataset.name;
+            const lion = card.dataset.lion;
+            const linenum = card.dataset.linenum;
+            const line = card.dataset.line;
+
+            const matchSearch = !query || name.includes(query) || lion.includes(query) || linenum === query;
+            const matchLine = !lineVal || line === lineVal;
+            const show = matchSearch && matchLine;
+
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        sections.forEach(function(sec) {
+            const visibleCards = sec.querySelectorAll('.brothers-card-link:not([style*="display: none"])');
+            sec.style.display = visibleCards.length ? '' : 'none';
+        });
+
+        noResults.style.display = visible === 0 ? '' : 'none';
+        resultsCount.textContent = (query || lineVal) ? visible + ' brother' + (visible !== 1 ? 's' : '') + ' found' : '';
+    }
+
+    searchInput.addEventListener('input', filterBrothers);
+    lineFilter.addEventListener('change', filterBrothers);
+});
+</script>
 {% endblock %}
