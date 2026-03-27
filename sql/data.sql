@@ -17,5 +17,4 @@ INSERT INTO lion_names(name, meaning) VALUES('Bassel', 'A fierce lion that is al
 INSERT INTO lion_names(name, meaning) VALUES('Muthafar', 'A lion dripping in blood.');
 INSERT INTO lion_names(name, meaning) VALUES('Rebaal', 'A lion that has grown all its teeth and is used to describe bravery.');
 INSERT INTO lion_names(name, meaning) VALUES('Dhergham', 'Denotes fearlessness. More specifically, it refers to a tough and fearless lion with magnificent sharp teeth.');
-INSERT INTO lion_names(name, meaning) VALUES('Neon', '');
 
