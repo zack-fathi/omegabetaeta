@@ -50,7 +50,7 @@ def send_default_password_email(to_email, fullname, username, password):
         <div style="text-align: center; margin-bottom: 24px;">
             <h1 style="color: #c9a84c; font-size: 24px; margin: 0;">ΩBH Portal</h1>
         </div>
-        <p>Salaams {fullname},</p>
+        <p>Hello {fullname},</p>
         <p>Your Omega Beta Eta portal account has been set up. Here are your login credentials:</p>
         <div style="background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #c9a84c;">
             <p style="margin: 4px 0;"><strong>Username:</strong> {username}</p>
@@ -92,7 +92,7 @@ def send_application_confirmation_email(to_email, fullname):
         <div style="text-align: center; margin-bottom: 24px;">
             <h1 style="color: #c9a84c; font-size: 24px; margin: 0;">Omega Beta Eta</h1>
         </div>
-        <p>Salaams {fullname},</p>
+        <p>Hello {fullname},</p>
         <p>Thank you for applying to join Omega Beta Eta! Your application has been received and is under review.</p>
         <p>We will be in contact with you soon regarding next steps.</p>
         <hr style="border: none; border-top: 1px solid #2a2a4a; margin: 24px 0;">
