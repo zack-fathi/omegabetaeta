@@ -12,38 +12,19 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('portal-calendar');
-        fetch('/get-events')
-            .then(response => response.json())
-            .then(data => {
-                if (!Array.isArray(data)) data = [];
-                const events = data.map(event => ({
-                    title: event.summary || 'No Title',
-                    start: event.start?.dateTime || event.start?.date,
-                    end: event.end?.dateTime || event.end?.date,
-                }));
-                var calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    events: events,
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    },
-                });
-                calendar.render();
-            })
-            .catch(() => {
-                var calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    events: [],
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    },
-                });
-                calendar.render();
-            });
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: {
+                url: '/api/calendar-events/',
+                extraParams: { scope: 'portal' }
+            },
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+        });
+        calendar.render();
     });
 </script>
 {% endblock %}

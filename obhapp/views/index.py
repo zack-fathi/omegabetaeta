@@ -1,6 +1,84 @@
 import flask
 import obhapp
 import os
+from datetime import datetime, timedelta
+
+
+def _get_calendar_service():
+    """Build a Google Calendar API service using the service account."""
+    from google.oauth2 import service_account
+    from googleapiclient.discovery import build
+
+    sa_file = obhapp.SERVICE_ACCOUNT_FILE
+    if not sa_file:
+        return None
+    creds = service_account.Credentials.from_service_account_file(
+        sa_file, scopes=['https://www.googleapis.com/auth/calendar.readonly']
+    )
+    return build('calendar', 'v3', credentials=creds, cache_discovery=False)
+
+
+def _fetch_events(calendar_ids, time_min, time_max):
+    """Fetch events from one or more Google Calendars."""
+    service = _get_calendar_service()
+    if not service:
+        return []
+    events = []
+    for cal_id in calendar_ids:
+        try:
+            result = service.events().list(
+                calendarId=cal_id,
+                timeMin=time_min,
+                timeMax=time_max,
+                singleEvents=True,
+                orderBy='startTime',
+                maxResults=250,
+            ).execute()
+            for item in result.get('items', []):
+                start = item['start'].get('dateTime', item['start'].get('date'))
+                end = item['end'].get('dateTime', item['end'].get('date'))
+                events.append({
+                    'title': item.get('summary', '(No title)'),
+                    'start': start,
+                    'end': end,
+                    'url': item.get('htmlLink', ''),
+                })
+        except Exception:
+            pass
+    return events
+
+
+@obhapp.app.route('/api/calendar-events/')
+def api_calendar_events():
+    """Return calendar events as JSON for FullCalendar.
+
+    Query params:
+      scope: 'public' (default) or 'portal'
+      start: ISO date string
+      end:   ISO date string
+    """
+    scope = flask.request.args.get('scope', 'public')
+    start = flask.request.args.get('start')
+    end = flask.request.args.get('end')
+
+    if not start or not end:
+        now = datetime.utcnow()
+        start = (now - timedelta(days=60)).isoformat() + 'Z'
+        end = (now + timedelta(days=120)).isoformat() + 'Z'
+    else:
+        if not start.endswith('Z'):
+            start += 'T00:00:00Z'
+        if not end.endswith('Z'):
+            end += 'T00:00:00Z'
+
+    cal_ids = []
+    if obhapp.PUBLIC_CALENDAR_ID:
+        cal_ids.append(obhapp.PUBLIC_CALENDAR_ID)
+    if scope == 'portal' and obhapp.PORTAL_CALENDAR_ID:
+        cal_ids.append(obhapp.PORTAL_CALENDAR_ID)
+
+    events = _fetch_events(cal_ids, start, end)
+    return flask.jsonify(events)
 
 @obhapp.app.route('/uploads/<filename>')
 def uploaded_file(filename):

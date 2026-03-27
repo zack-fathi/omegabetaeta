@@ -40,6 +40,7 @@
                 <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank"><i class="fas fa-folder"></i><span class="help-nav-name">Files</span><span class="help-nav-desc">Opens the shared Google Drive folder</span></a></li>
                 <li><a href="#section-gallery"><i class="fas fa-images"></i><span class="help-nav-name">Gallery</span><span class="help-nav-desc">Manage the public photo gallery <em>(Board only)</em></span></a></li>
                 <li><a href="#section-help"><i class="fas fa-question-circle"></i><span class="help-nav-name">Help</span><span class="help-nav-desc">This page</span></a></li>
+                <li><a href="#section-calendar-setup"><i class="fas fa-calendar-alt"></i><span class="help-nav-name">Calendar Setup</span><span class="help-nav-desc">Google Calendar config for site maintainers</span></a></li>
             </ul>
         </div>
 
@@ -216,6 +217,76 @@
                 <li><strong>Can't edit Gallery or change Recruits/Board?</strong> These features are restricted to specific board roles.</li>
                 <li><strong>Files link</strong> opens an external Google Drive — bookmark it for quick access.</li>
             </ul>
+        </div>
+
+        <!-- Calendar & Maintainer Setup -->
+        <div class="help-section" id="section-calendar-setup">
+            <h4><i class="fas fa-calendar-alt"></i> Calendar Setup <span class="help-badge">Maintainers</span></h4>
+            <p>The site uses two Google Calendars — one for public events and one for internal events. Both feed into the portal calendar; only the public one appears on the front-facing website. <strong>The calendars do not need to be public</strong> — access is handled through a service account.</p>
+
+            <table class="portal-table">
+                <thead>
+                    <tr><th>Calendar</th><th>Shown On</th><th>Use For</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Public Calendar</strong></td>
+                        <td>Public <a href="/calendar/">Calendar</a> page <em>and</em> Portal</td>
+                        <td>Rush events, socials, community events — anything the public should see</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Portal Calendar</strong></td>
+                        <td>Portal only</td>
+                        <td>Board meetings, chapter meetings, internal deadlines</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Quick links to manage calendars in Google Calendar:</strong></p>
+            <ul>
+                <li><a href="https://calendar.google.com/calendar/r?cid={{ PUBLIC_CALENDAR_ID }}" target="_blank">Open Public Calendar in Google Calendar <i class="fas fa-external-link-alt fa-xs"></i></a></li>
+                <li><a href="https://calendar.google.com/calendar/r?cid={{ PORTAL_CALENDAR_ID }}" target="_blank">Open Portal Calendar in Google Calendar <i class="fas fa-external-link-alt fa-xs"></i></a></li>
+            </ul>
+
+            <p><strong>Adding events:</strong> Just add events to the appropriate Google Calendar — they appear on the site automatically. No code changes needed.</p>
+
+            <h5 class="mt-4"><i class="fas fa-key"></i> Service Account Setup</h5>
+            <p>The site uses a <strong>Google Cloud service account</strong> to read calendar events server-side. This means the calendars stay private — only the service account has access. Here's how to set it up:</p>
+            <ol>
+                <li>Go to the <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console <i class="fas fa-external-link-alt fa-xs"></i></a>.</li>
+                <li>Create a new project (or select an existing one).</li>
+                <li>Go to <strong>APIs &amp; Services → Library</strong>, search for <strong>Google Calendar API</strong>, and click <strong>Enable</strong>.</li>
+                <li>Go to <strong>APIs &amp; Services → Credentials</strong>.</li>
+                <li>Click <strong>Create Credentials → Service Account</strong>.</li>
+                <li>Give it a name (e.g. <code>obh-calendar</code>) and click <strong>Done</strong>.</li>
+                <li>Click on the service account you just created, go to the <strong>Keys</strong> tab.</li>
+                <li>Click <strong>Add Key → Create new key → JSON</strong>. A <code>.json</code> file will download.</li>
+                <li>Place the JSON file on the server (e.g. <code>/path/to/service-account.json</code>).</li>
+                <li>Set the path in the <code>.env</code> file: <code>SERVICE_ACCOUNT_FILE=/path/to/service-account.json</code></li>
+                <li>Restart the server.</li>
+            </ol>
+
+            <h5 class="mt-4"><i class="fas fa-share-alt"></i> Sharing Calendars with the Service Account</h5>
+            <p>After creating the service account, you need to share each Google Calendar with it. The service account has an email address that looks like <code>name@project-id.iam.gserviceaccount.com</code> — you can find it on the service account's details page in Google Cloud Console.</p>
+            <ol>
+                <li>Open <a href="https://calendar.google.com/" target="_blank">Google Calendar <i class="fas fa-external-link-alt fa-xs"></i></a> in the account that owns the calendars.</li>
+                <li>Click the <strong>⋮</strong> (three dots) next to a calendar name → <strong>Settings and sharing</strong>.</li>
+                <li>Under <strong>Share with specific people or groups</strong>, click <strong>Add people and groups</strong>.</li>
+                <li>Paste the service account email and set permission to <strong>"See all event details"</strong>.</li>
+                <li>Repeat for both the Public and Portal calendars.</li>
+            </ol>
+            <div class="help-tip">
+                <i class="fas fa-lock"></i>
+                The calendars remain <strong>private</strong>. Only the service account can read them — no one else can see them unless you explicitly share.
+            </div>
+
+            <h5 class="mt-4"><i class="fas fa-exchange-alt"></i> Changing Calendars</h5>
+            <p>To switch to different Google Calendars, update the IDs in the <code>.env</code> file:</p>
+            <ul>
+                <li><code>PUBLIC_CALENDAR_ID</code> — the Calendar ID for public events</li>
+                <li><code>PORTAL_CALENDAR_ID</code> — the Calendar ID for internal/board events</li>
+            </ul>
+            <p>You can find a calendar's ID in Google Calendar under <strong>Settings → Integrate calendar → Calendar ID</strong>. Remember to share the new calendar with the service account email. Then restart the server.</p>
         </div>
 
     </div>
