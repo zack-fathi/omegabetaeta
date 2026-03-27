@@ -364,38 +364,147 @@ def logout():
 
 @obhapp.app.route('/portal/upload/', methods=['GET', 'POST'])
 def upload():
+    return flask.redirect(flask.url_for("gallery_manage"))
+
+
+def check_gallery_permission():
+    """Check if current user has gallery management permission."""
     if "user_id" not in flask.session:
-        return flask.redirect(flask.url_for("show_login"))
-    # Board-only access
+        return False
     con = obhapp.model.get_db()
     cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
     role = cur.fetchone()
-    if not role or role["role_name"] not in ["Admin", "President", "Vice President", "Director of External"]:
-        flask.flash("You don't have permission to upload.", "error")
+    return role and role["role_name"] in ["Admin", "President", "Vice President", "Director of External"]
+
+
+@obhapp.app.route('/portal/gallery/', methods=['GET'])
+def gallery_manage():
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    if not check_gallery_permission():
+        flask.flash("You don't have permission to manage the gallery.", "error")
         return flask.redirect(flask.url_for("show_portal"))
-    if flask.request.method == 'POST':
-        description = flask.request.form['description']
-        file = flask.request.files['profile_picture']
-        connection = obhapp.model.get_db()
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT filename, desc, sort_order FROM gallery ORDER BY sort_order")
+    images = cur.fetchall()
+    return flask.render_template('portal_gallery.html', images=images)
 
-        if file:
-            filename = file.filename
-            stem = uuid.uuid4().hex
-            suffix = pathlib.Path(filename).suffix.lower()
-            uuid_basename = f"{stem}{suffix}"
-            path = obhapp.app.config['UPLOAD_FOLDER'] / uuid_basename
-            file.save(path)
-            # Save description and file path to the database if necessary
 
-            curr = connection.execute(
-                "INSERT INTO gallery(filename, desc) "
-                "VALUES(?, ?) ",
-                (uuid_basename, description)
-            )
+@obhapp.app.route('/portal/gallery/upload/', methods=['POST'])
+def gallery_upload():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
 
-            return flask.redirect(flask.url_for('upload'))
+    file = flask.request.files.get('file')
+    description = flask.request.form.get('description', '')
+    if not file or not file.filename:
+        return flask.jsonify(success=False, error="No file provided"), 400
 
-    return flask.render_template('portal_upload.html')
+    suffix = pathlib.Path(file.filename).suffix.lower()
+    if suffix.lstrip('.') not in obhapp.app.config.get('ALLOWED_EXTENSIONS', {'png', 'jpg', 'jpeg', 'gif'}):
+        return flask.jsonify(success=False, error="File type not allowed"), 400
+
+    con = obhapp.model.get_db()
+    # Get next sort order
+    cur = con.execute("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_order FROM gallery")
+    next_order = cur.fetchone()["next_order"]
+
+    stem = uuid.uuid4().hex
+    uuid_basename = f"{stem}{suffix}"
+    path = obhapp.app.config['UPLOAD_FOLDER'] / uuid_basename
+    file.save(path)
+
+    con.execute(
+        "INSERT INTO gallery(filename, desc, sort_order) VALUES(?, ?, ?)",
+        (uuid_basename, description, next_order)
+    )
+    con.commit()
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Uploaded gallery photo: {description}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True, filename=uuid_basename, description=description, sort_order=next_order)
+
+
+@obhapp.app.route('/portal/gallery/delete/', methods=['POST'])
+def gallery_delete():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    filename = data.get('filename')
+    if not filename:
+        return flask.jsonify(success=False, error="No filename"), 400
+
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT desc FROM gallery WHERE filename = ?", (filename,))
+    image = cur.fetchone()
+    if not image:
+        return flask.jsonify(success=False, error="Image not found"), 404
+
+    con.execute("DELETE FROM gallery WHERE filename = ?", (filename,))
+    con.commit()
+
+    # Try to remove the file
+    file_path = obhapp.app.config['UPLOAD_FOLDER'] / filename
+    if file_path.is_file():
+        file_path.unlink()
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Deleted gallery photo: {image['desc']}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
+
+
+@obhapp.app.route('/portal/gallery/edit/', methods=['POST'])
+def gallery_edit():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    filename = data.get('filename')
+    description = data.get('description', '')
+    if not filename:
+        return flask.jsonify(success=False, error="No filename"), 400
+
+    con = obhapp.model.get_db()
+    con.execute("UPDATE gallery SET desc = ? WHERE filename = ?", (description, filename))
+    con.commit()
+
+    return flask.jsonify(success=True)
+
+
+@obhapp.app.route('/portal/gallery/reorder/', methods=['POST'])
+def gallery_reorder():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    order = data.get('order', [])
+    if not order:
+        return flask.jsonify(success=False, error="No order data"), 400
+
+    con = obhapp.model.get_db()
+    for idx, filename in enumerate(order):
+        con.execute("UPDATE gallery SET sort_order = ? WHERE filename = ?", (idx + 1, filename))
+    con.commit()
+
+    return flask.jsonify(success=True)
+
 
 
 def get_active_brothers():

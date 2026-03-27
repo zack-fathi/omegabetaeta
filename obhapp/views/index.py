@@ -73,7 +73,7 @@ def show_calendar():
 def show_gallery():
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT * FROM gallery "
+        "SELECT * FROM gallery ORDER BY sort_order "
     )
     context = {
         "images": cur.fetchall()

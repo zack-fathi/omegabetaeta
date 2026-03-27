@@ -34,6 +34,7 @@ CREATE TABLE recruits(
 CREATE TABLE gallery(
     filename VARCHAR(64) NOT NULL,
     desc VARCHAR(256),
+    sort_order INTEGER DEFAULT 0,
     PRIMARY KEY(filename)
 );
 
