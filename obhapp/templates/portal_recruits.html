@@ -234,8 +234,10 @@ $(document).ready(function() {
     // Delete recruit (soft delete)
     $(document).on('click', '.remove-btn', function() {
         var id = $(this).data('id');
-        if (!confirm('Delete this recruit? They can be restored later.')) return;
-
+        portalConfirm('Delete this recruit? They can be restored later.', function() { _doDeleteRecruit(id); }, {danger: true, confirmText: 'Delete'});
+        return;
+    });
+    function _doDeleteRecruit(id) {
         var $card = $('#recruit-' + id);
         $card.css({ opacity: 0.5, pointerEvents: 'none' });
 
@@ -261,7 +263,7 @@ $(document).ready(function() {
                 }
             }
         });
-    });
+    }
 
     // Restore recruit
     $(document).on('click', '.restore-btn', function() {

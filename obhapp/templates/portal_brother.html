@@ -224,8 +224,8 @@
         <div class="member-danger-zone mt-3">
             <h5><i class="fas fa-exclamation-triangle me-1"></i>Danger Zone</h5>
             <p>Permanently delete this member and all their associated roles.</p>
-            <form action="/portal/directory/{{ brother.username }}/delete/" method="post" onsubmit="return confirm('Are you sure you want to permanently delete {{ brother.fullname }}? This cannot be undone.');">
-                <button type="submit" class="btn btn-portal-danger"><i class="fas fa-trash-alt me-1"></i>Delete Member</button>
+            <form id="deleteMemberForm" action="/portal/directory/{{ brother.username }}/delete/" method="post">
+                <button type="button" class="btn btn-portal-danger" onclick="portalConfirm('Are you sure you want to permanently delete {{ brother.fullname }}? This cannot be undone.', function() { document.getElementById(&quot;deleteMemberForm&quot;).submit(); }, {danger: true, confirmText: 'Delete'})"><i class="fas fa-trash-alt me-1"></i>Delete Member</button>
             </form>
         </div>
         {% endif %}
@@ -247,7 +247,10 @@ function toggleEdit() {
 }
 
 function sendPassword(username) {
-    if (!confirm('Generate a new default password and send it to this brother? This will reset their password.')) return;
+    portalConfirm('Generate a new default password and send it to this brother? This will reset their password.', function() { _doSendPassword(username); });
+    return;
+}
+function _doSendPassword(username) {
     var btn = document.getElementById('sendPasswordBtn');
     var alert = document.getElementById('passwordAlert');
     btn.disabled = true;

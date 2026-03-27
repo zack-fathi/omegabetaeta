@@ -177,9 +177,10 @@ async function addAdmin() {
     }
 }
 
-async function removeAdmin(roleId, btn) {
-    if (!confirm('Remove this admin?')) return;
-
+function removeAdmin(roleId, btn) {
+    portalConfirm('Remove this admin?', function() { _doRemoveAdmin(roleId, btn); }, {danger: true, confirmText: 'Remove'});
+}
+async function _doRemoveAdmin(roleId, btn) {
     const card = btn.closest('.admin-card');
     card.style.opacity = '0.5';
     card.style.pointerEvents = 'none';
