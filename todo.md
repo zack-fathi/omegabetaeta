@@ -5,4 +5,4 @@ All lion name references in the app will need to be updated to use the new lion 
 change help page directory to scroll down to description instead of being linked to page, since page is linked in description. Make it a nicer hover list that when clicked takes you to section.
 
 
-editing profile or brothers should have a dynamically 
+editing profile or brothers should have a dynamically sized description box that accomodates the old description.
