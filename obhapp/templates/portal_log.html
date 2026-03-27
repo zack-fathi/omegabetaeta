@@ -1,26 +1,33 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-<div class="container mt-2">
-    <h2 class="portal-heading">Change Log</h2>
-    <div class="table-responsive mt-3">
-        <table class="portal-table">
-            <thead>
-                <tr>
-                    <th>Change Time</th>
-                    <th>User ID</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in log %}
-                <tr>
-                    <td>{{ entry.change_time }}</td>
-                    <td>{{ entry.user_id }}</td>
-                    <td>{{ entry.desc }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container-fluid log-manage">
+    <h2 class="portal-heading text-center">Change Log</h2>
+
+    {% if log %}
+    <div class="log-timeline">
+        {% for entry in log %}
+        <div class="log-entry">
+            <div class="log-entry-avatar">
+                <img src="/uploads/{{ entry.profile_picture or 'default.jpg' }}" alt="">
+            </div>
+            <div class="log-entry-content">
+                <div class="log-entry-header">
+                    <span class="log-entry-name">{{ entry.fullname or 'Unknown' }}</span>
+                    <span class="log-entry-id">ID: {{ entry.user_id }}</span>
+                </div>
+                <div class="log-entry-desc">{{ entry.desc }}</div>
+                <div class="log-entry-time">
+                    <i class="fas fa-clock me-1"></i>{{ entry.change_time }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
+    {% else %}
+    <div class="log-empty">
+        <i class="fas fa-clipboard-list"></i>
+        <p>No changes logged yet.</p>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
