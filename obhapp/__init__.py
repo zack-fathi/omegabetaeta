@@ -30,38 +30,22 @@ def inject_user_roles():
     return {"user_roles": set()}
 
 
-# Google Calendar integration (optional for local development)
+# Google Calendar integration via service account (calendars stay private)
 SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')
-GOOGLE_CALENDAR_ENABLED = bool(SERVICE_ACCOUNT_FILE and PORTAL_CALENDAR_ID)
+PUBLIC_CALENDAR_ID = os.getenv('PUBLIC_CALENDAR_ID')
 
-if not GOOGLE_CALENDAR_ENABLED:
-    print("WARNING: Google Calendar not configured. Calendar events will be empty.")
-    print("Set SERVICE_ACCOUNT_FILE and PORTAL_CALENDAR_ID in .env to enable.")
+if not (SERVICE_ACCOUNT_FILE and PORTAL_CALENDAR_ID and PUBLIC_CALENDAR_ID):
+    print("WARNING: Google Calendar not fully configured. Set SERVICE_ACCOUNT_FILE, PORTAL_CALENDAR_ID, and PUBLIC_CALENDAR_ID in .env.")
 
 
-@app.route('/get-events', methods=['GET'])
-def get_events():
-    """Return the events for the calendar using a service account."""
-    if not GOOGLE_CALENDAR_ENABLED:
-        return flask.jsonify([])
-
-    try:
-        from google.oauth2 import service_account
-        from googleapiclient.discovery import build
-
-        SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-        credentials = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE, scopes=SCOPES
-        )
-        service = build('calendar', 'v3', credentials=credentials)
-        events_result = service.events().list(calendarId=PORTAL_CALENDAR_ID).execute()
-        events = events_result.get('items', [])
-        return flask.jsonify(events)
-
-    except Exception as e:
-        print(f"Error fetching events: {e}")
-        return flask.jsonify({'error': str(e)}), 500
+@app.context_processor
+def inject_calendar_config():
+    """Expose Google Calendar config to all templates."""
+    return {
+        'PORTAL_CALENDAR_ID': PORTAL_CALENDAR_ID or '',
+        'PUBLIC_CALENDAR_ID': PUBLIC_CALENDAR_ID or '',
+    }
 
 
 # Ignore coding style violations for these imports

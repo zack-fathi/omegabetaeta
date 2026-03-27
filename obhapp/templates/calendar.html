@@ -25,6 +25,10 @@
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
+      events: {
+        url: '/api/calendar-events/',
+        extraParams: { scope: 'public' }
+      },
       themeSystem: 'standard'
     });
     calendar.render();
