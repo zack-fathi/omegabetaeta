@@ -1330,6 +1330,62 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0.75rem;
 }
 
+.help-section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* ─── Help Nav List ─── */
+.help-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.help-nav-list li {
+  margin: 0;
+}
+
+.help-nav-list li a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--portal-text);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.help-nav-list li a:hover {
+  background: rgba(201, 168, 76, 0.1);
+  transform: translateX(4px);
+}
+
+.help-nav-list li a i {
+  color: var(--portal-gold);
+  font-size: 0.85rem;
+  width: 1.2rem;
+  text-align: center;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.help-nav-list li a:hover i {
+  opacity: 1;
+}
+
+.help-nav-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  min-width: 6rem;
+}
+
+.help-nav-desc {
+  color: var(--portal-text-muted);
+  font-size: 0.82rem;
+}
+
 .help-tip {
   background: rgba(201, 168, 76, 0.08);
   border: 1px solid rgba(201, 168, 76, 0.2);
