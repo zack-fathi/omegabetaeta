@@ -2,6 +2,7 @@
 import flask
 from dotenv import load_dotenv
 import os
+import sys
 
 # Load environment variables before anything else
 load_dotenv()
@@ -35,8 +36,47 @@ SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')
 PUBLIC_CALENDAR_ID = os.getenv('PUBLIC_CALENDAR_ID')
 
-if not (SERVICE_ACCOUNT_FILE and PORTAL_CALENDAR_ID and PUBLIC_CALENDAR_ID):
-    print("WARNING: Google Calendar not fully configured. Set SERVICE_ACCOUNT_FILE, PORTAL_CALENDAR_ID, and PUBLIC_CALENDAR_ID in .env.")
+# ── Validate calendar config at startup ──
+_missing = []
+if not SERVICE_ACCOUNT_FILE:
+    _missing.append('SERVICE_ACCOUNT_FILE')
+if not PORTAL_CALENDAR_ID:
+    _missing.append('PORTAL_CALENDAR_ID')
+if not PUBLIC_CALENDAR_ID:
+    _missing.append('PUBLIC_CALENDAR_ID')
+if _missing:
+    sys.exit(f"FATAL: Missing required .env variables: {', '.join(_missing)}. "
+             "See the Help page in the portal for setup instructions.")
+
+if not os.path.isfile(SERVICE_ACCOUNT_FILE):
+    sys.exit(f"FATAL: SERVICE_ACCOUNT_FILE not found: {SERVICE_ACCOUNT_FILE}")
+
+# Verify the service account can reach both calendars
+try:
+    from google.oauth2 import service_account as _sa
+    from googleapiclient.discovery import build as _build
+
+    _creds = _sa.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE,
+        scopes=['https://www.googleapis.com/auth/calendar.readonly']
+    )
+    _service = _build('calendar', 'v3', credentials=_creds, cache_discovery=False)
+
+    for _label, _cal_id in [('PUBLIC', PUBLIC_CALENDAR_ID), ('PORTAL', PORTAL_CALENDAR_ID)]:
+        try:
+            _service.calendars().get(calendarId=_cal_id).execute()
+            print(f"  ✓ {_label} calendar OK: {_cal_id}")
+        except Exception as e:
+            sys.exit(
+                f"FATAL: Cannot access {_label} calendar ({_cal_id}).\n"
+                f"  Error: {e}\n"
+                f"  Make sure the calendar is shared with the service account email."
+            )
+    del _creds, _service, _sa, _build, _label, _cal_id
+except Exception as e:
+    sys.exit(f"FATAL: Failed to initialize Google Calendar service: {e}")
+
+print("Google Calendar integration verified.")
 
 
 @app.context_processor
