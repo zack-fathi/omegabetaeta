@@ -156,7 +156,7 @@ def change_password():
     cursor.execute(
             "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
-            (user_id, f"{flask.session['name']} changed password"),
+            (user_id, "Changed password"),
         )
     conn.commit()
 
@@ -544,6 +544,12 @@ def gallery_edit():
     con.execute("UPDATE gallery SET desc = ? WHERE filename = ?", (description, filename))
     con.commit()
 
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Edited gallery photo description to: {description}")
+    )
+    con.commit()
+
     return flask.jsonify(success=True)
 
 
@@ -562,6 +568,12 @@ def gallery_reorder():
     con = obhapp.model.get_db()
     for idx, filename in enumerate(order):
         con.execute("UPDATE gallery SET sort_order = ? WHERE filename = ?", (idx + 1, filename))
+    con.commit()
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Reordered gallery photos ({len(order)} images)")
+    )
     con.commit()
 
     return flask.jsonify(success=True)
@@ -584,21 +596,40 @@ def assign_roles():
         role_assignments = flask.request.form.to_dict()
         connection = obhapp.model.get_db()
         cursor = connection.cursor()
+        changes = []
         for role_id_str, value in role_assignments.items():
             if not value:
                 continue  # "No change" selected — skip
+            # Get role name for logging
+            cursor.execute("SELECT role_name, user_id FROM roles WHERE role_id = ?", (role_id_str,))
+            role_info = cursor.fetchone()
+            if not role_info:
+                continue
+            role_name = role_info["role_name"]
+            old_user_id = role_info["user_id"]
             if value == 'CLEAR':
+                if old_user_id:
+                    cursor.execute("SELECT fullname FROM brothers WHERE user_id = ?", (old_user_id,))
+                    old_bro = cursor.fetchone()
+                    old_name = old_bro["fullname"] if old_bro else "Unknown"
+                    changes.append(f"Removed {old_name} from {role_name}")
                 cursor.execute("UPDATE roles SET user_id = NULL WHERE role_id = ?", (role_id_str,))
             else:
+                cursor.execute("SELECT fullname FROM brothers WHERE user_id = ?", (value,))
+                new_bro = cursor.fetchone()
+                new_name = new_bro["fullname"] if new_bro else "Unknown"
+                changes.append(f"Assigned {new_name} to {role_name}")
                 cursor.execute("UPDATE roles SET user_id = ? WHERE role_id = ?", (value, role_id_str))
         connection.commit()
 
-        cursor.execute(
-            "INSERT INTO change_log(user_id, desc) "
-            "VALUES(?, ?); ",
-            (flask.session["user_id"], f"{flask.session['name']} updated board roles"),
-        )
-        connection.commit()
+        if changes:
+            desc = "Board changes: " + "; ".join(changes)
+            cursor.execute(
+                "INSERT INTO change_log(user_id, desc) "
+                "VALUES(?, ?); ",
+                (flask.session["user_id"], desc),
+            )
+            connection.commit()
 
         flask.flash("Board roles updated successfully.", "success")
         return flask.redirect(flask.url_for('assign_roles'))
@@ -682,7 +713,7 @@ def add_admin():
 
     con.execute(
         "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
-        (flask.session["user_id"], f"{flask.session['name']} added {brother['fullname']} as Admin")
+        (flask.session["user_id"], f"Added {brother['fullname']} as Admin")
     )
     con.commit()
 
@@ -734,7 +765,7 @@ def remove_admin():
 
     con.execute(
         "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
-        (flask.session["user_id"], f"{flask.session['name']} removed {brother['fullname']} from Admin")
+        (flask.session["user_id"], f"Removed {brother['fullname']} from Admin")
     )
     con.commit()
 
