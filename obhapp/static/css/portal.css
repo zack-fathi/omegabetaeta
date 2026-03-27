@@ -2243,3 +2243,107 @@ h1, h2, h3, h4, h5, h6 {
     height: 34px;
   }
 }
+
+/* ================================================
+   LION NAMES PAGE
+   ================================================ */
+.lion-names-manage {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.lion-names-add-section {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.lion-names-add-section h5 {
+  color: var(--portal-text);
+  margin-bottom: 0.75rem;
+}
+
+.lion-name-card {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.lion-name-card:hover {
+  border-color: var(--portal-accent);
+}
+
+.lion-name-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.lion-name-title h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--portal-text);
+}
+
+.lion-name-count {
+  font-size: 0.8rem;
+  color: var(--portal-text-dim);
+}
+
+.lion-name-meaning .meaning-text {
+  font-size: 0.92rem;
+  color: var(--portal-text-dim);
+  margin-bottom: 0.75rem;
+}
+
+.lion-name-brothers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--portal-border);
+}
+
+.lion-name-brother {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--portal-surface-light);
+  padding: 0.3rem 0.7rem 0.3rem 0.3rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: var(--portal-text);
+  transition: background 0.2s;
+}
+
+.lion-name-brother:hover {
+  background: var(--portal-accent);
+  color: #fff;
+}
+
+.lion-name-brother img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.lion-name-brother .badge-inactive {
+  font-size: 0.7rem;
+  background: var(--portal-border);
+  color: var(--portal-text-dim);
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+}
+
+/* Auto-resize textarea */
+textarea.auto-resize {
+  overflow: hidden;
+  resize: vertical;
+  min-height: 3.5rem;
+}

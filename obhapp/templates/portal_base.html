@@ -126,6 +126,9 @@
             <a class="nav-link sidebar-link" href="/portal/board/">Board</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link sidebar-link" href="/portal/lion-names/">Lion Names</a>
+          </li>
+          <li class="nav-item">
             <a
               class="nav-link sidebar-link"
               href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing"
@@ -173,6 +176,18 @@
         if (navbar) {
           navbar.classList.toggle('scrolled', window.scrollY > 10);
         }
+      });
+
+      // Auto-resize textareas
+      function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('textarea.auto-resize').forEach(function(ta) {
+          autoResize(ta);
+          ta.addEventListener('input', function() { autoResize(this); });
+        });
       });
     </script>
   </body>

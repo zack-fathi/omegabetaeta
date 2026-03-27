@@ -12,44 +12,30 @@
             <i class="fas fa-search"></i>
             <input type="text" id="brothersSearch" placeholder="Search by name, lion name, or line #..." autocomplete="off">
         </div>
-        <select id="lineFilter" class="brothers-filter-select">
-            <option value="">All Lines</option>
-            {% for line_name in brothers.keys() %}
-            <option value="{{ line_name }}">{{ line_name }}</option>
-            {% endfor %}
-        </select>
     </div>
 
     <div class="brothers-results-count" id="resultsCount"></div>
 
-    <!-- Grouped by line -->
-    {% for line_name, members in brothers.items() %}
-    {% if members %}
-    <section class="brothers-line-section" data-line="{{ line_name }}">
-        <h4 class="brothers-line-title">{{ line_name }}</h4>
-        <div class="brothers-grid">
-            {% for bro in members %}
-            <a class="link-no-style brothers-card-link"
-               href="/brothers/{{ bro['username'] }}/"
-               data-name="{{ bro['fullname']|lower }}"
-               data-lion="{{ (bro['lion_name'] or '')|lower }}"
-               data-linenum="{{ bro['line_num'] }}"
-               data-line="{{ line_name }}">
-                <div class="brothers-card">
-                    <div class="brothers-card-img">
-                        <img src="/uploads/{{ bro.profile_picture or 'default.jpg' }}" alt="{{ bro.fullname }}">
-                    </div>
-                    <div class="brothers-card-body">
-                        <span class="brothers-card-name">{{ bro.fullname }}</span>
-                        <span class="brothers-card-detail">#{{ bro.line_num }} · {{ bro.lion_name or '—' }}</span>
-                    </div>
+    <!-- Alphabetical list -->
+    <div class="brothers-grid">
+        {% for bro in brothers %}
+        <a class="link-no-style brothers-card-link"
+           href="/brothers/{{ bro['username'] }}/"
+           data-name="{{ bro['fullname']|lower }}"
+           data-lion="{{ (bro['lion_name'] or '')|lower }}"
+           data-linenum="{{ bro['line_num'] }}">
+            <div class="brothers-card">
+                <div class="brothers-card-img">
+                    <img src="/uploads/{{ bro.profile_picture or 'default.jpg' }}" alt="{{ bro.fullname }}">
                 </div>
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-    {% endfor %}
+                <div class="brothers-card-body">
+                    <span class="brothers-card-name">{{ bro.fullname }}</span>
+                    <span class="brothers-card-detail">#{{ bro.line_num }} · {{ bro.lion_name or '—' }}</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
 
     <div class="brothers-no-results" id="noResults" style="display:none;">
         <i class="fas fa-search"></i>
@@ -60,42 +46,30 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('brothersSearch');
-    const lineFilter = document.getElementById('lineFilter');
     const cards = document.querySelectorAll('.brothers-card-link');
-    const sections = document.querySelectorAll('.brothers-line-section');
     const noResults = document.getElementById('noResults');
     const resultsCount = document.getElementById('resultsCount');
 
     function filterBrothers() {
         const query = searchInput.value.toLowerCase().trim();
-        const lineVal = lineFilter.value;
         let visible = 0;
 
         cards.forEach(function(card) {
             const name = card.dataset.name;
             const lion = card.dataset.lion;
             const linenum = card.dataset.linenum;
-            const line = card.dataset.line;
 
             const matchSearch = !query || name.includes(query) || lion.includes(query) || linenum === query;
-            const matchLine = !lineVal || line === lineVal;
-            const show = matchSearch && matchLine;
 
-            card.style.display = show ? '' : 'none';
-            if (show) visible++;
-        });
-
-        sections.forEach(function(sec) {
-            const visibleCards = sec.querySelectorAll('.brothers-card-link:not([style*="display: none"])');
-            sec.style.display = visibleCards.length ? '' : 'none';
+            card.style.display = matchSearch ? '' : 'none';
+            if (matchSearch) visible++;
         });
 
         noResults.style.display = visible === 0 ? '' : 'none';
-        resultsCount.textContent = (query || lineVal) ? visible + ' brother' + (visible !== 1 ? 's' : '') + ' found' : '';
+        resultsCount.textContent = query ? visible + ' brother' + (visible !== 1 ? 's' : '') + ' found' : '';
     }
 
     searchInput.addEventListener('input', filterBrothers);
-    lineFilter.addEventListener('change', filterBrothers);
 });
 </script>
 {% endblock %}
