@@ -16,7 +16,7 @@
         </div>
 
         <!-- Portal Home -->
-        <div class="help-section">
+        <div class="help-section" id="section-portal-home">
             <h4><i class="fas fa-home"></i> Portal Home</h4>
             <p>After logging in you'll see:</p>
             <ul>
@@ -29,25 +29,17 @@
         <!-- Sidebar Navigation -->
         <div class="help-section">
             <h4><i class="fas fa-bars"></i> Sidebar Navigation</h4>
-            <table class="portal-table">
-                <thead>
-                    <tr>
-                        <th>Page</th>
-                        <th>What It Does</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><a href="/portal/">Portal Home</a></td><td>Calendar and welcome page</td></tr>
-                    <tr><td><a href="/portal/messages/">Messages</a></td><td>View contact form submissions</td></tr>
-                    <tr><td><a href="/portal/recruits/">Recruits</a></td><td>View and manage recruit applications</td></tr>
-                    <tr><td><a href="/portal/directory/">Directory</a></td><td>Browse, search, filter, and manage all brothers</td></tr>
-                    <tr><td><a href="/portal/log/">Log</a></td><td>View the change log of all portal actions</td></tr>
-                    <tr><td><a href="/portal/board/">Board</a></td><td>View and assign board roles</td></tr>
-                    <tr><td><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank">Files</a></td><td>Opens the shared Google Drive folder</td></tr>
-                    <tr><td><a href="/portal/gallery/">Gallery</a></td><td>Manage the public photo gallery — upload, delete, reorder, edit descriptions <em>(Board only)</em></td></tr>
-                    <tr><td><a href="/portal/help/">Help</a></td><td>This page</td></tr>
-                </tbody>
-            </table>
+            <ul class="help-nav-list">
+                <li><a href="#section-portal-home"><i class="fas fa-home"></i><span class="help-nav-name">Portal Home</span><span class="help-nav-desc">Calendar and welcome page</span></a></li>
+                <li><a href="#section-messages"><i class="fas fa-envelope"></i><span class="help-nav-name">Messages</span><span class="help-nav-desc">View contact form submissions</span></a></li>
+                <li><a href="#section-recruits"><i class="fas fa-user-plus"></i><span class="help-nav-name">Recruits</span><span class="help-nav-desc">View and manage recruit applications</span></a></li>
+                <li><a href="#section-directory"><i class="fas fa-address-book"></i><span class="help-nav-name">Directory</span><span class="help-nav-desc">Browse, search, filter, and manage all brothers</span></a></li>
+                <li><a href="#section-log"><i class="fas fa-history"></i><span class="help-nav-name">Log</span><span class="help-nav-desc">View the change log of all portal actions</span></a></li>
+                <li><a href="#section-board"><i class="fas fa-crown"></i><span class="help-nav-name">Board</span><span class="help-nav-desc">View and assign board roles</span></a></li>
+                <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank"><i class="fas fa-folder"></i><span class="help-nav-name">Files</span><span class="help-nav-desc">Opens the shared Google Drive folder</span></a></li>
+                <li><a href="#section-gallery"><i class="fas fa-images"></i><span class="help-nav-name">Gallery</span><span class="help-nav-desc">Manage the public photo gallery <em>(Board only)</em></span></a></li>
+                <li><a href="#section-help"><i class="fas fa-question-circle"></i><span class="help-nav-name">Help</span><span class="help-nav-desc">This page</span></a></li>
+            </ul>
         </div>
 
         <!-- Changing Password -->
@@ -87,7 +79,7 @@
         </div>
 
         <!-- Directory -->
-        <div class="help-section">
+        <div class="help-section" id="section-directory">
             <h4><i class="fas fa-address-book"></i> <a href="/portal/directory/">Directory</a></h4>
             <p>Browse all brothers organized by line. Each card shows profile picture, name, lion name, line number, ID, uniqname, and active/inactive status (green/red dot).</p>
             <ul>
@@ -104,7 +96,7 @@
         </div>
 
         <!-- Recruits -->
-        <div class="help-section">
+        <div class="help-section" id="section-recruits">
             <h4><i class="fas fa-user-plus"></i> <a href="/portal/recruits/">Recruits</a></h4>
             <p>All brothers can view the list of people who applied through the public <a href="/apply/">Apply</a> page.</p>
             <p>If you have the right role (Admin, President, or Director of Recruitment), you can also:</p>
@@ -120,7 +112,7 @@
         </div>
 
         <!-- Board -->
-        <div class="help-section">
+        <div class="help-section" id="section-board">
             <h4><i class="fas fa-crown"></i> <a href="/portal/board/">Board</a></h4>
             <p>Shows all current officer roles and who holds them, along with site administrators.</p>
             <p><strong>Assigning board roles</strong> (President or Admin only):</p>
@@ -141,7 +133,7 @@
         </div>
 
         <!-- Gallery Management -->
-        <div class="help-section">
+        <div class="help-section" id="section-gallery">
             <h4><i class="fas fa-images"></i> <a href="/portal/gallery/">Gallery Management</a> <span class="help-badge">Board Only</span></h4>
             <p>Go to <a href="/portal/gallery/">Gallery</a> in the sidebar to manage the public photo gallery.</p>
             <p><strong>Uploading photos:</strong></p>
@@ -163,13 +155,13 @@
         </div>
 
         <!-- Log -->
-        <div class="help-section">
+        <div class="help-section" id="section-log">
             <h4><i class="fas fa-history"></i> <a href="/portal/log/">Log</a></h4>
             <p>Shows a history of all actions taken in the portal — profile edits, recruit changes, role assignments, etc. This is view-only.</p>
         </div>
 
         <!-- Messages -->
-        <div class="help-section">
+        <div class="help-section" id="section-messages">
             <h4><i class="fas fa-envelope"></i> <a href="/portal/messages/">Messages</a></h4>
             <p>All brothers can view messages submitted through the public <a href="/contact/">Contact</a> page — including the sender's name, email, subject, and message.</p>
         </div>
@@ -199,7 +191,7 @@
         </div>
 
         <!-- Tips -->
-        <div class="help-section">
+        <div class="help-section" id="section-help">
             <h4><i class="fas fa-lightbulb"></i> Quick Tips</h4>
             <ul>
                 <li><strong>Forgot your password?</strong> Ask a brother with Admin access to reset it in the database.</li>
