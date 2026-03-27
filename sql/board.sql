@@ -1,6 +1,5 @@
 INSERT INTO roles (role_name, user_id) VALUES
-('Admin', 39),
-('Admin', 40);
+('Admin', (SELECT user_id FROM brothers WHERE username = 'jawadalsahlani'));
 INSERT INTO roles (role_name) VALUES
 ('President'),
 ('Internal Vice President'),

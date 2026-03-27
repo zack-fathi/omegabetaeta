@@ -43,10 +43,9 @@ case $1 in
     sqlite3 var/${APP}.sqlite3 < sql/schema.sql
     sqlite3 var/${APP}.sqlite3 < sql/data.sql
     sqlite3 var/${APP}.sqlite3 < sql/insert_gallery.sql
-    sqlite3 var/${APP}.sqlite3 < sql/board.sql
     cp sql/uploads/* var/uploads/
     python3 bin/make_brothers.py
-    sqlite3 var/${APP}.sqlite3 < sql/insert_brothers.sql
+    sqlite3 var/${APP}.sqlite3 < sql/board.sql
     ;;
 
   "dump")

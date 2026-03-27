@@ -30,7 +30,7 @@
                 </div>
                 <div class="brothers-card-body">
                     <span class="brothers-card-name">{{ bro.fullname }}</span>
-                    <span class="brothers-card-detail">#{{ bro.line_num }} · {{ bro.lion_name or '—' }}</span>
+                    <span class="brothers-card-detail">{{ bro.line_name }}{% if bro.lion_name %} - {{ bro.lion_name }}{% endif %}</span>
                 </div>
             </div>
         </a>

@@ -16,6 +16,8 @@ def show_brothers():
         "ORDER BY b.fullname ASC;",
     )
     brothers = cur.fetchall()
+    for bro in brothers:
+        bro["line_name"] = line_int_to_line.get(str(bro["line"]), "")
 
     return flask.render_template("brothers.html", brothers=brothers)
 
