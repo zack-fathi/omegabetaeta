@@ -207,8 +207,11 @@ def show_portal_log():
         return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT * FROM change_log "
-        "ORDER BY id DESC "
+        "SELECT c.id, c.user_id, c.change_time, c.desc, "
+        "b.fullname, b.profile_picture "
+        "FROM change_log c "
+        "LEFT JOIN brothers b ON c.user_id = b.user_id "
+        "ORDER BY c.id DESC "
     )
     log = cur.fetchall()
     context = {"log": log}
