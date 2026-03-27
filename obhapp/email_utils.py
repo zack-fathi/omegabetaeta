@@ -15,7 +15,7 @@ EMAIL_SMTP_PORT = int(os.getenv('EMAIL_SMTP_PORT', '587'))
 SITE_URL = os.getenv('SITE_URL', 'https://omegabetaeta.org')
 
 
-def _send_email(to, subject, body_html):
+def _send_email(to, subject, body_html, bcc_self=True):
     """Send an email via SMTP. Returns True on success, False on failure."""
     if not EMAIL_PASSWORD:
         logger.warning("EMAIL_PASSWORD not set — skipping email to %s", to)
@@ -26,6 +26,10 @@ def _send_email(to, subject, body_html):
     msg['To'] = to
     msg['Subject'] = subject
     msg['Reply-To'] = EMAIL_ADDRESS
+    recipients = [to]
+    if bcc_self:
+        msg['Bcc'] = EMAIL_ADDRESS
+        recipients.append(EMAIL_ADDRESS)
     msg.attach(MIMEText(body_html, 'html'))
 
     try:
@@ -34,7 +38,7 @@ def _send_email(to, subject, body_html):
             server.starttls()
             server.ehlo()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-            server.sendmail(EMAIL_ADDRESS, to, msg.as_string())
+            server.sendmail(EMAIL_ADDRESS, recipients, msg.as_string())
         logger.info("Email sent to %s: %s", to, subject)
         return True
     except Exception as e:
@@ -102,8 +106,8 @@ def send_application_confirmation_email(to_email, fullname):
     return _send_email(to_email, subject, body)
 
 
-def send_message_reply_email(to_email, original_name, original_subject, reply_body, replier_name):
-    """Send a reply to a contact message."""
+def send_message_reply_email(to_email, original_name, original_subject, original_message, reply_body, replier_name):
+    """Send a reply to a contact message. Includes the original message for context."""
     subject = f"Re: {original_subject}"
     body = f"""
     <div style="font-family: 'Inter', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #1a1a2e; color: #e0e0e0; padding: 32px; border-radius: 12px;">
@@ -113,8 +117,13 @@ def send_message_reply_email(to_email, original_name, original_subject, reply_bo
         <p>Hello {original_name},</p>
         <div style="white-space: pre-wrap;">{reply_body}</div>
         <hr style="border: none; border-top: 1px solid #2a2a4a; margin: 24px 0;">
+        <div style="padding: 12px 16px; background: #16213e; border-left: 3px solid #c9a84c; border-radius: 6px; margin-bottom: 16px;">
+            <p style="font-size: 12px; color: #888; margin: 0 0 8px 0;">Your original message:</p>
+            <p style="font-size: 13px; color: #aaa; margin: 0 0 4px 0;"><strong>Subject:</strong> {original_subject}</p>
+            <div style="white-space: pre-wrap; font-size: 13px; color: #aaa;">{original_message}</div>
+        </div>
         <p style="font-size: 12px; color: #888;">Reply from {replier_name} via the ΩBH Portal.</p>
         <p style="font-size: 12px; color: #888;">You can respond directly to this email.</p>
     </div>
     """
-    return _send_email(to_email, subject, body)
+    return _send_email(to_email, subject, body, bcc_self=False)

@@ -40,9 +40,9 @@
     <script>
       function confirmLogout(event) {
         event.preventDefault();
-        if (confirm("Are you sure you want to log out?")) {
+        portalConfirm('Are you sure you want to log out?', function() {
           window.location.href = event.target.href;
-        }
+        });
       }
     </script>
   </head>
@@ -187,6 +187,49 @@
           autoResize(ta);
           ta.addEventListener('input', function() { autoResize(this); });
         });
+      });
+    </script>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="portalConfirmOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+      <div style="background: var(--portal-surface, #1e1e3a); border: 1px solid var(--portal-gold, #c9a84c); border-radius: 12px; padding: 28px 32px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+        <div style="margin-bottom: 16px;">
+          <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: var(--portal-gold, #c9a84c);"></i>
+        </div>
+        <p id="portalConfirmMessage" style="color: #e0e0e0; font-size: 1rem; margin-bottom: 24px; line-height: 1.5;"></p>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button id="portalConfirmCancel" class="btn btn-portal-muted" style="min-width: 90px;">Cancel</button>
+          <button id="portalConfirmOk" class="btn btn-portal" style="min-width: 90px;">Confirm</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      var _portalConfirmCb = null;
+      function portalConfirm(message, callback, opts) {
+        opts = opts || {};
+        var overlay = document.getElementById('portalConfirmOverlay');
+        document.getElementById('portalConfirmMessage').textContent = message;
+        var okBtn = document.getElementById('portalConfirmOk');
+        okBtn.textContent = opts.confirmText || 'Confirm';
+        okBtn.className = opts.danger ? 'btn btn-portal-danger' : 'btn btn-portal';
+        okBtn.style.minWidth = '90px';
+        _portalConfirmCb = callback;
+        overlay.style.display = 'flex';
+      }
+      document.getElementById('portalConfirmOk').addEventListener('click', function() {
+        document.getElementById('portalConfirmOverlay').style.display = 'none';
+        if (_portalConfirmCb) _portalConfirmCb();
+        _portalConfirmCb = null;
+      });
+      document.getElementById('portalConfirmCancel').addEventListener('click', function() {
+        document.getElementById('portalConfirmOverlay').style.display = 'none';
+        _portalConfirmCb = null;
+      });
+      document.getElementById('portalConfirmOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.style.display = 'none';
+          _portalConfirmCb = null;
+        }
       });
     </script>
   </body>

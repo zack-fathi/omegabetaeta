@@ -363,7 +363,7 @@ def send_all_passwords():
 
 @obhapp.app.route('/portal/directory/unsent-brothers/')
 def get_unsent_brothers():
-    """Get list of brothers who haven't been sent their password email."""
+    """Get list of brothers who haven't been sent their password email or haven't changed password."""
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
     con = obhapp.model.get_db()
@@ -374,8 +374,9 @@ def get_unsent_brothers():
         return flask.jsonify(success=False, error="No permission"), 403
 
     cur = con.execute(
-        "SELECT user_id, fullname, username, uniqname FROM brothers "
-        "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+        "SELECT user_id, fullname, username, uniqname, email_sent, password_changed FROM brothers "
+        "WHERE (email_sent = 0 OR password_changed = 0) "
+        "AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
     )
     brothers = [dict(row) for row in cur.fetchall()]
     return flask.jsonify(success=True, brothers=brothers, count=len(brothers))
@@ -414,12 +415,13 @@ def show_portal_directory():
     if any(r in user_roles for r in ["Admin", "President"]):
         can_manage_passwords = True
 
-    # Count unsent password emails for the badge
+    # Count brothers needing attention (unsent email or unchanged password)
     unsent_count = 0
     if can_manage_passwords:
         cur = con.execute(
             "SELECT COUNT(*) as cnt FROM brothers "
-            "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+            "WHERE (email_sent = 0 OR password_changed = 0) "
+            "AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
         )
         unsent_count = cur.fetchone()["cnt"]
 
@@ -1187,12 +1189,27 @@ def show_messages():
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
     cursor.execute(
-        "SELECT m.*, b.fullname as replier_name "
-        "FROM messages m "
-        "LEFT JOIN brothers b ON m.replied_by = b.user_id "
-        "ORDER BY m.created_at DESC"
+        "SELECT m.* FROM messages m ORDER BY m.created_at DESC"
     )
-    messages = cursor.fetchall()
+    messages = [dict(row) for row in cursor.fetchall()]
+
+    # Fetch all replies grouped by message_id
+    cursor.execute(
+        "SELECT r.*, b.fullname as replier_name "
+        "FROM message_replies r "
+        "LEFT JOIN brothers b ON r.replied_by = b.user_id "
+        "ORDER BY r.replied_at ASC"
+    )
+    replies_by_msg = {}
+    for reply in cursor.fetchall():
+        mid = reply['message_id']
+        if mid not in replies_by_msg:
+            replies_by_msg[mid] = []
+        replies_by_msg[mid].append(dict(reply))
+
+    for msg in messages:
+        msg['replies'] = replies_by_msg.get(msg['id'], [])
+
     return flask.render_template('portal_messages.html', messages=messages)
 
 
@@ -1219,16 +1236,15 @@ def reply_to_message(message_id):
     replier_name = replier["fullname"] if replier else "ΩBH Member"
 
     sent = send_message_reply_email(
-        msg['email'], msg['name'], msg['subject'], reply_text, replier_name
+        msg['email'], msg['name'], msg['subject'], msg['message'], reply_text, replier_name
     )
 
     if not sent:
         return flask.jsonify(success=False, error="Failed to send email. Check email configuration."), 500
 
     con.execute(
-        "UPDATE messages SET reply_text = ?, replied_at = CURRENT_TIMESTAMP, replied_by = ? "
-        "WHERE id = ?",
-        (reply_text, flask.session["user_id"], message_id)
+        "INSERT INTO message_replies (message_id, reply_text, replied_by) VALUES (?, ?, ?)",
+        (message_id, reply_text, flask.session["user_id"])
     )
     con.execute(
         "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
@@ -1236,7 +1252,15 @@ def reply_to_message(message_id):
     )
     con.commit()
 
-    return flask.jsonify(success=True, message="Reply sent successfully")
+    return flask.jsonify(
+        success=True,
+        message="Reply sent successfully",
+        reply={
+            "reply_text": reply_text,
+            "replier_name": replier_name,
+            "replied_at": "just now"
+        }
+    )
 
 @obhapp.app.route('/portal/lion-names/')
 def show_lion_names():

@@ -72,9 +72,15 @@ CREATE TABLE messages (
     email TEXT NOT NULL,
     subject TEXT NOT NULL,
     message TEXT NOT NULL,
-    reply_text TEXT DEFAULT NULL,
-    replied_at DATETIME DEFAULT NULL,
-    replied_by INTEGER DEFAULT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE message_replies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    message_id INTEGER NOT NULL,
+    reply_text TEXT NOT NULL,
+    replied_by INTEGER NOT NULL,
+    replied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE,
     FOREIGN KEY (replied_by) REFERENCES brothers(user_id)
 );

@@ -259,9 +259,10 @@ function addImageToGrid(filename, description, sortOrder) {
 }
 
 // ── Delete ──
-async function deleteImage(filename, btn) {
-  if (!confirm('Delete this photo? This cannot be undone.')) return;
-
+function deleteImage(filename, btn) {
+  portalConfirm('Delete this photo? This cannot be undone.', function() { _doDeleteImage(filename, btn); }, {danger: true, confirmText: 'Delete'});
+}
+async function _doDeleteImage(filename, btn) {
   const item = btn.closest('.gallery-manage-item');
   item.classList.add('gallery-item-deleting');
 
