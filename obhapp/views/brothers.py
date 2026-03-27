@@ -8,17 +8,21 @@ from obhapp.utils import line_int_to_line
 def show_brothers():
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT fullname, username, line, line_num, uniqname, profile_picture FROM brothers "
+        "SELECT fullname, username, line, line_num, lion_name, uniqname, profile_picture FROM brothers "
         "WHERE active = 1 "
-        "ORDER BY fullname ASC;",
+        "ORDER BY line ASC, line_num ASC;",
     )
     brothers = cur.fetchall()
-    for bro in brothers:
-        bro["line_name"] = line_int_to_line[str(bro["line"])]
-    context = {}
-    context["brothers"] = brothers
-    
-    return flask.render_template("brothers.html", **context)
+    line_dict = {}
+    if brothers:
+        last_line = brothers[-1]["line"]
+        for i in range(int(last_line) + 1):
+            members = [bro for bro in brothers if bro["line"] == i]
+            if members:
+                line_name = line_int_to_line[str(i)]
+                line_dict[line_name] = members
+
+    return flask.render_template("brothers.html", brothers=line_dict)
 
 @obhapp.app.route('/brothers/<name>/')
 def show_brother(name):
@@ -29,11 +33,11 @@ def show_brother(name):
         (name, )
     )
     bro = cur.fetchone()
+    if not bro:
+        flask.abort(404)
     bro["line_name"] = line_int_to_line[str(bro["line"])]
-    # return bro
-
     bro['grad_time'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
-    return flask.render_template("brother.html", **bro)
+    return flask.render_template("brother.html", brother=bro)
 
 @obhapp.app.route('/apply/')
 def show_apply():
