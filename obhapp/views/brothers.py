@@ -44,13 +44,29 @@ def apply_rec():
     uniqname = flask.request.form["uniqname"]
     email = flask.request.form["email"]
     fullname = flask.request.form["fullname"]
-    
+
     con = obhapp.model.get_db()
-    cur = con.execute(
-        "INSERT INTO recruits "
-        "(uniqname, fullname, email, campus) "
-        "VALUES(?, ?, ?, ?) ",
-        (uniqname, fullname, email, "Ann Arbor")
-    )
+
+    # Check if this person was previously deleted — bring them back
+    existing = con.execute(
+        "SELECT uniqname, deleted FROM recruits WHERE uniqname = ?",
+        (uniqname,)
+    ).fetchone()
+
+    if existing and existing['deleted']:
+        con.execute(
+            "UPDATE recruits SET fullname = ?, email = ?, campus = ?, "
+            "deleted = 0, accept = 0, line_num = NULL, lion_name = NULL "
+            "WHERE uniqname = ?",
+            (fullname, email, "Ann Arbor", uniqname)
+        )
+    elif not existing:
+        con.execute(
+            "INSERT INTO recruits "
+            "(uniqname, fullname, email, campus) "
+            "VALUES(?, ?, ?, ?) ",
+            (uniqname, fullname, email, "Ann Arbor")
+        )
+
     return flask.render_template("apply-confirm.html")
     

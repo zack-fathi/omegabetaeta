@@ -704,6 +704,266 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+/* =============================================
+   Board Management
+   ============================================= */
+
+.board-section {
+  margin-bottom: 2rem;
+}
+
+.board-section-header h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--portal-gold);
+  margin-bottom: 0.25rem;
+}
+
+.board-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--portal-text-muted);
+  margin-bottom: 1rem;
+}
+
+/* ─── Board Roles Grid ─── */
+.board-roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.board-role-card {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.board-role-card:hover {
+  border-color: rgba(201, 168, 76, 0.2);
+}
+
+.board-role-header {
+  background: var(--portal-surface-light);
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid var(--portal-border);
+}
+
+.board-role-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--portal-gold);
+}
+
+.board-role-body {
+  padding: 0.85rem;
+}
+
+.board-role-current {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.board-role-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--portal-red);
+}
+
+.board-role-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vacant-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--portal-surface-light);
+  border-color: var(--portal-border);
+  color: var(--portal-text-muted);
+  font-size: 0.85rem;
+}
+
+.board-role-holder {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--portal-text);
+}
+
+.board-role-holder.vacant {
+  color: var(--portal-text-muted);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.board-role-select {
+  width: 100%;
+  font-size: 0.82rem !important;
+  padding: 0.35rem 0.65rem !important;
+  background-color: var(--portal-surface) !important;
+  border: 1px solid var(--portal-border) !important;
+  color: var(--portal-text) !important;
+}
+
+.board-role-select:focus {
+  border-color: var(--portal-gold) !important;
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.12) !important;
+}
+
+/* ─── Admin Cards ─── */
+.admin-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-left: 3px solid var(--portal-red);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  min-width: 240px;
+  flex: 0 1 auto;
+  transition: all 0.25s ease;
+}
+
+.admin-card:hover {
+  border-left-color: var(--portal-gold);
+}
+
+.admin-card-new {
+  animation: slideIn 0.3s ease;
+}
+
+.admin-card.fade-out {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+}
+
+.admin-card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--portal-red);
+}
+
+.admin-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--portal-text);
+}
+
+.admin-username {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  color: var(--portal-text-muted);
+}
+
+.btn-admin-remove {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--portal-text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  opacity: 0.35;
+  transition: all 0.2s;
+}
+
+.admin-card:hover .btn-admin-remove {
+  opacity: 0.65;
+}
+
+.btn-admin-remove:hover {
+  opacity: 1 !important;
+  color: #ff6b6b;
+  background: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.2);
+}
+
+.admin-empty {
+  width: 100%;
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--portal-text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+}
+
+.admin-add-section {
+  margin-top: 0.5rem;
+}
+
+.admin-add-row {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  max-width: 500px;
+}
+
+.admin-add-select {
+  flex: 1;
+  font-size: 0.82rem !important;
+  padding: 0.4rem 0.65rem !important;
+}
+
+@media (max-width: 600px) {
+  .board-roles-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-list {
+    flex-direction: column;
+  }
+  .admin-card {
+    min-width: auto;
+  }
+  .admin-add-row {
+    flex-direction: column;
+    max-width: 100%;
+  }
+}
+
 /* ─── Help Page ─── */
 .help-content {
   max-width: 800px;
@@ -1289,5 +1549,239 @@ h1, h2, h3, h4, h5, h6 {
 
   .upload-zone-icon {
     font-size: 2rem;
+  }
+}
+
+
+/* ===== Recruits Management ===== */
+.recruits-manage {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.recruits-section {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.recruits-section-header h4 {
+  color: var(--portal-gold);
+  margin-bottom: 0.25rem;
+  font-size: 1.15rem;
+}
+
+.recruits-section-header .recruit-count,
+.recruits-section-header .deleted-count {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  font-weight: normal;
+}
+
+.recruits-hint {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 0.75rem;
+}
+
+.recruits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.recruit-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.recruit-card:hover {
+  border-color: rgba(201,168,76,0.25);
+}
+
+.recruit-card.recruit-accepted {
+  border-color: rgba(40,167,69,0.3);
+}
+
+.recruit-card-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  flex-wrap: wrap;
+}
+
+.recruit-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 200px;
+  flex: 1;
+}
+
+.recruit-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--portal-gold);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.recruit-avatar.deleted-avatar {
+  background: rgba(155,35,53,0.15);
+  color: var(--portal-red);
+}
+
+.recruit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.recruit-name {
+  color: var(--portal-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.recruit-detail {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+}
+
+.recruit-fields {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.recruit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.recruit-field label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.recruit-field input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--portal-border);
+  color: var(--portal-text);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  width: 100px;
+  font-size: 0.85rem;
+}
+
+.recruit-field input:focus {
+  border-color: var(--portal-gold);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.2);
+}
+
+.recruit-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.recruit-status-bar {
+  padding: 0.3rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.recruit-status-bar.accepted {
+  background: rgba(40,167,69,0.1);
+  color: #28a745;
+  border-top: 1px solid rgba(40,167,69,0.15);
+}
+
+.recruit-card.recruit-deleted {
+  opacity: 0.7;
+  border-color: rgba(155,35,53,0.2);
+}
+
+.recruit-card.recruit-deleted:hover {
+  opacity: 1;
+}
+
+.btn-toggle-deleted {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--portal-border);
+  color: var(--portal-text);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 0.2s;
+}
+
+.btn-toggle-deleted:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.recruits-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.recruits-empty i {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.recruits-move-section {
+  text-align: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--portal-border);
+}
+
+@media (max-width: 768px) {
+  .recruit-card-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .recruit-identity {
+    min-width: unset;
+  }
+
+  .recruit-fields {
+    width: 100%;
+  }
+
+  .recruit-field input {
+    width: 100%;
+  }
+
+  .recruit-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

@@ -1,49 +1,225 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-    <section class="mb-4">
-        <h2 class="portal-heading">Assign Roles to Active Brothers</h2>
-        <form action="{{ url_for('assign_roles') }}" method="POST">
-            <div class="table-responsive">
-                <table class="portal-table">
-                    <thead>
-                        <tr>
-                            <th>Role</th>
-                            <th>Current</th>
-                            <th>User ID</th>
-                            {% if can_change %}
-                            <th>Select New</th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for role in roles %}
-                        <tr id="role-{{ role['role_name'] }}">
-                            <td><strong>{{ role['role_name'] }}</strong></td>
-                            <td>{{ role['username'] }}</td>
-                            <td>{{ role['user_id'] }}</td>
-                            {% if can_change %}
-                            <td>
-                                {% if role['role_name'] != "Admin" %}
-                                    <select name="{{ role['role_name'] }}" id="{{ role['role_name'] }}" class="form-select form-select-sm">
-                                        <option value="">--Select Brother--</option>
-                                        {% for brother in brothers %}
-                                        <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                {% endif %}
-                            </td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+<div class="container-fluid board-manage">
+    <h2 class="portal-heading text-center">Board Management</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Board Roles Section -->
+    <section class="board-section">
+        <div class="board-section-header">
+            <h4><i class="fas fa-crown me-2"></i>Board Roles</h4>
+            {% if can_change %}
+            <p class="board-hint">Select a brother for each position, then save.</p>
+            {% endif %}
+        </div>
+
+        <form action="{{ url_for('assign_roles') }}" method="POST" id="rolesForm">
+            <div class="board-roles-grid">
+                {% for role in roles %}
+                <div class="board-role-card">
+                    <div class="board-role-header">
+                        <span class="board-role-name">{{ role['role_name'] }}</span>
+                    </div>
+                    <div class="board-role-body">
+                        {% if role['fullname'] %}
+                        <div class="board-role-current">
+                            <div class="board-role-avatar">
+                                <img src="/uploads/{{ role['profile_picture'] or 'default.jpg' }}" alt="{{ role['fullname'] }}">
+                            </div>
+                            <span class="board-role-holder">{{ role['fullname'] }}</span>
+                        </div>
+                        {% else %}
+                        <div class="board-role-current board-role-vacant">
+                            <div class="board-role-avatar vacant-avatar">
+                                <i class="fas fa-user-slash"></i>
+                            </div>
+                            <span class="board-role-holder vacant">Vacant</span>
+                        </div>
+                        {% endif %}
+
+                        {% if can_change %}
+                        <select name="{{ role['role_id'] }}" class="form-select board-role-select">
+                            <option value="">— No change —</option>
+                            <option value="CLEAR">Remove current holder</option>
+                            {% for brother in brothers %}
+                            <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
+                            {% endfor %}
+                        </select>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
             </div>
 
             {% if can_change %}
             <div class="text-center mt-4">
-                <input type="submit" class="btn btn-portal" value="Assign Roles">
+                <button type="submit" class="btn btn-portal"><i class="fas fa-save me-2"></i>Save Board Roles</button>
             </div>
             {% endif %}
         </form>
     </section>
+
+    <!-- Admin Management Section -->
+    <section class="board-section mt-4">
+        <div class="board-section-header">
+            <h4><i class="fas fa-shield-alt me-2"></i>Site Administrators</h4>
+            {% if is_admin %}
+            <p class="board-hint">Admins have full access to the portal. You can add or remove admins below.</p>
+            {% else %}
+            <p class="board-hint">Admins have full access to the portal and can manage all settings.</p>
+            {% endif %}
+        </div>
+
+        <div class="admin-list" id="adminList">
+            {% for admin in admins %}
+            <div class="admin-card" data-role-id="{{ admin['role_id'] }}">
+                <div class="admin-card-info">
+                    <div class="admin-avatar">
+                        <img src="/uploads/{{ admin['profile_picture'] or 'default.jpg' }}" alt="{{ admin['fullname'] }}">
+                    </div>
+                    <div class="admin-details">
+                        <span class="admin-name">{{ admin['fullname'] }}</span>
+                        <span class="admin-username">@{{ admin['username'] }}</span>
+                    </div>
+                </div>
+                {% if is_admin %}
+                <button class="btn-admin-remove" onclick="removeAdmin({{ admin['role_id'] }}, this)" title="Remove admin">
+                    <i class="fas fa-times"></i>
+                </button>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% if not admins %}
+            <div class="admin-empty">
+                <p>No administrators assigned.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if is_admin %}
+        <div class="admin-add-section">
+            <div class="admin-add-row">
+                <select id="newAdminSelect" class="form-select admin-add-select">
+                    <option value="">— Select a brother to add as admin —</option>
+                    {% for brother in all_brothers %}
+                    <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-portal btn-portal-sm" onclick="addAdmin()">
+                    <i class="fas fa-plus me-1"></i>Add Admin
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="gallery-toast"></div>
+
+<script>
+async function addAdmin() {
+    const select = document.getElementById('newAdminSelect');
+    const userId = select.value;
+    if (!userId) return;
+
+    try {
+        const res = await fetch('/portal/board/admin/add/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: parseInt(userId) })
+        });
+        const data = await res.json();
+        if (data.success) {
+            // Add the card to the list
+            const list = document.getElementById('adminList');
+            const empty = list.querySelector('.admin-empty');
+            if (empty) empty.remove();
+
+            const card = document.createElement('div');
+            card.className = 'admin-card admin-card-new';
+            card.dataset.roleId = data.role_id;
+            card.innerHTML = `
+                <div class="admin-card-info">
+                    <div class="admin-avatar">
+                        <img src="/uploads/${data.profile_picture || 'default.jpg'}" alt="${escapeHtml(data.fullname)}">
+                    </div>
+                    <div class="admin-details">
+                        <span class="admin-name">${escapeHtml(data.fullname)}</span>
+                        <span class="admin-username">@${escapeHtml(data.username)}</span>
+                    </div>
+                </div>
+                <button class="btn-admin-remove" onclick="removeAdmin(${data.role_id}, this)" title="Remove admin">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            list.appendChild(card);
+
+            // Remove from dropdown
+            const opt = select.querySelector(`option[value="${userId}"]`);
+            select.value = '';
+            showToast('Admin added successfully');
+        } else {
+            showToast(data.error || 'Failed to add admin', true);
+        }
+    } catch (err) {
+        showToast('Network error', true);
+    }
+}
+
+async function removeAdmin(roleId, btn) {
+    if (!confirm('Remove this admin?')) return;
+
+    const card = btn.closest('.admin-card');
+    card.style.opacity = '0.5';
+    card.style.pointerEvents = 'none';
+
+    try {
+        const res = await fetch('/portal/board/admin/remove/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role_id: roleId })
+        });
+        const data = await res.json();
+        if (data.success) {
+            card.classList.add('fade-out');
+            setTimeout(() => card.remove(), 300);
+            showToast('Admin removed');
+        } else {
+            card.style.opacity = '1';
+            card.style.pointerEvents = '';
+            showToast(data.error || 'Failed to remove admin', true);
+        }
+    } catch (err) {
+        card.style.opacity = '1';
+        card.style.pointerEvents = '';
+        showToast('Network error', true);
+    }
+}
+
+function showToast(message, isError) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'gallery-toast show' + (isError ? ' error' : '');
+    setTimeout(() => { toast.className = 'gallery-toast'; }, 2500);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// No special handling needed — CLEAR value is handled server-side
+</script>
 {% endblock %}
