@@ -487,95 +487,398 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
 }
 
-/* ─── Directory Cards ─── */
+/* ─── Directory ─── */
+.directory-manage {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.directory-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.directory-search {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.directory-search i {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.3);
+  font-size: 0.85rem;
+}
+
+.directory-search input {
+  width: 100%;
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  color: var(--portal-text);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem 0.6rem 2.25rem;
+  font-size: 0.88rem;
+  transition: border-color 0.2s;
+}
+
+.directory-search input:focus {
+  border-color: var(--portal-gold);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+}
+
+.directory-search input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.directory-filters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.directory-filter-select {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  color: var(--portal-text);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.directory-filter-select:focus {
+  border-color: var(--portal-gold);
+  outline: none;
+}
+
+.directory-results-count {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.75rem;
+  min-height: 1.2em;
+}
+
+.directory-line-section {
+  margin-bottom: 1.5rem;
+}
+
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.65rem;
+}
+
+.directory-card-link {
+  text-decoration: none;
+}
+
 .directory-card {
   background: var(--portal-surface);
   border: 1px solid var(--portal-border);
   border-left: 3px solid var(--portal-red);
-  border-radius: 6px;
-  padding: 1rem 1.25rem;
-  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
 }
 
 .directory-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   border-left-color: var(--portal-gold);
 }
 
-.directory-card h6 {
-  margin-bottom: 0.15rem;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  color: var(--portal-text);
+.directory-card-avatar {
+  position: relative;
+  flex-shrink: 0;
 }
 
-.directory-card small {
-  color: var(--portal-text-muted);
+.directory-card-avatar img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--portal-border);
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--portal-surface);
+}
+
+.status-dot.active {
+  background: #28a745;
+}
+
+.status-dot.inactive {
+  background: #dc3545;
+}
+
+.status-dot.large {
+  width: 16px;
+  height: 16px;
+  border-width: 3px;
+}
+
+.directory-card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.directory-card-name {
+  font-weight: 600;
+  color: var(--portal-text);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.directory-card-detail {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.78rem;
+}
+
+.directory-card-sub {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.directory-no-results {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.directory-no-results i {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
 }
 
 /* ─── Category Titles ─── */
 .portal-category-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--portal-gold);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--portal-border);
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-/* ─── Brother Detail ─── */
-.portal-profile-card {
+/* ─── Member Detail Page ─── */
+.member-detail {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.member-profile-card {
   background: var(--portal-surface);
   border: 1px solid var(--portal-border);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.portal-profile-card .profile-img {
-  max-height: 320px;
+.member-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--portal-border);
+}
+
+.member-profile-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.member-profile-avatar img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
   object-fit: cover;
-  border-radius: 8px;
-  width: 100%;
-  border: 2px solid var(--portal-border);
+  border: 3px solid var(--portal-border);
 }
 
-.portal-profile-card h3 {
+.member-profile-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-profile-title h3 {
   color: var(--portal-gold);
   font-family: 'Playfair Display', serif;
+  margin-bottom: 0.2rem;
 }
 
-.portal-profile-card .card-body p {
-  color: var(--portal-text-muted);
-  margin-bottom: 0.5rem;
+.member-profile-subtitle {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
 }
 
-.portal-profile-card .card-body strong {
+.member-profile-id {
+  color: rgba(255,255,255,0.35);
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.member-profile-body {
+  padding: 1.5rem;
+}
+
+.member-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.member-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.detail-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
   color: var(--portal-text);
+  font-size: 0.9rem;
 }
 
-.portal-profile-card hr {
-  border-color: var(--portal-border);
-}
-
-.portal-profile-card a {
-  color: var(--portal-gold);
-}
-
-.portal-profile-card .about-footer {
-  background: var(--portal-surface-light);
+.member-about-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--portal-border);
 }
 
-.portal-profile-card .about-footer h5 {
+.member-about-section h5 {
   color: var(--portal-gold);
-  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
 }
 
-.portal-profile-card .about-footer p {
-  color: var(--portal-text-muted);
+.member-about-section p {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.member-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+/* Edit form */
+.member-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.member-edit-grid .form-group label,
+.member-profile-body > .form-group label,
+.member-profile-body > .form-check label {
+  font-size: 0.75rem;
+  color: var(--portal-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.member-edit-grid .form-control,
+.member-profile-body .form-control {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--portal-border);
+  color: var(--portal-text);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.88rem;
+}
+
+.member-edit-grid .form-control:focus,
+.member-profile-body .form-control:focus {
+  border-color: var(--portal-gold);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+  background: rgba(255,255,255,0.06);
+}
+
+.member-edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.member-danger-zone {
+  background: rgba(155,35,53,0.08);
+  border: 1px solid rgba(155,35,53,0.25);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.member-danger-zone h5 {
+  color: var(--portal-red);
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+
+.member-danger-zone p {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .directory-controls {
+    flex-direction: column;
+  }
+
+  .directory-filters {
+    flex-direction: column;
+  }
+
+  .directory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .member-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-edit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-actions-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
 
 /* ─── Alerts ─── */

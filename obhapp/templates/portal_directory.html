@@ -1,23 +1,148 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-<div class="container mt-2">
+<div class="container-fluid directory-manage">
     <h2 class="portal-heading text-center">Member Directory</h2>
-    {% for key in brothers.keys() %}
-        <section class="mb-4">
-            <h4 class="portal-category-title">{{ key }}</h4>
-            <div class="row g-3">
-                {% for brother in brothers[key] %}
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <a class="link-no-style" href="/portal/directory/{{ brother['username'] }}/">
-                            <div class="directory-card">
-                                <h6>{{ brother['fullname'] }}</h6>
-                                <small>#{{ brother['line_num'] }}</small>
-                            </div>
-                        </a>
-                    </div>
+
+    <!-- Search & Filters -->
+    <div class="directory-controls">
+        <div class="directory-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="directorySearch" placeholder="Search name, lion name, uniqname, email, line #, or ID..." autocomplete="off">
+        </div>
+        <div class="directory-filters">
+            <select id="lineFilter" class="directory-filter-select">
+                <option value="">All Lines</option>
+                {% for line_name in brothers.keys() %}
+                <option value="{{ line_name }}">{{ line_name }}</option>
                 {% endfor %}
-            </div>
-        </section>
+            </select>
+            <select id="statusFilter" class="directory-filter-select">
+                <option value="">All Members</option>
+                <option value="active">Active Only</option>
+                <option value="inactive">Inactive Only</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Results count -->
+    <div class="directory-results-count" id="resultsCount"></div>
+
+    <!-- Directory grouped by line -->
+    {% for line_name, members in brothers.items() %}
+    {% if members %}
+    <section class="directory-line-section" data-line="{{ line_name }}">
+        <h4 class="portal-category-title">{{ line_name }}</h4>
+        <div class="directory-grid">
+            {% for brother in members %}
+            <a class="link-no-style directory-card-link"
+               href="/portal/directory/{{ brother['username'] }}/"
+               data-name="{{ brother['fullname']|lower }}"
+               data-lion="{{ (brother['lion_name'] or '')|lower }}"
+               data-uniqname="{{ (brother['uniqname'] or '')|lower }}"
+               data-id="{{ brother['user_id'] }}"
+               data-linenum="{{ brother['line_num'] }}"
+               data-line="{{ line_name }}"
+               data-active="{{ brother['active'] }}">
+                <div class="directory-card">
+                    <div class="directory-card-avatar">
+                        <img src="/uploads/{{ brother['profile_picture'] or 'default.jpg' }}" alt="">
+                        <span class="status-dot {{ 'active' if brother['active'] else 'inactive' }}" title="{{ 'Active' if brother['active'] else 'Inactive' }}"></span>
+                    </div>
+                    <div class="directory-card-info">
+                        <span class="directory-card-name">{{ brother['fullname'] }}</span>
+                        <span class="directory-card-detail">#{{ brother['line_num'] }} · {{ brother['lion_name'] or '—' }}</span>
+                        <span class="directory-card-detail directory-card-sub">ID: {{ brother['user_id'] }} · {{ brother['uniqname'] or '—' }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    {% endfor %}
+
+    <div class="directory-no-results" id="noResults" style="display:none;">
+        <i class="fas fa-search"></i>
+        <p>No members match your search.</p>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('directorySearch');
+    const lineFilter = document.getElementById('lineFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const cards = document.querySelectorAll('.directory-card-link');
+    const sections = document.querySelectorAll('.directory-line-section');
+    const noResults = document.getElementById('noResults');
+    const resultsCount = document.getElementById('resultsCount');
+
+    function filterDirectory() {
+        const query = searchInput.value.toLowerCase().trim();
+        const lineVal = lineFilter.value;
+        const statusVal = statusFilter.value;
+        let visible = 0;
+
+        cards.forEach(function(card) {
+            const name = card.dataset.name;
+            const lion = card.dataset.lion;
+            const uniqname = card.dataset.uniqname;
+            const id = card.dataset.id;
+            const linenum = card.dataset.linenum;
+            const line = card.dataset.line;
+            const active = card.dataset.active;
+
+            let matchSearch = !query ||
+                name.includes(query) ||
+                lion.includes(query) ||
+                uniqname.includes(query) ||
+                id.includes(query) ||
+                linenum === query;
+
+            let matchLine = !lineVal || line === lineVal;
+            let matchStatus = !statusVal ||
+                (statusVal === 'active' && active === '1') ||
+                (statusVal === 'inactive' && active === '0');
+
+            if (matchSearch && matchLine && matchStatus) {
+                card.style.display = '';
+                visible++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Hide empty sections
+        sections.forEach(function(section) {
+            const visibleCards = section.querySelectorAll('.directory-card-link[style=""], .directory-card-link:not([style])');
+            let sectionVisible = false;
+            section.querySelectorAll('.directory-card-link').forEach(function(c) {
+                if (c.style.display !== 'none') sectionVisible = true;
+            });
+            section.style.display = sectionVisible ? '' : 'none';
+        });
+
+        noResults.style.display = visible === 0 ? '' : 'none';
+        resultsCount.textContent = query || lineVal || statusVal
+            ? visible + ' member' + (visible !== 1 ? 's' : '') + ' found'
+            : '';
+    }
+
+    searchInput.addEventListener('input', filterDirectory);
+    lineFilter.addEventListener('change', filterDirectory);
+    statusFilter.addEventListener('change', filterDirectory);
+});
+</script>
 {% endblock %}

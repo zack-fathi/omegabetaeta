@@ -168,38 +168,167 @@ def change_password():
 def show_portal_directory():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("show_login"))
-    user_id = flask.session['user_id']
-    context = {"user_id": user_id}
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT user_id, fullname, username, line, line_num, uniqname FROM brothers "
-        "ORDER BY line ASC, line_num ASC;",
+        "SELECT user_id, fullname, username, line, line_num, lion_name, uniqname, "
+        "profile_picture, active "
+        "FROM brothers ORDER BY line ASC, line_num ASC;",
     )
     brothers = cur.fetchall()
+
+    # Build line groups
     line_dict = {}
     if brothers:
         last_line = brothers[-1]["line"]
         for i in range(int(last_line) + 1):
-            line = line_int_to_line[str(i)]
-            line_dict[line] = [brother for brother in brothers if brother["line"] == i]
+            line_name = line_int_to_line[str(i)]
+            line_dict[line_name] = [dict(brother) for brother in brothers if brother["line"] == i]
 
-    context["brothers"] = line_dict
+    # Check permissions
+    can_edit = False
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
+                                      "External Vice President", "Director of Recruitment",
+                                      "Director of External"]):
+        can_edit = True
+
+    context = {
+        "brothers": line_dict,
+        "all_brothers": [dict(b) for b in brothers],
+        "can_edit": can_edit,
+        "line_map": line_int_to_line,
+    }
     return flask.render_template("portal_directory.html", **context)
 
 @obhapp.app.route('/portal/directory/<name>/')
 def show_directory_brother(name):
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT * FROM brothers "
-        "WHERE username = ? ",
-        (name, )
+        "SELECT * FROM brothers WHERE username = ?",
+        (name,)
     )
     bro = cur.fetchone()
+    if not bro:
+        flask.flash("Member not found.", "error")
+        return flask.redirect(flask.url_for("show_portal_directory"))
+    bro = dict(bro)
     bro["line_name"] = line_int_to_line[str(bro["line"])]
-    # return bro
+    bro['grad_time_display'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
 
-    bro['grad_time'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
-    return flask.render_template("portal_brother.html", **bro)
+    # Check permissions
+    can_edit = False
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
+                                      "External Vice President", "Director of Recruitment",
+                                      "Director of External"]):
+        can_edit = True
+
+    return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit)
+
+@obhapp.app.route('/portal/directory/<name>/edit/', methods=['POST'])
+def edit_member(name):
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    con = obhapp.model.get_db()
+
+    # Check permissions
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if not any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
+                                          "External Vice President", "Director of Recruitment",
+                                          "Director of External"]):
+        flask.flash("No permission.", "error")
+        return flask.redirect(flask.url_for("show_directory_brother", name=name))
+
+    # Get existing brother
+    cur = con.execute("SELECT * FROM brothers WHERE username = ?", (name,))
+    bro = cur.fetchone()
+    if not bro:
+        flask.flash("Member not found.", "error")
+        return flask.redirect(flask.url_for("show_portal_directory"))
+
+    new_username = flask.request.form['username']
+    fullname = flask.request.form['fullname']
+    uniqname = flask.request.form['uniqname']
+    major = flask.request.form['major']
+    job = flask.request.form['job']
+    desc = flask.request.form['desc']
+    contacts = flask.request.form['contacts']
+    campus = flask.request.form['campus']
+    cross_time = flask.request.form['cross_time']
+    grad_time = flask.request.form['grad_time']
+    line = flask.request.form['line']
+    line_num = flask.request.form['line_num']
+    lion_name = flask.request.form['lion_name']
+    active = flask.request.form.get('active', 0)
+
+    file = flask.request.files.get("profile_picture")
+    if file and file.filename:
+        stem = uuid.uuid4().hex
+        suffix = pathlib.Path(file.filename).suffix.lower()
+        uuid_basename = f"{stem}{suffix}"
+        path = obhapp.app.config["UPLOAD_FOLDER"] / uuid_basename
+        file.save(path)
+    else:
+        uuid_basename = bro['profile_picture']
+
+    con.execute('''
+        UPDATE brothers SET username = ?, fullname = ?, uniqname = ?, profile_picture = ?,
+        major = ?, job = ?, desc = ?, contacts = ?, campus = ?, cross_time = ?,
+        grad_time = ?, line = ?, line_num = ?, lion_name = ?, active = ?
+        WHERE user_id = ?
+    ''', (new_username, fullname, uniqname, uuid_basename, major, job, desc, contacts,
+          campus, cross_time, grad_time, line, line_num, lion_name, active, bro['user_id']))
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Edited member {fullname} (ID: {bro['user_id']})")
+    )
+    con.commit()
+
+    flask.flash("Member updated successfully.", "success")
+    return flask.redirect(flask.url_for("show_directory_brother", name=new_username))
+
+@obhapp.app.route('/portal/directory/<name>/delete/', methods=['POST'])
+def delete_member(name):
+    if "user_id" not in flask.session:
+        return flask.redirect(flask.url_for("show_login"))
+    con = obhapp.model.get_db()
+
+    # Check permissions - admin only for delete
+    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
+    user_roles = [row["role_name"] for row in cur.fetchall()]
+    if 'Admin' not in user_roles:
+        flask.flash("Only admins can delete members.", "error")
+        return flask.redirect(flask.url_for("show_directory_brother", name=name))
+
+    cur = con.execute("SELECT user_id, fullname FROM brothers WHERE username = ?", (name,))
+    bro = cur.fetchone()
+    if not bro:
+        flask.flash("Member not found.", "error")
+        return flask.redirect(flask.url_for("show_portal_directory"))
+
+    # Prevent deleting yourself
+    if bro['user_id'] == flask.session['user_id']:
+        flask.flash("You cannot delete your own account.", "error")
+        return flask.redirect(flask.url_for("show_directory_brother", name=name))
+
+    # Remove roles first
+    con.execute("DELETE FROM roles WHERE user_id = ?", (bro['user_id'],))
+    con.execute("DELETE FROM brothers WHERE user_id = ?", (bro['user_id'],))
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Deleted member {bro['fullname']} (ID: {bro['user_id']})")
+    )
+    con.commit()
+
+    flask.flash(f"Member {bro['fullname']} has been deleted.", "success")
+    return flask.redirect(flask.url_for("show_portal_directory"))
 
 @obhapp.app.route('/portal/log/')
 def show_portal_log():

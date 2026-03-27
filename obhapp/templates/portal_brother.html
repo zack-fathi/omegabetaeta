@@ -1,46 +1,202 @@
 {% extends 'portal_base.html' %}
 {% block content %}
-<div class="container mt-2">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="portal-profile-card mb-4">
-                <div class="row g-0">
-                    <div class="col-md-5 text-center p-4">
-                        <img src="/uploads/{{ profile_picture }}" alt="Profile Picture" class="img-fluid profile-img">
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-body p-4">
-                            <h3>{{ fullname }}</h3>
-                            <hr>
-                            <p><strong>Username:</strong> {{ username }}</p>
-                            <p><strong>Uniqname:</strong> {{ uniqname }}</p>
-                            <p><strong>Major:</strong> {{ major }}</p>
-                            <p><strong>Line:</strong> {{ line_name }}</p>
-                            <p><strong>Line Number:</strong> {{ line_num }}</p>
-                            <p><strong>Lion Name:</strong> {{ lion_name }}</p>
-                            <p><strong>Cross Time:</strong> {{ cross_time }}</p>
-                            <p><strong>Grad Time:</strong> {{ grad_time }}</p>
-                            <p><strong>Campus:</strong> {{ campus }}</p>
-                            {% if contacts and contacts != 'N/A' %}
-                            <p><strong>Contacts:</strong> {{ contacts }}</p>
-                            {% endif %}
-                            {% if job and job != 'N/A' %}
-                            <p><strong>Job:</strong> {{ job }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
+<div class="container-fluid member-detail">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- View Mode -->
+    <div id="viewMode">
+        <div class="member-profile-card">
+            <div class="member-profile-header">
+                <div class="member-profile-avatar">
+                    <img src="/uploads/{{ brother.profile_picture or 'default.jpg' }}" alt="{{ brother.fullname }}">
+                    <span class="status-dot large {{ 'active' if brother.active else 'inactive' }}" title="{{ 'Active' if brother.active else 'Inactive' }}"></span>
                 </div>
-                {% if desc and desc != 'N/A' %}
-                <div class="about-footer p-4">
-                    <h5>About</h5>
-                    <p>{{ desc }}</p>
+                <div class="member-profile-title">
+                    <h3>{{ brother.fullname }}</h3>
+                    <span class="member-profile-subtitle">{{ brother.line_name }} · #{{ brother.line_num }} · {{ brother.lion_name }}</span>
+                    <span class="member-profile-id">ID: {{ brother.user_id }} · @{{ brother.uniqname }}</span>
+                </div>
+            </div>
+
+            <div class="member-profile-body">
+                <div class="member-detail-grid">
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-user me-1"></i>Username</span>
+                        <span class="detail-value">{{ brother.username }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-id-badge me-1"></i>Uniqname</span>
+                        <span class="detail-value">{{ brother.uniqname or 'N/A' }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-graduation-cap me-1"></i>Major</span>
+                        <span class="detail-value">{{ brother.major or 'N/A' }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-briefcase me-1"></i>Job</span>
+                        <span class="detail-value">{{ brother.job or 'N/A' }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-map-marker-alt me-1"></i>Campus</span>
+                        <span class="detail-value">{{ brother.campus or 'N/A' }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-paw me-1"></i>Lion Name</span>
+                        <span class="detail-value">{{ brother.lion_name }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-hashtag me-1"></i>Line / Line #</span>
+                        <span class="detail-value">{{ brother.line_name }} · #{{ brother.line_num }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-calendar-alt me-1"></i>Cross Time</span>
+                        <span class="detail-value">{{ brother.cross_time or 'N/A' }}</span>
+                    </div>
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-calendar-check me-1"></i>Grad Time</span>
+                        <span class="detail-value">{{ brother.grad_time_display }}</span>
+                    </div>
+                    {% if brother.contacts and brother.contacts != 'N/A' %}
+                    <div class="member-detail-item">
+                        <span class="detail-label"><i class="fas fa-address-card me-1"></i>Contacts</span>
+                        <span class="detail-value">{{ brother.contacts }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if brother.desc and brother.desc != 'N/A' %}
+                <div class="member-about-section">
+                    <h5><i class="fas fa-info-circle me-1"></i>About</h5>
+                    <p>{{ brother.desc }}</p>
                 </div>
                 {% endif %}
             </div>
-            <div class="text-center">
-                <a href="/portal/directory/" class="btn btn-portal">Back to Directory</a>
-            </div>
+        </div>
+
+        <div class="member-actions-bar">
+            <a href="/portal/directory/" class="btn btn-portal-muted"><i class="fas fa-arrow-left me-1"></i>Back</a>
+            {% if can_edit %}
+            <button class="btn btn-portal" onclick="toggleEdit()"><i class="fas fa-pen me-1"></i>Edit Member</button>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Edit Mode -->
+    {% if can_edit %}
+    <div id="editMode" style="display:none;">
+        <div class="member-profile-card">
+            <div class="member-profile-header">
+                <h3><i class="fas fa-pen me-2"></i>Edit: {{ brother.fullname }}</h3>
+            </div>
+            <div class="member-profile-body">
+                <form action="/portal/directory/{{ brother.username }}/edit/" method="post" enctype="multipart/form-data">
+                    <div class="member-edit-grid">
+                        <div class="form-group">
+                            <label for="edit-username">Username</label>
+                            <input type="text" class="form-control" id="edit-username" name="username" value="{{ brother.username }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-fullname">Full Name</label>
+                            <input type="text" class="form-control" id="edit-fullname" name="fullname" value="{{ brother.fullname }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-uniqname">Uniqname</label>
+                            <input type="text" class="form-control" id="edit-uniqname" name="uniqname" value="{{ brother.uniqname }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-major">Major</label>
+                            <input type="text" class="form-control" id="edit-major" name="major" value="{{ brother.major }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-job">Job</label>
+                            <input type="text" class="form-control" id="edit-job" name="job" value="{{ brother.job }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-campus">Campus</label>
+                            <input type="text" class="form-control" id="edit-campus" name="campus" value="{{ brother.campus }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-lion-name">Lion Name</label>
+                            <input type="text" class="form-control" id="edit-lion-name" name="lion_name" value="{{ brother.lion_name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-line">Line (number)</label>
+                            <input type="number" class="form-control" id="edit-line" name="line" value="{{ brother.line }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-line-num">Line Number</label>
+                            <input type="number" class="form-control" id="edit-line-num" name="line_num" value="{{ brother.line_num }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-cross-time">Cross Time</label>
+                            <input type="text" class="form-control" id="edit-cross-time" name="cross_time" value="{{ brother.cross_time }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-grad-time">Grad Time</label>
+                            <input type="month" class="form-control" id="edit-grad-time" name="grad_time" value="{{ brother.grad_time or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-contacts">Contacts</label>
+                            <input type="text" class="form-control" id="edit-contacts" name="contacts" value="{{ brother.contacts }}">
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="edit-desc">Description</label>
+                        <textarea class="form-control" id="edit-desc" name="desc" rows="3">{{ brother.desc }}</textarea>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Profile Picture</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="/uploads/{{ brother.profile_picture or 'default.jpg' }}" class="img-thumbnail" style="max-width:60px; border-radius:6px; background:var(--portal-surface-light); border-color:var(--portal-border);">
+                            <input type="file" class="form-control" name="profile_picture" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input type="checkbox" class="form-check-input" id="edit-active" name="active" value="1" {% if brother.active %}checked{% endif %}>
+                        <label class="form-check-label" for="edit-active">Active Member</label>
+                    </div>
+                    <div class="member-edit-actions mt-4">
+                        <button type="button" class="btn btn-portal-muted" onclick="toggleEdit()">Cancel</button>
+                        <button type="submit" class="btn btn-portal">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if 'Admin' in user_roles %}
+        <div class="member-danger-zone mt-3">
+            <h5><i class="fas fa-exclamation-triangle me-1"></i>Danger Zone</h5>
+            <p>Permanently delete this member and all their associated roles.</p>
+            <form action="/portal/directory/{{ brother.username }}/delete/" method="post" onsubmit="return confirm('Are you sure you want to permanently delete {{ brother.fullname }}? This cannot be undone.');">
+                <button type="submit" class="btn btn-portal-danger"><i class="fas fa-trash-alt me-1"></i>Delete Member</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
+
+<script>
+function toggleEdit() {
+    var view = document.getElementById('viewMode');
+    var edit = document.getElementById('editMode');
+    if (edit.style.display === 'none') {
+        edit.style.display = '';
+        view.style.display = 'none';
+    } else {
+        edit.style.display = 'none';
+        view.style.display = '';
+    }
+}
+</script>
 {% endblock %}
