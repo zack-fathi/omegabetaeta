@@ -3,17 +3,6 @@
 <div class="container-fluid board-manage">
     <h2 class="portal-heading text-center">Board Management</h2>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-
     <!-- Board Roles Section -->
     <section class="board-section">
         <div class="board-section-header">

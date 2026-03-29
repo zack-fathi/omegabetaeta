@@ -90,7 +90,7 @@ bros = {
 ],
 5:[ 
 "X",
-"Jawad Alsahlani, Muthafar",
+"Jawad Alsahlani, Muthafar, jawadals",
 "Zackery Fathi, Aklaaf",
 "Mohsen Najar, Furhud",
 "Mohamman Alhameed, Asrul",
@@ -149,12 +149,13 @@ for key in bros.keys():
         ln += 1
         if bro == "X":
             continue
-        parts = bro.split(',', 1)
-        if len(parts) == 2:
+        parts = bro.split(',')
+        if len(parts) >= 2:
             full_name = parts[0].strip()
             lion = parts[1].strip()
+            uniq = parts[2].strip() if len(parts) >= 3 else ""
             brothers.append({
-                "u": "",
+                "u": uniq,
                 "f": full_name,
                 "l": key,
                 "ln": ln,
@@ -179,7 +180,19 @@ for b in brothers:
     new_password_hash = new_hash_obj.hexdigest()
     password_db = "$".join([algorithm, new_salt, new_password_hash])
 
-    username = b["f"].lower().replace(" ", "")
+    base_username = b["f"].lower().replace(" ", "")
+    username = base_username
+    counter = 0
+    while True:
+        existing = conn.execute(
+            "SELECT username FROM brothers WHERE username = ?",
+            (username,)
+        ).fetchone()
+        if not existing:
+            break
+        counter += 1
+        username = base_username + str(counter)
+
     lion_name_id = lion_name_map.get(b["lion"])
     if lion_name_id is None:
         print(f"WARNING: Lion name '{b['lion']}' not found in lion_names table, skipping {b['f']}")

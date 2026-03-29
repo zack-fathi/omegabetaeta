@@ -7,6 +7,15 @@
             <hr class="section-divider">
             <p style="color: var(--obh-text-muted);">Fill out the form below to apply for membership. We look forward to reviewing your application and welcoming you to our community.</p>
         </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes list-unstyled">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
         <form action="/apply/" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="fullname" class="form-label">Full Name</label>

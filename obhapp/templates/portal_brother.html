@@ -1,18 +1,6 @@
 {% extends 'portal_base.html' %}
 {% block content %}
 <div class="container-fluid member-detail">
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-
     <!-- View Mode -->
     <div id="viewMode">
         <div class="member-profile-card">

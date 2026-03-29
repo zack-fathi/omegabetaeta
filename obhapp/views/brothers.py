@@ -53,6 +53,15 @@ def apply_rec():
 
     con = obhapp.model.get_db()
 
+    # Check if this uniqname already belongs to a brother
+    bro = con.execute(
+        "SELECT uniqname FROM brothers WHERE uniqname = ?",
+        (uniqname,)
+    ).fetchone()
+    if bro:
+        flask.flash('This uniqname is already associated with a brother.', 'error')
+        return flask.redirect(flask.url_for('show_apply'))
+
     # Check if this person was previously deleted — bring them back
     existing = con.execute(
         "SELECT uniqname, deleted FROM recruits WHERE uniqname = ?",
@@ -62,11 +71,14 @@ def apply_rec():
     if existing and existing['deleted']:
         con.execute(
             "UPDATE recruits SET fullname = ?, email = ?, campus = ?, "
-            "deleted = 0, accept = 0, line_num = NULL, lion_name = NULL "
+            "deleted = 0, accept = 0, line_num = NULL, lion_name_id = NULL "
             "WHERE uniqname = ?",
             (fullname, email, "Ann Arbor", uniqname)
         )
-    elif not existing:
+    elif existing:
+        flask.flash('This uniqname has already applied.', 'error')
+        return flask.redirect(flask.url_for('show_apply'))
+    else:
         con.execute(
             "INSERT INTO recruits "
             "(uniqname, fullname, email, campus) "

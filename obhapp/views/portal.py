@@ -19,7 +19,7 @@ def check_forced_password_change():
     if flask.session.get("force_password_change"):
         allowed_endpoints = {
             'force_change_password', 'logout', 'static', 'uploaded_file',
-            'show_login', 'login', 'show_index',
+            'show_login', 'login', 'show_index', 'forgot_password',
         }
         if flask.request.endpoint and flask.request.endpoint not in allowed_endpoints:
             return flask.redirect(flask.url_for('force_change_password'))
@@ -70,6 +70,44 @@ def login():
 
     target = flask.request.args.get('target', flask.url_for('show_portal'))
     return flask.redirect(target)
+
+
+@obhapp.app.route('/forgot-password/', methods=['POST'])
+def forgot_password():
+    username = flask.request.form.get('username', '').strip().lower()
+    if not username:
+        flask.flash('Please enter your username.', 'error')
+        return flask.redirect(flask.url_for('show_login'))
+
+    connection = obhapp.model.get_db()
+    cur = connection.execute(
+        "SELECT user_id, fullname, uniqname FROM brothers WHERE username = ?",
+        (username,)
+    )
+    bro = cur.fetchone()
+    if not bro:
+        flask.flash('User does not exist.', 'error')
+        return flask.redirect(flask.url_for('show_login'))
+
+    if not bro['uniqname'] or bro['uniqname'] == 'N/A' or bro['uniqname'] == '':
+        flask.flash('No email (uniqname) associated with this account. Contact an admin.', 'error')
+        return flask.redirect(flask.url_for('show_login'))
+
+    plain_pw, uname, fullname, email = _set_default_password(connection, bro['user_id'])
+    sent = send_default_password_email(email, fullname, uname, plain_pw)
+
+    connection.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (bro['user_id'], "Password reset via forgot password")
+    )
+    connection.commit()
+
+    if sent:
+        flask.flash('A new password has been sent to your email.', 'success')
+    else:
+        flask.flash('Password was reset but email could not be sent. Contact an admin.', 'error')
+    return flask.redirect(flask.url_for('show_login'))
+
 
 @obhapp.app.route('/portal/')
 def show_portal():
