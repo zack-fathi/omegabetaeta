@@ -1,121 +1,152 @@
-# Deployment Guide — Render.com
+# Deployment Guide — AWS EC2 + GitHub Actions
 
-## Why Render?
+## Architecture
+- **EC2 instance** (Amazon Linux) runs the Flask app via Gunicorn
+- **Nginx** sits in front as a reverse proxy (serves static files, handles SSL)
+- **GitHub Actions** auto-deploys when you push to `main`
+- **SQLite** database + uploads live on the EC2 disk
 
-**Best fit for this project.** Here's why the other options don't work well:
+**Cost: ~$3.50/month** (t2.micro or t3.micro with free tier, then ~$8/mo after)
 
-- **GitHub Pages** — static hosting only, can't run Flask/Python. Eliminated.
-- **Supabase** — great database, but you'd need to rewrite every SQL query from SQLite to PostgreSQL and rebuild the auth system. Major effort for no benefit.
-- **AWS** (EC2/Lightsail) — cheapest raw price ($3.50/mo) but you'd manage your own server: install nginx, configure SSL certificates, set up systemd services, handle OS updates, security patches, firewall rules. Not maintainable by someone with little code experience.
-- **Render** — connects to your GitHub repo, auto-deploys when you push, manages SSL and the server for you. Dashboard handles env vars, logs, and restarts. The $7/mo Starter plan gives persistent disk (needed for SQLite + uploaded photos). This is the right tradeoff between cost and ease of maintenance.
 
-**Cost: $7/month** (Starter plan for persistent disk). Free tier won't work because the disk resets on every deploy — you'd lose all uploaded photos and the database.
+## Step-by-Step (once SSH works)
 
----
-
-## Step-by-Step Deployment
-
-### Step 1: Push to GitHub
-Create a private GitHub repo and push the code. Make sure these are **NOT** committed (already in .gitignore):
-- `.env` (has your email password, calendar IDs)
-- `var/` (database + uploads — these live on the server)
-- `env/` (virtual environment)
-- `*.json` (service account key file)
-
+### Step 1: Move your key to a safe place
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin git@github.com:YOUR_USERNAME/omegabetaeta.git
-git push -u origin main
+cp Jawad.pem ~/.ssh/obh.pem    # (or whichever key works)
+chmod 600 ~/.ssh/obh.pem
+```
+Then use `./bin/ssh-server` to connect easily.
+
+### Step 2: Set up the server (one time)
+```bash
+# Copy the setup script to the server
+scp -i "Jawad.pem" deploy/server-setup.sh ec2-user@ec2-18-119-117-254.us-east-2.compute.amazonaws.com:~
+
+# SSH in and run it
+./bin/ssh-server
+sudo chmod +x server-setup.sh && sudo ./server-setup.sh
+```
+This installs Python, nginx, creates the `obh` user, systemd service, etc.
+
+### Step 3: Clone the repo on the server
+```bash
+# Still SSH'd in:
+sudo -u obh -i
+git clone https://github.com/Javv4d/omegabetaeta.git
+cd omegabetaeta
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
 ```
 
-### Step 2: Create a Render account
-Go to [render.com](https://render.com) and sign up (connect your GitHub account).
-
-### Step 3: Create a new Web Service
-1. Click **New → Web Service**
-2. Connect your GitHub repo
-3. Settings:
-   - **Name**: `omegabetaeta` (or whatever you want)
-   - **Region**: Oregon (or closest to you)
-   - **Branch**: `main`
-   - **Runtime**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn -w 3 -b 0.0.0.0:$PORT obhapp:app`
-   - **Plan**: Starter ($7/mo)
-
-### Step 4: Add a persistent disk
-1. In your service settings, go to **Disks**
-2. Click **Add Disk**
-3. Settings:
-   - **Name**: `obh-data`
-   - **Mount Path**: `/var/data`
-   - **Size**: 1 GB (plenty for photos + database)
-
-### Step 5: Set environment variables
-In the Render dashboard → **Environment** tab, add these:
-
-| Key | Value |
-|-----|-------|
-| `SECRET_KEY` | (generate one — run `python3 -c "import secrets; print(secrets.token_hex(32))"`) |
-| `FLASK_ENV` | `production` |
-| `RENDER_DISK_PATH` | `/var/data` |
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | (paste the entire contents of your `omegabetaeta-*.json` service account file) |
-| `PORTAL_CALENDAR_ID` | (your portal calendar ID from .env) |
-| `PUBLIC_CALENDAR_ID` | (your public calendar ID from .env) |
-| `EMAIL_ADDRESS` | `omegabetaeta@umich.edu` |
-| `EMAIL_PASSWORD` | (your app password) |
-| `SITE_URL` | `https://omegabetaeta.onrender.com` (or your custom domain) |
-
-### Step 6: Initialize the database (first deploy only)
-After the first deploy, open the **Shell** tab in Render and run:
+### Step 4: Create the .env file on the server
 ```bash
+# As the obh user, in /home/obh/omegabetaeta:
+cp deploy/.env.example .env
+nano .env   # fill in real values
+```
+You need:
+- `SECRET_KEY` — generate with `python3 -c "import secrets; print(secrets.token_hex(32))"`
+- `PORTAL_CALENDAR_ID` / `PUBLIC_CALENDAR_ID` — from your local `.env`
+- `EMAIL_PASSWORD` — your app password
+- `SERVICE_ACCOUNT_FILE` — path to the Google service account JSON
+
+### Step 5: Copy the Google service account JSON to the server
+```bash
+# From your laptop (not SSH'd in):
+scp -i "Jawad.pem" omegabetaeta-*.json ec2-user@ec2-18-119-117-254.us-east-2.compute.amazonaws.com:/tmp/sa.json
+
+# Then SSH in and move it:
+./bin/ssh-server
+sudo mv /tmp/sa.json /home/obh/omegabetaeta/service-account.json
+sudo chown obh:obh /home/obh/omegabetaeta/service-account.json
+sudo chmod 600 /home/obh/omegabetaeta/service-account.json
+```
+
+### Step 6: Initialize the database
+```bash
+# SSH'd in as obh:
+sudo -u obh -i
+cd omegabetaeta
+source env/bin/activate
 ./bin/obhdb fill
 ```
-This creates the database and populates it with brothers/roles. You only do this once — the persistent disk keeps it alive across deploys.
 
-### Step 7: Custom domain (optional)
-1. In Render → **Settings → Custom Domains**, add `omegabetaeta.org`
-2. In your domain registrar's DNS settings, add the CNAME record Render gives you
-3. Render auto-provisions an SSL certificate
+### Step 7: Start the app
+```bash
+sudo systemctl start obhapp
+sudo systemctl status obhapp   # should say "active (running)"
+```
+Visit `http://YOUR_EC2_IP` — you should see the site.
+
+### Step 8: Set up SSL (optional, when you have a domain)
+```bash
+sudo certbot --nginx -d omegabetaeta.org -d www.omegabetaeta.org
+```
+Certbot auto-renews. Point your domain's DNS A record to the EC2 public IP.
+
+### Step 9: Set up GitHub Actions (auto-deploy on push)
+1. Go to your GitHub repo → **Settings → Secrets and Variables → Actions**
+2. Add these repository secrets:
+   - `EC2_HOST` = `ec2-18-119-117-254.us-east-2.compute.amazonaws.com` (your instance DNS)
+   - `EC2_SSH_KEY` = paste the **entire contents** of your `.pem` private key file
+3. Also give the `obh` user permission to restart the service:
+```bash
+# SSH into server:
+echo "obh ALL=(root) NOPASSWD: /bin/systemctl restart obhapp" | sudo tee /etc/sudoers.d/obh-restart
+```
+4. Push to `main` — Actions will SSH in and deploy automatically.
 
 ---
 
 ## Maintenance Guide (for future board members)
 
 ### To update the website:
-1. Edit code locally
-2. `git add . && git commit -m "description" && git push`
-3. Render auto-deploys. Done.
-
-### To add brothers:
-Use the portal — Board page → manage members. No code needed.
-
-### To rebuild the database (nuclear option):
-Open Render **Shell** tab:
 ```bash
-./bin/obhdb fill
+git add . && git commit -m "description" && git push
 ```
-**Warning**: this resets ALL data (brothers, gallery, messages, etc.) to defaults.
+GitHub Actions auto-deploys. Done.
 
-### To check logs:
-Render dashboard → **Logs** tab. Shows live server output and errors.
+### To SSH in manually:
+```bash
+./bin/ssh-server
+```
 
-### To restart:
-Render dashboard → **Manual Deploy → Clear build cache & deploy**.
+### To check server status:
+```bash
+./bin/ssh-server "sudo systemctl status obhapp"
+```
 
-### Environment variables:
-If email stops working (password expired) or calendar IDs change, update them in Render **Environment** tab. No code changes needed.
+### To view logs:
+```bash
+./bin/ssh-server "sudo journalctl -u obhapp -n 50 --no-pager"
+```
+
+### To restart the app:
+```bash
+./bin/ssh-server "sudo systemctl restart obhapp"
+```
+
+### To rebuild the database (nuclear — resets ALL data):
+```bash
+./bin/ssh-server
+sudo -u obh -i
+cd omegabetaeta && source env/bin/activate
+./bin/obhdb fill
+sudo systemctl restart obhapp
+```
 
 ---
 
-## Code changes already made
+## Files created/modified
 
-Three files were modified to support Render deployment:
-
-1. **`obhapp/config.py`** — `SECRET_KEY` reads from env var (falls back to dev key). `UPLOAD_FOLDER` and `DATABASE_FILENAME` use `RENDER_DISK_PATH` when set (persistent disk). `DEBUG` mode off in production.
-
-2. **`obhapp/__init__.py`** — Accepts `GOOGLE_SERVICE_ACCOUNT_JSON` env var as alternative to a file on disk (writes it to a temp file at startup). No more need to manually place the JSON file on the server.
-
-3. **`render.yaml`** — Blueprint file so Render can auto-configure the service. Optional but convenient.
+| File | Purpose |
+|------|---------|
+| `bin/ssh-server` | SSH convenience script — finds your key and connects |
+| `deploy/server-setup.sh` | One-time server config (nginx, systemd, users) |
+| `deploy/deploy.sh` | Pulls code + restarts app (called by GitHub Actions) |
+| `deploy/.env.example` | Template for server environment variables |
+| `.github/workflows/deploy.yml` | GitHub Actions workflow — deploy on push to main |
+| `obhapp/config.py` | Updated — reads SECRET_KEY from env var |
+| `obhapp/__init__.py` | Updated — debug off in production, JSON env var support |

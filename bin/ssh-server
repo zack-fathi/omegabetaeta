@@ -1,0 +1,15 @@
+#!/bin/bash
+# SSH into the OBH production server.
+# Usage: ./bin/ssh-server
+#
+# If your key isn't in ~/.ssh/, set OBH_KEY:
+#   OBH_KEY=~/path/to/key.pem ./bin/ssh-server
+
+set -euo pipefail
+
+HOST="ec2-18-119-117-254.us-east-2.compute.amazonaws.com"
+USER="ec2-user"
+KEY="Jawad.pem"
+
+echo "→ Connecting to $USER@$HOST with key $KEY"
+ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "$USER@$HOST" "$@"

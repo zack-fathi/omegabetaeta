@@ -12,14 +12,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY',
     b'\xbf\x8d\x9d\xc6\xd9\x0c\xf3\x97}\x85tZ"\x92\xf6\r\xca\xaf\x8f\x14\xf7\xd8V\xd6')
 SESSION_COOKIE_NAME = 'login'
 
-# When deployed on Render with a persistent disk, use that path.
-# Locally, use var/ relative to the project root.
+# Data directory: on the server, /home/obh/omegabetaeta/var. Locally, var/.
 OBHAPP_ROOT = pathlib.Path(__file__).resolve().parent.parent
-_DISK_PATH = os.environ.get('RENDER_DISK_PATH')
-if _DISK_PATH:
-    _DATA_DIR = pathlib.Path(_DISK_PATH)
-else:
-    _DATA_DIR = OBHAPP_ROOT / 'var'
+_DATA_DIR = OBHAPP_ROOT / 'var'
 
 # File Upload
 UPLOAD_FOLDER = _DATA_DIR / 'uploads'

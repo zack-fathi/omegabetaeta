@@ -34,7 +34,7 @@ def inject_user_roles():
 
 
 # Google Calendar integration via service account (calendars stay private)
-# Supports either a file path (local dev) or raw JSON content (Render env var)
+# Supports either a file path (local/.env) or raw JSON string (env var on server)
 SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 _SERVICE_ACCOUNT_JSON = os.getenv('GOOGLE_SERVICE_ACCOUNT_JSON')
 
