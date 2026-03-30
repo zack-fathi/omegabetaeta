@@ -963,6 +963,31 @@ h1, h2, h3, h4, h5, h6 {
   .site-logo-text span {
     font-size: 0.95rem;
   }
+  /* Calendar mobile */
+  .calendar-card {
+    padding: 0.75rem;
+  }
+  .calendar-hero {
+    padding: 2.5rem 1rem 1.5rem;
+  }
+  .calendar-hero .lead {
+    font-size: 0.9rem;
+  }
+  .fc-toolbar-title {
+    font-size: 1rem !important;
+  }
+  .fc .fc-button {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .fc .fc-toolbar .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 /* ─── Animations ─── */

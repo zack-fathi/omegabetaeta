@@ -657,6 +657,15 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(255,255,255,0.35);
 }
 
+.directory-card-contacts {
+  font-size: 0.72rem;
+  color: rgba(201,168,76,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
 .directory-no-results {
   text-align: center;
   padding: 3rem 1rem;
@@ -1609,6 +1618,53 @@ h1, h2, h3, h4, h5, h6 {
   }
   .portal-welcome h1 {
     font-size: 1.35rem;
+  }
+  .portal-card {
+    padding: 1rem;
+  }
+  .portal-welcome {
+    padding: 1.25rem;
+  }
+  .profile-badge .profile-name {
+    display: none;
+  }
+  .profile-badge {
+    padding: 0.35rem;
+    border-radius: 50%;
+  }
+  .portal-calendar-card .card-body {
+    padding: 0.75rem;
+  }
+  .portal-calendar-card .card-header {
+    padding: 0.75rem 1rem;
+  }
+  .portal-calendar-card .card-header h2 {
+    font-size: 1.05rem;
+  }
+  /* FullCalendar mobile: switch to list view-friendly sizing */
+  .portal-main .fc-toolbar-title {
+    font-size: 1rem !important;
+  }
+  .portal-main .fc .fc-button {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
+  .portal-main .fc .fc-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .portal-main .fc .fc-toolbar .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+  .help-section {
+    padding: 1rem 1.25rem;
+  }
+  .help-nav-list li a {
+    padding: 0.5rem 0.6rem;
+  }
+  .help-nav-desc {
+    display: none;
   }
 }
 

@@ -35,9 +35,17 @@
                 <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
             </div>
             <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-obh w-100">Send Message</button>
+                <button type="submit" class="btn btn-obh w-100" id="contactSubmitBtn">Send Message</button>
             </div>
         </form>
+        <script>
+        document.querySelector('form[action="/contact/"]').addEventListener('submit', function(e) {
+            var btn = document.getElementById('contactSubmitBtn');
+            if (btn.disabled) { e.preventDefault(); return; }
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+        });
+        </script>
     </div>
 </div>
 {% endblock %}

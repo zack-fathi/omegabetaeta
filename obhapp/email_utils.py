@@ -60,6 +60,10 @@ def send_default_password_email(to_email, fullname, username, password):
         <p style="text-align: center; margin-top: 24px;">
             <a href="{SITE_URL}/login/" style="background: #c9a84c; color: #1a1a2e; padding: 12px 32px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block;">Sign In to Portal</a>
         </p>
+        <p style="text-align: center; font-size: 13px; color: #aaa; margin-top: 12px;">
+            If the button above doesn't work, copy and paste this link into your browser:<br>
+            <a href="{SITE_URL}/login/" style="color: #c9a84c; word-break: break-all;">{SITE_URL}/login/</a>
+        </p>
         <hr style="border: none; border-top: 1px solid #2a2a4a; margin: 24px 0;">
         <p style="font-size: 12px; color: #888;">This is an automated message from the ΩBH Portal. Do not reply to this email.</p>
     </div>

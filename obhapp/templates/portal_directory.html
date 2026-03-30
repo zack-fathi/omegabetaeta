@@ -67,6 +67,7 @@
                data-name="{{ brother['fullname']|lower }}"
                data-lion="{{ (brother['lion_name'] or '')|lower }}"
                data-uniqname="{{ (brother['uniqname'] or '')|lower }}"
+               data-contacts="{{ (brother['contacts'] or '')|lower }}"
                data-id="{{ brother['user_id'] }}"
                data-linenum="{{ brother['line_num'] }}"
                data-line="{{ line_name }}"
@@ -80,6 +81,9 @@
                         <span class="directory-card-name">{{ brother['fullname'] }}</span>
                         <span class="directory-card-detail">#{{ brother['line_num'] }} · {{ brother['lion_name'] or '—' }}</span>
                         <span class="directory-card-detail directory-card-sub">ID: {{ brother['user_id'] }} · {{ brother['uniqname'] or '—' }}</span>
+                        {% if brother['contacts'] and brother['contacts'] != 'N/A' %}
+                        <span class="directory-card-detail directory-card-contacts"><i class="fas fa-address-card" style="font-size:0.7rem; opacity:0.5; margin-right:2px;"></i>{{ brother['contacts'] }}</span>
+                        {% endif %}
                     </div>
                 </div>
             </a>
@@ -115,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = card.dataset.name;
             const lion = card.dataset.lion;
             const uniqname = card.dataset.uniqname;
+            const contacts = card.dataset.contacts;
             const id = card.dataset.id;
             const linenum = card.dataset.linenum;
             const line = card.dataset.line;
@@ -124,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name.includes(query) ||
                 lion.includes(query) ||
                 uniqname.includes(query) ||
+                contacts.includes(query) ||
                 id.includes(query) ||
                 linenum === query;
 

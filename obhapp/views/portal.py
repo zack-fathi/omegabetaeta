@@ -441,7 +441,7 @@ def show_portal_directory():
     con = obhapp.model.get_db()
     cur = con.execute(
         "SELECT b.user_id, b.fullname, b.username, b.line, b.line_num, "
-        "ln.name AS lion_name, b.uniqname, b.profile_picture, b.active "
+        "ln.name AS lion_name, b.uniqname, b.profile_picture, b.active, b.contacts "
         "FROM brothers b "
         "LEFT JOIN lion_names ln ON b.lion_name_id = ln.lion_name_id "
         "ORDER BY b.line ASC, b.line_num ASC;",
