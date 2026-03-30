@@ -120,24 +120,30 @@
           <button
             class="navbar-toggler"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#navbarOffcanvas"
+            aria-controls="navbarOffcanvas"
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav site-nav">
-              <a class="nav-link" href="/about/">About</a>
-              <a class="nav-link" href="/brothers/">Brothers</a>
-              <a class="nav-link" href="/gallery/">Gallery</a>
-              <a class="nav-link" href="/calendar/">Calendar</a>
-              <a class="nav-link" href="/contact/">Contact</a>
-              <a class="nav-link" href="/donate/">Donate</a>
-              <a class="nav-link" href="/apply/">Apply</a>
-              <a class="nav-link" href="/portal/">Portal</a>
+          <div class="offcanvas offcanvas-end offcanvas-lg" tabindex="-1" id="navbarOffcanvas" aria-labelledby="navbarOffcanvasLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="navbarOffcanvasLabel">Menu</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <div class="navbar-nav site-nav ms-auto">
+                <a class="nav-link" href="/about/">About</a>
+                <a class="nav-link" href="/brothers/">Brothers</a>
+                <a class="nav-link" href="/gallery/">Gallery</a>
+                <a class="nav-link" href="/calendar/">Calendar</a>
+                <a class="nav-link" href="/contact/">Contact</a>
+                <a class="nav-link" href="/donate/">Donate</a>
+                <a class="nav-link" href="/apply/">Apply</a>
+                <a class="nav-link" href="/portal/">Portal</a>
+              </div>
             </div>
           </div>
         </nav>

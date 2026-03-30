@@ -473,6 +473,25 @@ h1, h2, h3, h4, h5, h6 {
   gap: 0.75rem;
 }
 
+@media (max-width: 576px) {
+  .brothers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  .brothers-card-img {
+    height: 150px;
+  }
+  .brothers-card-body {
+    padding: 0.6rem 0.4rem;
+  }
+  .brothers-card-name {
+    font-size: 0.82rem;
+  }
+  .brothers-card-detail {
+    font-size: 0.7rem;
+  }
+}
+
 .brothers-card-link {
   text-decoration: none;
 }
@@ -885,6 +904,34 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 280px;
   border-radius: 8px;
   border: 2px solid var(--obh-border);
+}
+
+/* ─── Mobile Offcanvas Nav ─── */
+.offcanvas {
+  background: var(--obh-dark) !important;
+  border-left: 1px solid var(--obh-border) !important;
+  max-width: 280px;
+}
+
+.offcanvas-header {
+  border-bottom: 1px solid var(--obh-border);
+  padding: 1rem 1.25rem;
+}
+
+.offcanvas-title {
+  font-family: 'Playfair Display', serif;
+  color: var(--obh-gold);
+  font-size: 1.1rem;
+}
+
+.offcanvas-body .site-nav .nav-link {
+  padding: 0.75rem 1.25rem !important;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--obh-border);
+}
+
+.offcanvas-body .site-nav .nav-link:last-child {
+  border-bottom: none;
 }
 
 /* ─── Responsive ─── */
