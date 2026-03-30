@@ -1914,6 +1914,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Thumbnail */
 .gallery-item-thumb {
+  position: relative;
   width: 72px;
   height: 54px;
   border-radius: 6px;
@@ -2149,10 +2150,6 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0.15rem 0.35rem;
   border-radius: 3px;
   line-height: 1;
-}
-
-.gallery-item-thumb {
-  position: relative;
 }
 
 /* ─── Legend ─── */
