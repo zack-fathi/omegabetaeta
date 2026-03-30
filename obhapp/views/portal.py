@@ -305,18 +305,34 @@ def _set_default_password(con, user_id):
     return plain_pw, bro['username'], bro['fullname'], email
 
 
+def get_user_permission_level(user_id=None):
+    """Get the minimum (highest privilege) permission level for a user. Returns 99 if no roles."""
+    if user_id is None:
+        user_id = flask.session.get("user_id")
+    if not user_id:
+        return 99
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT MIN(permission_level) as min_level FROM roles WHERE user_id = ?",
+        (user_id,)
+    )
+    row = cur.fetchone()
+    return row["min_level"] if row and row["min_level"] is not None else 99
+
+
+def has_permission(required_level, user_id=None):
+    """Check if user has at least the required permission level (lower number = more privilege)."""
+    return get_user_permission_level(user_id) <= required_level
+
+
 @obhapp.app.route('/portal/directory/<name>/send-password/', methods=['POST'])
 def send_brother_password(name):
     """Generate a new default password for a brother and email it."""
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
-    con = obhapp.model.get_db()
-
-    # Check permissions — Admin or President only
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President"]):
+    if not has_permission(1):
         return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
 
     cur = con.execute("SELECT user_id, fullname, uniqname FROM brothers WHERE username = ?", (name,))
     bro = cur.fetchone()
@@ -354,13 +370,9 @@ def send_all_passwords():
     """Send default passwords to all brothers who haven't been emailed yet."""
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
-    con = obhapp.model.get_db()
-
-    # Check permissions — Admin or President only
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President"]):
+    if not has_permission(1):
         return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
 
     cur = con.execute(
         "SELECT user_id, fullname, uniqname, username FROM brothers "
@@ -404,12 +416,9 @@ def get_unsent_brothers():
     """Get list of brothers who haven't been sent their password email or haven't changed password."""
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
-    con = obhapp.model.get_db()
-
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President"]):
+    if not has_permission(1):
         return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
 
     cur = con.execute(
         "SELECT user_id, fullname, username, uniqname, email_sent, password_changed FROM brothers "
@@ -442,16 +451,8 @@ def show_portal_directory():
             line_dict[line_name] = [dict(brother) for brother in brothers if brother["line"] == i]
 
     # Check permissions
-    can_edit = False
-    can_manage_passwords = False
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
-                                      "External Vice President", "Director of Recruitment",
-                                      "Director of External"]):
-        can_edit = True
-    if any(r in user_roles for r in ["Admin", "President"]):
-        can_manage_passwords = True
+    can_edit = has_permission(4)
+    can_manage_passwords = has_permission(1)
 
     # Count brothers needing attention (unsent email or unchanged password)
     unsent_count = 0
@@ -498,16 +499,8 @@ def show_directory_brother(name):
     lion_names = cur.fetchall()
 
     # Check permissions
-    can_edit = False
-    can_manage_passwords = False
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
-                                      "External Vice President", "Director of Recruitment",
-                                      "Director of External"]):
-        can_edit = True
-    if any(r in user_roles for r in ["Admin", "President"]):
-        can_manage_passwords = True
+    can_edit = has_permission(4)
+    can_manage_passwords = has_permission(1)
 
     return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit,
                                  can_manage_passwords=can_manage_passwords, lion_names=lion_names)
@@ -519,11 +512,7 @@ def edit_member(name):
     con = obhapp.model.get_db()
 
     # Check permissions
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President", "Internal Vice President",
-                                          "External Vice President", "Director of Recruitment",
-                                          "Director of External"]):
+    if not has_permission(4):
         flask.flash("No permission.", "error")
         return flask.redirect(flask.url_for("show_directory_brother", name=name))
 
@@ -582,11 +571,9 @@ def delete_member(name):
         return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
 
-    # Check permissions - admin only for delete
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if 'Admin' not in user_roles:
-        flask.flash("Only admins can delete members.", "error")
+    # Check permissions - Level 1 only for delete
+    if not has_permission(1):
+        flask.flash("No permission to delete members.", "error")
         return flask.redirect(flask.url_for("show_directory_brother", name=name))
 
     cur = con.execute("SELECT user_id, fullname FROM brothers WHERE username = ?", (name,))
@@ -635,19 +622,8 @@ def show_portal_recruits():
         return flask.redirect(flask.url_for("show_login"))
     con = obhapp.model.get_db()
 
-    # only show certain buttons if user has the right permissions
-    cur = con.execute(
-        "SELECT role_name FROM roles "
-        "WHERE user_id = ? ",
-        (flask.session["user_id"],)
-    )
-
-    # currently up to president
-    role = cur.fetchone()
-    can_change = False
-    if role:
-        role = role["role_name"]
-        can_change = role in ["Admin", "President", "Director of Recruitment"]
+    # Levels 1-3 can manage recruits
+    can_change = has_permission(3)
 
     cur = con.execute(
         "SELECT r.fullname, r.uniqname, r.email, r.accept, r.line_num, "
@@ -877,26 +853,21 @@ def upload():
 
 
 def check_gallery_permission():
-    """Check if current user has gallery management permission."""
+    """Check if current user has gallery management permission (any board member, Level 1-4)."""
     if "user_id" not in flask.session:
         return False
-    con = obhapp.model.get_db()
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    role = cur.fetchone()
-    return role and role["role_name"] in ["Admin", "President", "Vice President", "Director of External"]
+    return has_permission(4)
 
 
 @obhapp.app.route('/portal/gallery/', methods=['GET'])
 def gallery_manage():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("show_login"))
-    if not check_gallery_permission():
-        flask.flash("You don't have permission to manage the gallery.", "error")
-        return flask.redirect(flask.url_for("show_portal"))
+    can_edit = check_gallery_permission()
     con = obhapp.model.get_db()
-    cur = con.execute("SELECT filename, desc, sort_order, carousel, carousel_focus FROM gallery ORDER BY sort_order")
+    cur = con.execute("SELECT filename, desc, sort_order, carousel, carousel_focus, visible FROM gallery ORDER BY sort_order")
     images = cur.fetchall()
-    return flask.render_template('portal_gallery.html', images=images)
+    return flask.render_template('portal_gallery.html', images=images, can_edit=can_edit)
 
 
 @obhapp.app.route('/portal/gallery/upload/', methods=['POST'])
@@ -1076,6 +1047,33 @@ def gallery_carousel_focus():
     return flask.jsonify(success=True)
 
 
+@obhapp.app.route('/portal/gallery/visibility/', methods=['POST'])
+def gallery_visibility_toggle():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    filename = data.get('filename')
+    visible = data.get('visible')
+    if not filename or visible is None:
+        return flask.jsonify(success=False, error="Missing data"), 400
+
+    con = obhapp.model.get_db()
+    con.execute("UPDATE gallery SET visible = ? WHERE filename = ?", (1 if visible else 0, filename))
+    con.commit()
+
+    action = "Shown in" if visible else "Hidden from"
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"{action} gallery: {filename}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
+
+
 def get_active_brothers():
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
@@ -1133,18 +1131,18 @@ def assign_roles():
     connection = obhapp.model.get_db()
     cursor = connection.cursor()
 
-    # Get board roles (non-Admin)
+    # Get board roles (non-Admin) with permission levels
     cursor.execute(
-        "SELECT r.role_id, r.role_name, r.user_id, b.fullname, b.profile_picture "
+        "SELECT r.role_id, r.role_name, r.permission_level, r.user_id, b.fullname, b.profile_picture "
         "FROM roles r LEFT JOIN brothers b ON r.user_id = b.user_id "
         "WHERE r.role_name != 'Admin' "
-        "ORDER BY r.role_id"
+        "ORDER BY r.permission_level, r.role_id"
     )
     roles = cursor.fetchall()
 
     # Get admins
     cursor.execute(
-        "SELECT r.role_id, r.user_id, b.fullname, b.profile_picture, b.username "
+        "SELECT r.role_id, r.user_id, r.permission_level, b.fullname, b.profile_picture, b.username "
         "FROM roles r JOIN brothers b ON r.user_id = b.user_id "
         "WHERE r.role_name = 'Admin' "
         "ORDER BY b.fullname"
@@ -1158,14 +1156,10 @@ def assign_roles():
     all_brothers = cursor.fetchall()
 
     # Check if current user can edit
-    can_change = False
-    is_admin = False
-    cursor.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session['user_id'],))
-    user_roles = [row["role_name"] for row in cursor.fetchall()]
-    if 'Admin' in user_roles or 'President' in user_roles:
-        can_change = True
-    if 'Admin' in user_roles:
-        is_admin = True
+    can_change = has_permission(1)
+
+    # Permission level labels for display
+    permission_labels = {1: "Executive", 2: "Vice President", 3: "Director", 4: "Board Member"}
 
     return flask.render_template(
         'portal_board.html',
@@ -1174,7 +1168,7 @@ def assign_roles():
         roles=roles,
         admins=admins,
         can_change=can_change,
-        is_admin=is_admin
+        permission_labels=permission_labels
     )
 
 
@@ -1182,11 +1176,9 @@ def assign_roles():
 def add_admin():
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(1):
+        return flask.jsonify(success=False, error="No permission"), 403
     con = obhapp.model.get_db()
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if 'Admin' not in user_roles:
-        return flask.jsonify(success=False, error="Only admins can manage admins"), 403
 
     data = flask.request.get_json()
     new_admin_id = data.get('user_id')
@@ -1204,7 +1196,7 @@ def add_admin():
     if cur.fetchone():
         return flask.jsonify(success=False, error="Already an admin"), 400
 
-    con.execute("INSERT INTO roles (role_name, user_id) VALUES ('Admin', ?)", (new_admin_id,))
+    con.execute("INSERT INTO roles (role_name, permission_level, user_id) VALUES ('Admin', 1, ?)", (new_admin_id,))
     con.commit()
 
     con.execute(
@@ -1230,11 +1222,9 @@ def add_admin():
 def remove_admin():
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(1):
+        return flask.jsonify(success=False, error="No permission"), 403
     con = obhapp.model.get_db()
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if 'Admin' not in user_roles:
-        return flask.jsonify(success=False, error="Only admins can manage admins"), 403
 
     data = flask.request.get_json()
     role_id = data.get('role_id')
@@ -1266,6 +1256,134 @@ def remove_admin():
     con.commit()
 
     return flask.jsonify(success=True)
+
+
+@obhapp.app.route('/portal/board/role/add/', methods=['POST'])
+def add_role():
+    """Add a new board role (Level 1 only)."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(1):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    role_name = (data.get('role_name') or '').strip()
+    permission_level = data.get('permission_level', 4)
+
+    if not role_name:
+        return flask.jsonify(success=False, error="Role name is required"), 400
+
+    # Validate permission level
+    try:
+        permission_level = int(permission_level)
+    except (ValueError, TypeError):
+        return flask.jsonify(success=False, error="Invalid permission level"), 400
+
+    if permission_level < 1 or permission_level > 4:
+        return flask.jsonify(success=False, error="Permission level must be 1–4"), 400
+
+    # Cannot create Admin or President roles
+    if role_name.lower() in ['admin', 'president']:
+        return flask.jsonify(success=False, error="Cannot create Admin or President roles"), 400
+
+    con = obhapp.model.get_db()
+    con.execute(
+        "INSERT INTO roles (role_name, permission_level) VALUES (?, ?)",
+        (role_name, permission_level)
+    )
+    con.commit()
+
+    cur = con.execute("SELECT role_id FROM roles WHERE rowid = last_insert_rowid()")
+    new_role = cur.fetchone()
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Added board role: {role_name} (Level {permission_level})")
+    )
+    con.commit()
+
+    return flask.jsonify(
+        success=True,
+        role_id=new_role["role_id"],
+        role_name=role_name,
+        permission_level=permission_level
+    )
+
+
+@obhapp.app.route('/portal/board/role/remove/', methods=['POST'])
+def remove_role():
+    """Remove a board role (Level 1 only). Cannot remove Admin or President."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(1):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    role_id = data.get('role_id')
+    if not role_id:
+        return flask.jsonify(success=False, error="No role specified"), 400
+
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT role_name, permission_level FROM roles WHERE role_id = ?", (role_id,))
+    role = cur.fetchone()
+    if not role:
+        return flask.jsonify(success=False, error="Role not found"), 404
+
+    if role['role_name'] in ('Admin', 'President'):
+        return flask.jsonify(success=False, error="Cannot remove Admin or President roles"), 400
+
+    con.execute("DELETE FROM roles WHERE role_id = ?", (role_id,))
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Removed board role: {role['role_name']}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
+
+
+@obhapp.app.route('/portal/board/role/permission/', methods=['POST'])
+def change_role_permission():
+    """Change a role's permission level (Level 1 only). Cannot change Admin or President."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(1):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    role_id = data.get('role_id')
+    new_level = data.get('permission_level')
+
+    if not role_id or new_level is None:
+        return flask.jsonify(success=False, error="Missing data"), 400
+
+    try:
+        new_level = int(new_level)
+    except (ValueError, TypeError):
+        return flask.jsonify(success=False, error="Invalid permission level"), 400
+
+    if new_level < 1 or new_level > 4:
+        return flask.jsonify(success=False, error="Permission level must be 1–4"), 400
+
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT role_name, permission_level FROM roles WHERE role_id = ?", (role_id,))
+    role = cur.fetchone()
+    if not role:
+        return flask.jsonify(success=False, error="Role not found"), 404
+
+    if role['role_name'] in ('Admin', 'President'):
+        return flask.jsonify(success=False, error="Cannot change Admin or President permission level"), 400
+
+    old_level = role['permission_level']
+    con.execute("UPDATE roles SET permission_level = ? WHERE role_id = ?", (new_level, role_id))
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Changed {role['role_name']} permission level from {old_level} to {new_level}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
+
 
 @obhapp.app.route('/portal/messages/')
 def show_messages():
@@ -1387,10 +1505,8 @@ def show_lion_names():
             brothers_by_lion[lid] = []
         brothers_by_lion[lid].append(dict(bro))
 
-    # Check permissions
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    can_edit = any(r in user_roles for r in ["Admin", "President"])
+    # Check permissions — Level 1-2 can edit lion names
+    can_edit = has_permission(2)
 
     return flask.render_template(
         "portal_lion_names.html",
@@ -1403,12 +1519,9 @@ def show_lion_names():
 def edit_lion_name():
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
-    con = obhapp.model.get_db()
-
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President"]):
+    if not has_permission(2):
         return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
 
     data = flask.request.get_json()
     lion_name_id = data.get("lion_name_id")
@@ -1429,12 +1542,9 @@ def edit_lion_name():
 def add_lion_name():
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
-    con = obhapp.model.get_db()
-
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President"]):
+    if not has_permission(2):
         return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
 
     data = flask.request.get_json()
     name = (data.get("name") or "").strip()
@@ -1464,12 +1574,9 @@ def add_lion_name():
 def delete_lion_name():
     if "user_id" not in flask.session:
         return flask.jsonify(success=False, error="Not logged in"), 401
-    con = obhapp.model.get_db()
-
-    cur = con.execute("SELECT role_name FROM roles WHERE user_id = ?", (flask.session["user_id"],))
-    user_roles = [row["role_name"] for row in cur.fetchall()]
-    if not any(r in user_roles for r in ["Admin", "President"]):
+    if not has_permission(2):
         return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
 
     data = flask.request.get_json()
     lion_name_id = data.get("lion_name_id")

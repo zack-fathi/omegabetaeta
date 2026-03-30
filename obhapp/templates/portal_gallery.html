@@ -2,7 +2,16 @@
 
 {% block content %}
 <div class="container-fluid gallery-manage">
-  <h2 class="portal-heading text-center">Manage Gallery</h2>
+  <h2 class="portal-heading text-center">{% if can_edit %}Manage {% endif %}Gallery</h2>
+
+  {% if can_edit %}
+  <!-- Controls Legend -->
+  <div class="gallery-legend">
+    <span class="gallery-legend-item"><i class="fas fa-grip-vertical"></i> Drag to reorder</span>
+    <span class="gallery-legend-item"><i class="fas fa-star gallery-legend-gold"></i> Carousel (homepage hero)</span>
+    <span class="gallery-legend-item"><i class="fas fa-eye"></i> Visible in gallery page</span>
+    <span class="gallery-legend-item"><i class="fas fa-sliders-h"></i> Vertical focus crop</span>
+  </div>
 
   <!-- Upload Section -->
   <div class="gallery-upload-zone" id="uploadZone">
@@ -24,23 +33,29 @@
     </div>
     <div id="uploadItems"></div>
   </div>
+  {% endif %}
 
   <!-- Gallery Grid -->
   <div class="gallery-manage-header">
     <h5 class="gallery-section-title"><i class="fas fa-images me-2"></i>Gallery Photos <span class="photo-count">({{ images|length }})</span></h5>
-    <p class="gallery-hint"><i class="fas fa-grip-vertical me-1"></i>Drag to reorder &bull; Click description to edit</p>
   </div>
 
   <div id="galleryGrid" class="gallery-manage-grid">
     {% for image in images %}
-    <div class="gallery-manage-item" data-filename="{{ image['filename'] }}" data-carousel="{{ image['carousel'] }}" data-focus="{{ image['carousel_focus'] }}">
+    <div class="gallery-manage-item{% if not image['visible'] %} gallery-item-hidden{% endif %}" data-filename="{{ image['filename'] }}" data-carousel="{{ image['carousel'] }}" data-focus="{{ image['carousel_focus'] }}" data-visible="{{ image['visible'] }}">
+      {% if can_edit %}
       <div class="gallery-item-drag-handle">
         <i class="fas fa-grip-vertical"></i>
       </div>
+      {% endif %}
       <div class="gallery-item-thumb">
         <img src="/uploads/{{ image['filename'] }}" alt="{{ image['desc'] }}" loading="lazy">
+        {% if can_edit and not image['visible'] %}
+        <span class="gallery-hidden-badge" title="Hidden from public gallery"><i class="fas fa-eye-slash"></i></span>
+        {% endif %}
       </div>
       <div class="gallery-item-info">
+        {% if can_edit %}
         <input
           type="text"
           class="gallery-item-desc"
@@ -49,25 +64,35 @@
           placeholder="Add description..."
           spellcheck="false"
         >
+        {% else %}
+        <span class="gallery-item-desc-text">{{ image['desc'] or 'No description' }}</span>
+        {% endif %}
         <div class="gallery-item-meta">
           <span class="order-badge">#{{ loop.index }}</span>
         </div>
       </div>
-      <div class="gallery-item-carousel-controls">
-        <label class="carousel-toggle" title="Show in homepage carousel">
-          <input type="checkbox" class="carousel-checkbox" data-filename="{{ image['filename'] }}" {% if image['carousel'] %}checked{% endif %}>
-          <span class="carousel-toggle-slider"></span>
-        </label>
-        <div class="carousel-focus-control {% if not image['carousel'] %}hidden{% endif %}">
-          <input type="range" class="carousel-focus-range" min="0" max="100" value="{{ image['carousel_focus'] }}" data-filename="{{ image['filename'] }}" title="Vertical focus: {{ image['carousel_focus'] }}%">
-          <span class="carousel-focus-value">{{ image['carousel_focus'] }}%</span>
+      {% if can_edit %}
+      <div class="gallery-item-controls">
+        <!-- Carousel star -->
+        <button class="btn-carousel-star{% if image['carousel'] %} active{% endif %}" data-filename="{{ image['filename'] }}" title="{% if image['carousel'] %}Remove from carousel{% else %}Add to carousel{% endif %}">
+          <i class="fa{% if image['carousel'] %}s{% else %}r{% endif %} fa-star"></i>
+        </button>
+        <!-- Focus control (only visible when starred) -->
+        <div class="carousel-focus-control{% if not image['carousel'] %} hidden{% endif %}">
+          <input type="range" class="carousel-focus-range" min="0" max="100" value="{{ image['carousel_focus'] }}" data-filename="{{ image['filename'] }}" title="Vertical focus">
+          <input type="number" class="carousel-focus-input" min="0" max="100" value="{{ image['carousel_focus'] }}" data-filename="{{ image['filename'] }}" title="Focus %">
         </div>
-      </div>
-      <div class="gallery-item-actions">
-        <button class="btn-gallery-delete" onclick="deleteImage('{{ image['filename'] }}', this)" title="Delete photo">
+        <!-- Visibility toggle -->
+        <label class="visibility-toggle" title="{% if image['visible'] %}Hide from gallery page{% else %}Show in gallery page{% endif %}">
+          <input type="checkbox" class="visibility-checkbox" data-filename="{{ image['filename'] }}" {% if image['visible'] %}checked{% endif %}>
+          <span class="visibility-toggle-icon"><i class="fas fa-eye"></i></span>
+        </label>
+        <!-- Delete -->
+        <button class="btn-gallery-delete" onclick="deleteImage('{{ image['filename'] }}', this)" title="Delete permanently">
           <i class="fas fa-trash-alt"></i>
         </button>
       </div>
+      {% endif %}
     </div>
     {% endfor %}
   </div>
@@ -75,7 +100,7 @@
   {% if not images %}
   <div class="gallery-empty">
     <i class="fas fa-camera-retro"></i>
-    <p>No photos yet. Upload some above!</p>
+    <p>No photos yet.{% if can_edit %} Upload some above!{% endif %}</p>
   </div>
   {% endif %}
 </div>
@@ -84,6 +109,7 @@
 <div id="toast" class="gallery-toast"></div>
 
 <script>
+{% if can_edit %}
 document.addEventListener('DOMContentLoaded', function() {
   // ── Upload Zone ──
   const uploadZone = document.getElementById('uploadZone');
@@ -92,56 +118,51 @@ document.addEventListener('DOMContentLoaded', function() {
   const uploadItems = document.getElementById('uploadItems');
 
   uploadZone.addEventListener('click', () => fileInput.click());
-
-  uploadZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadZone.classList.add('drag-over');
-  });
-
-  uploadZone.addEventListener('dragleave', () => {
-    uploadZone.classList.remove('drag-over');
-  });
-
-  uploadZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadZone.classList.remove('drag-over');
-    handleFiles(e.dataTransfer.files);
-  });
-
-  fileInput.addEventListener('change', () => {
-    handleFiles(fileInput.files);
-    fileInput.value = '';
-  });
+  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', () => { uploadZone.classList.remove('drag-over'); });
+  uploadZone.addEventListener('drop', (e) => { e.preventDefault(); uploadZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); });
+  fileInput.addEventListener('change', () => { handleFiles(fileInput.files); fileInput.value = ''; });
 
   // ── Drag-and-drop reorder ──
   initSortable();
 
   // ── Inline description editing ──
   document.querySelectorAll('.gallery-item-desc').forEach(input => {
-    input.addEventListener('change', function() {
-      saveDescription(this.dataset.filename, this.value);
-    });
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
+    input.addEventListener('change', function() { saveDescription(this.dataset.filename, this.value); });
+    input.addEventListener('keydown', function(e) { if (e.key === 'Enter') this.blur(); });
+  });
+
+  // ── Carousel star buttons ──
+  document.querySelectorAll('.btn-carousel-star').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const filename = this.dataset.filename;
+      const isActive = this.classList.contains('active');
+      toggleCarousel(filename, !isActive, this);
     });
   });
 
-  // ── Carousel controls ──
-  document.querySelectorAll('.carousel-checkbox').forEach(cb => {
-    cb.addEventListener('change', function() {
-      toggleCarousel(this.dataset.filename, this.checked, this);
-    });
-  });
-
+  // ── Focus range + input sync ──
   document.querySelectorAll('.carousel-focus-range').forEach(range => {
-    range.addEventListener('input', function() {
-      this.closest('.carousel-focus-control').querySelector('.carousel-focus-value').textContent = this.value + '%';
-      this.title = 'Vertical focus: ' + this.value + '%';
+    const control = range.closest('.carousel-focus-control');
+    const numInput = control.querySelector('.carousel-focus-input');
+    range.addEventListener('input', function() { numInput.value = this.value; });
+    range.addEventListener('change', function() { saveCarouselFocus(this.dataset.filename, this.value); });
+  });
+  document.querySelectorAll('.carousel-focus-input').forEach(input => {
+    const control = input.closest('.carousel-focus-control');
+    const range = control.querySelector('.carousel-focus-range');
+    input.addEventListener('change', function() {
+      let v = Math.max(0, Math.min(100, parseInt(this.value) || 0));
+      this.value = v;
+      range.value = v;
+      saveCarouselFocus(this.dataset.filename, v);
     });
-    range.addEventListener('change', function() {
-      saveCarouselFocus(this.dataset.filename, this.value);
+  });
+
+  // ── Visibility toggles ──
+  document.querySelectorAll('.visibility-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+      toggleVisibility(this.dataset.filename, this.checked, this);
     });
   });
 });
@@ -152,37 +173,28 @@ const pendingFiles = [];
 function handleFiles(files) {
   const queue = document.getElementById('uploadQueue');
   const items = document.getElementById('uploadItems');
-
   for (const file of files) {
     if (!file.type.startsWith('image/')) continue;
     const id = 'upload-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
     pendingFiles.push({ id, file });
-
     const reader = new FileReader();
     reader.onload = function(e) {
       const item = document.createElement('div');
       item.className = 'upload-queue-item';
       item.id = id;
       item.innerHTML = `
-        <div class="upload-queue-thumb">
-          <img src="${e.target.result}" alt="Preview">
-        </div>
+        <div class="upload-queue-thumb"><img src="${e.target.result}" alt="Preview"></div>
         <div class="upload-queue-info">
           <span class="upload-queue-name">${escapeHtml(file.name)}</span>
           <input type="text" class="upload-queue-desc" placeholder="Enter description..." data-id="${id}">
         </div>
-        <div class="upload-queue-status">
-          <span class="upload-status-pending">Pending</span>
-        </div>
-        <button class="upload-queue-remove" onclick="removeFromQueue('${id}')">
-          <i class="fas fa-times"></i>
-        </button>
+        <div class="upload-queue-status"><span class="upload-status-pending">Pending</span></div>
+        <button class="upload-queue-remove" onclick="removeFromQueue('${id}')"><i class="fas fa-times"></i></button>
       `;
       items.appendChild(item);
     };
     reader.readAsDataURL(file);
   }
-
   queue.style.display = 'block';
 }
 
@@ -191,39 +203,30 @@ function removeFromQueue(id) {
   if (idx !== -1) pendingFiles.splice(idx, 1);
   const el = document.getElementById(id);
   if (el) el.remove();
-  if (pendingFiles.length === 0) {
-    document.getElementById('uploadQueue').style.display = 'none';
-  }
+  if (pendingFiles.length === 0) document.getElementById('uploadQueue').style.display = 'none';
 }
 
 async function uploadAll() {
   const btn = document.getElementById('uploadAllBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
-
   const toUpload = [...pendingFiles];
   for (const item of toUpload) {
     const el = document.getElementById(item.id);
     const descInput = el ? el.querySelector('.upload-queue-desc') : null;
     const description = descInput ? descInput.value : '';
     const statusEl = el ? el.querySelector('.upload-queue-status') : null;
-
     if (statusEl) statusEl.innerHTML = '<span class="upload-status-uploading"><i class="fas fa-spinner fa-spin"></i></span>';
-
     const formData = new FormData();
     formData.append('file', item.file);
     formData.append('description', description);
-
     try {
       const res = await fetch('/portal/gallery/upload/', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.success) {
         if (statusEl) statusEl.innerHTML = '<span class="upload-status-done"><i class="fas fa-check"></i></span>';
-        addImageToGrid(data.filename, data.description, data.sort_order);
-        // Remove from pending
         const idx = pendingFiles.findIndex(f => f.id === item.id);
         if (idx !== -1) pendingFiles.splice(idx, 1);
-        // Fade out after a moment
         setTimeout(() => { if (el) el.classList.add('fade-out'); }, 600);
         setTimeout(() => { if (el) el.remove(); }, 900);
       } else {
@@ -233,112 +236,33 @@ async function uploadAll() {
       if (statusEl) statusEl.innerHTML = '<span class="upload-status-error"><i class="fas fa-exclamation-triangle"></i></span>';
     }
   }
-
   btn.disabled = false;
   btn.innerHTML = '<i class="fas fa-upload me-1"></i> Upload All';
-
   if (pendingFiles.length === 0) {
-    setTimeout(() => { document.getElementById('uploadQueue').style.display = 'none'; }, 1000);
+    showToast('Photos uploaded successfully');
+    setTimeout(() => { window.location.reload(); }, 1000);
+    return;
   }
-
   updatePhotoCount();
   showToast('Photos uploaded successfully');
 }
 
-function addImageToGrid(filename, description, sortOrder) {
-  const grid = document.getElementById('galleryGrid');
-  const empty = document.querySelector('.gallery-empty');
-  if (empty) empty.remove();
-
-  const count = grid.children.length + 1;
-  const item = document.createElement('div');
-  item.className = 'gallery-manage-item gallery-item-new';
-  item.dataset.filename = filename;
-  item.dataset.carousel = '0';
-  item.dataset.focus = '50';
-  item.innerHTML = `
-    <div class="gallery-item-drag-handle">
-      <i class="fas fa-grip-vertical"></i>
-    </div>
-    <div class="gallery-item-thumb">
-      <img src="/uploads/${encodeURIComponent(filename)}" alt="${escapeHtml(description)}" loading="lazy">
-    </div>
-    <div class="gallery-item-info">
-      <input type="text" class="gallery-item-desc" value="${escapeHtml(description)}" data-filename="${escapeHtml(filename)}" placeholder="Add description..." spellcheck="false">
-      <div class="gallery-item-meta">
-        <span class="order-badge">#${count}</span>
-      </div>
-    </div>
-    <div class="gallery-item-carousel-controls">
-      <label class="carousel-toggle" title="Show in homepage carousel">
-        <input type="checkbox" class="carousel-checkbox" data-filename="${escapeHtml(filename)}">
-        <span class="carousel-toggle-slider"></span>
-      </label>
-      <div class="carousel-focus-control hidden">
-        <input type="range" class="carousel-focus-range" min="0" max="100" value="50" data-filename="${escapeHtml(filename)}" title="Vertical focus: 50%">
-        <span class="carousel-focus-value">50%</span>
-      </div>
-    </div>
-    <div class="gallery-item-actions">
-      <button class="btn-gallery-delete" onclick="deleteImage('${escapeHtml(filename)}', this)" title="Delete photo">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </div>
-  `;
-  grid.appendChild(item);
-
-  // Attach description save handler
-  const descInput = item.querySelector('.gallery-item-desc');
-  descInput.addEventListener('change', function() {
-    saveDescription(this.dataset.filename, this.value);
-  });
-  descInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') this.blur();
-  });
-
-  // Attach carousel handlers
-  const cb = item.querySelector('.carousel-checkbox');
-  cb.addEventListener('change', function() {
-    toggleCarousel(this.dataset.filename, this.checked, this);
-  });
-  const range = item.querySelector('.carousel-focus-range');
-  range.addEventListener('input', function() {
-    this.closest('.carousel-focus-control').querySelector('.carousel-focus-value').textContent = this.value + '%';
-    this.title = 'Vertical focus: ' + this.value + '%';
-  });
-  range.addEventListener('change', function() {
-    saveCarouselFocus(this.dataset.filename, this.value);
-  });
-}
-
 // ── Delete ──
 function deleteImage(filename, btn) {
-  portalConfirm('Delete this photo? This cannot be undone.', function() { _doDeleteImage(filename, btn); }, {danger: true, confirmText: 'Delete'});
+  portalConfirm('Delete this photo permanently? This cannot be undone.', function() { _doDeleteImage(filename, btn); }, {danger: true, confirmText: 'Delete'});
 }
 async function _doDeleteImage(filename, btn) {
   const item = btn.closest('.gallery-manage-item');
   item.classList.add('gallery-item-deleting');
-
   try {
     const res = await fetch('/portal/gallery/delete/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename })
     });
     const data = await res.json();
     if (data.success) {
       item.classList.add('fade-out');
-      setTimeout(() => {
-        item.remove();
-        updateOrderBadges();
-        updatePhotoCount();
-        if (document.getElementById('galleryGrid').children.length === 0) {
-          const empty = document.createElement('div');
-          empty.className = 'gallery-empty';
-          empty.innerHTML = '<i class="fas fa-camera-retro"></i><p>No photos yet. Upload some above!</p>';
-          document.querySelector('.gallery-manage-grid').after(empty);
-        }
-      }, 300);
+      setTimeout(() => { item.remove(); updateOrderBadges(); updatePhotoCount(); }, 300);
       showToast('Photo deleted');
     } else {
       item.classList.remove('gallery-item-deleting');
@@ -354,17 +278,102 @@ async function _doDeleteImage(filename, btn) {
 async function saveDescription(filename, description) {
   try {
     const res = await fetch('/portal/gallery/edit/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename, description })
     });
     const data = await res.json();
+    if (data.success) showToast('Description saved');
+    else showToast('Failed to save', true);
+  } catch (err) { showToast('Network error', true); }
+}
+
+// ── Carousel star ──
+async function toggleCarousel(filename, enabled, btn) {
+  const item = btn.closest('.gallery-manage-item');
+  const focusControl = item.querySelector('.carousel-focus-control');
+  // Optimistic update
+  btn.classList.toggle('active', enabled);
+  btn.querySelector('i').className = enabled ? 'fas fa-star' : 'far fa-star';
+  btn.title = enabled ? 'Remove from carousel' : 'Add to carousel';
+  if (enabled) focusControl.classList.remove('hidden');
+  else focusControl.classList.add('hidden');
+
+  try {
+    const res = await fetch('/portal/gallery/carousel/', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, carousel: enabled })
+    });
+    const data = await res.json();
     if (data.success) {
-      showToast('Description saved');
+      showToast(enabled ? 'Added to carousel' : 'Removed from carousel');
     } else {
-      showToast('Failed to save', true);
+      // Revert
+      btn.classList.toggle('active', !enabled);
+      btn.querySelector('i').className = !enabled ? 'fas fa-star' : 'far fa-star';
+      focusControl.classList.toggle('hidden');
+      showToast(data.error || 'Failed to update', true);
     }
   } catch (err) {
+    btn.classList.toggle('active', !enabled);
+    btn.querySelector('i').className = !enabled ? 'fas fa-star' : 'far fa-star';
+    focusControl.classList.toggle('hidden');
+    showToast('Network error', true);
+  }
+}
+
+// ── Focus ──
+async function saveCarouselFocus(filename, focus) {
+  try {
+    const res = await fetch('/portal/gallery/carousel-focus/', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, focus: parseInt(focus) })
+    });
+    const data = await res.json();
+    if (data.success) showToast('Focus saved');
+    else showToast('Failed to save focus', true);
+  } catch (err) { showToast('Network error', true); }
+}
+
+// ── Visibility ──
+async function toggleVisibility(filename, visible, checkbox) {
+  const item = checkbox.closest('.gallery-manage-item');
+  const icon = checkbox.closest('.visibility-toggle').querySelector('i');
+  // Optimistic update
+  item.classList.toggle('gallery-item-hidden', !visible);
+  icon.className = visible ? 'fas fa-eye' : 'fas fa-eye-slash';
+  checkbox.closest('.visibility-toggle').title = visible ? 'Hide from gallery page' : 'Show in gallery page';
+  // Update hidden badge
+  let badge = item.querySelector('.gallery-hidden-badge');
+  if (!visible && !badge) {
+    badge = document.createElement('span');
+    badge.className = 'gallery-hidden-badge';
+    badge.title = 'Hidden from public gallery';
+    badge.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    item.querySelector('.gallery-item-thumb').appendChild(badge);
+  } else if (visible && badge) {
+    badge.remove();
+  }
+
+  try {
+    const res = await fetch('/portal/gallery/visibility/', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, visible })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(visible ? 'Shown in gallery' : 'Hidden from gallery');
+    } else {
+      // Revert
+      checkbox.checked = !visible;
+      item.classList.toggle('gallery-item-hidden', visible);
+      icon.className = !visible ? 'fas fa-eye' : 'fas fa-eye-slash';
+      if (badge) badge.remove();
+      showToast(data.error || 'Failed to update', true);
+    }
+  } catch (err) {
+    checkbox.checked = !visible;
+    item.classList.toggle('gallery-item-hidden', visible);
+    icon.className = !visible ? 'fas fa-eye' : 'fas fa-eye-slash';
     showToast('Network error', true);
   }
 }
@@ -373,7 +382,6 @@ async function saveDescription(filename, description) {
 function initSortable() {
   const grid = document.getElementById('galleryGrid');
   let dragItem = null;
-  let placeholder = null;
 
   grid.addEventListener('dragstart', (e) => {
     const item = e.target.closest('.gallery-manage-item');
@@ -381,7 +389,6 @@ function initSortable() {
     dragItem = item;
     dragItem.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
-    // Create invisible drag image
     const ghost = document.createElement('div');
     ghost.style.opacity = '0';
     document.body.appendChild(ghost);
@@ -393,13 +400,9 @@ function initSortable() {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if (!dragItem) return;
-
     const afterElement = getDragAfterElement(grid, e.clientY);
-    if (afterElement) {
-      grid.insertBefore(dragItem, afterElement);
-    } else {
-      grid.appendChild(dragItem);
-    }
+    if (afterElement) grid.insertBefore(dragItem, afterElement);
+    else grid.appendChild(dragItem);
   });
 
   grid.addEventListener('dragend', () => {
@@ -411,42 +414,29 @@ function initSortable() {
     }
   });
 
-  // Make items draggable via handle
   grid.querySelectorAll('.gallery-manage-item').forEach(item => {
     const handle = item.querySelector('.gallery-item-drag-handle');
-    handle.addEventListener('mousedown', () => {
-      item.setAttribute('draggable', 'true');
-    });
-    item.addEventListener('dragend', () => {
-      item.setAttribute('draggable', 'false');
-    });
+    if (!handle) return;
+    handle.addEventListener('mousedown', () => { item.setAttribute('draggable', 'true'); });
+    item.addEventListener('dragend', () => { item.setAttribute('draggable', 'false'); });
   });
 
-  // Touch support for mobile reorder
+  // Touch support
   let touchItem = null;
-  let touchStartY = 0;
-  let touchClone = null;
-
   grid.addEventListener('touchstart', (e) => {
     const handle = e.target.closest('.gallery-item-drag-handle');
     if (!handle) return;
     touchItem = handle.closest('.gallery-manage-item');
-    touchStartY = e.touches[0].clientY;
     touchItem.classList.add('dragging');
   }, { passive: true });
-
   grid.addEventListener('touchmove', (e) => {
     if (!touchItem) return;
     e.preventDefault();
     const y = e.touches[0].clientY;
     const afterElement = getDragAfterElement(grid, y);
-    if (afterElement) {
-      grid.insertBefore(touchItem, afterElement);
-    } else {
-      grid.appendChild(touchItem);
-    }
+    if (afterElement) grid.insertBefore(touchItem, afterElement);
+    else grid.appendChild(touchItem);
   }, { passive: false });
-
   grid.addEventListener('touchend', () => {
     if (touchItem) {
       touchItem.classList.remove('dragging');
@@ -462,9 +452,7 @@ function getDragAfterElement(container, y) {
   return elements.reduce((closest, child) => {
     const box = child.getBoundingClientRect();
     const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) {
-      return { offset, element: child };
-    }
+    if (offset < 0 && offset > closest.offset) return { offset, element: child };
     return closest;
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
@@ -472,20 +460,14 @@ function getDragAfterElement(container, y) {
 async function saveOrder() {
   const items = document.querySelectorAll('#galleryGrid .gallery-manage-item');
   const order = [...items].map(item => item.dataset.filename);
-
   try {
     const res = await fetch('/portal/gallery/reorder/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ order })
     });
     const data = await res.json();
-    if (data.success) {
-      showToast('Order saved');
-    }
-  } catch (err) {
-    showToast('Failed to save order', true);
-  }
+    if (data.success) showToast('Order saved');
+  } catch (err) { showToast('Failed to save order', true); }
 }
 
 // ── Helpers ──
@@ -509,60 +491,11 @@ function showToast(message, isError) {
   setTimeout(() => { toast.className = 'gallery-toast'; }, 2500);
 }
 
-// ── Carousel controls ──
-async function toggleCarousel(filename, enabled, checkbox) {
-  const item = checkbox.closest('.gallery-manage-item');
-  const focusControl = item.querySelector('.carousel-focus-control');
-  if (enabled) {
-    focusControl.classList.remove('hidden');
-  } else {
-    focusControl.classList.add('hidden');
-  }
-
-  try {
-    const res = await fetch('/portal/gallery/carousel/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename, carousel: enabled })
-    });
-    const data = await res.json();
-    if (data.success) {
-      showToast(enabled ? 'Added to carousel' : 'Removed from carousel');
-    } else {
-      showToast('Failed to update', true);
-      checkbox.checked = !enabled;
-      focusControl.classList.toggle('hidden');
-    }
-  } catch (err) {
-    showToast('Network error', true);
-    checkbox.checked = !enabled;
-    focusControl.classList.toggle('hidden');
-  }
-}
-
-async function saveCarouselFocus(filename, focus) {
-  try {
-    const res = await fetch('/portal/gallery/carousel-focus/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename, focus: parseInt(focus) })
-    });
-    const data = await res.json();
-    if (data.success) {
-      showToast('Focus point saved');
-    } else {
-      showToast('Failed to save focus', true);
-    }
-  } catch (err) {
-    showToast('Network error', true);
-  }
-}
-
-// ── Helpers ──
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
+{% endif %}
 </script>
 {% endblock %}

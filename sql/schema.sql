@@ -49,6 +49,7 @@ CREATE TABLE gallery(
     sort_order INTEGER DEFAULT 0,
     carousel BIT DEFAULT 0,
     carousel_focus INTEGER DEFAULT 50,
+    visible BIT DEFAULT 1,
     PRIMARY KEY(filename)
 );
 
@@ -64,6 +65,7 @@ CREATE TABLE change_log (
 CREATE TABLE roles (
     role_id INTEGER PRIMARY KEY AUTOINCREMENT,
     role_name TEXT NOT NULL,
+    permission_level INTEGER DEFAULT 4,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES brothers(user_id) ON UPDATE SET NULL ON DELETE SET NULL
 );

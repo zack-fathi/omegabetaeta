@@ -38,7 +38,7 @@
                 <li><a href="#section-board"><i class="fas fa-crown"></i><span class="help-nav-name">Board</span><span class="help-nav-desc">View and assign board roles</span></a></li>
                 <li><a href="#section-lion-names"><i class="fas fa-paw"></i><span class="help-nav-name">Lion Names</span><span class="help-nav-desc">View meanings and manage lion names</span></a></li>
                 <li><a href="https://drive.google.com/drive/folders/1MAkIRkn9wQO7LCRvAst0xSzoTW2aUG35?usp=sharing" target="_blank"><i class="fas fa-folder"></i><span class="help-nav-name">Files</span><span class="help-nav-desc">Opens the shared Google Drive folder</span></a></li>
-                <li><a href="#section-gallery"><i class="fas fa-images"></i><span class="help-nav-name">Gallery</span><span class="help-nav-desc">Manage the public photo gallery <em>(Board only)</em></span></a></li>
+                <li><a href="#section-gallery"><i class="fas fa-images"></i><span class="help-nav-name">Gallery</span><span class="help-nav-desc">View and manage the public photo gallery</span></a></li>
                 <li><a href="#section-help"><i class="fas fa-question-circle"></i><span class="help-nav-name">Help</span><span class="help-nav-desc">This page</span></a></li>
                 <li><a href="#section-calendar-setup"><i class="fas fa-calendar-alt"></i><span class="help-nav-name">Calendar Setup</span><span class="help-nav-desc">Google Calendar config for site maintainers</span></a></li>
             </ul>
@@ -56,7 +56,7 @@
             </ol>
             <div class="help-tip">
                 <i class="fas fa-exclamation-triangle"></i>
-                <strong>Password Management (Admin/President only):</strong> A banner on the Directory page shows how many brothers haven't been sent credentials or haven't changed their password yet. Click <strong>View List</strong> to see a detailed table with each brother's email-sent and password-changed status, or click <strong>Send All Default Passwords</strong> to send credentials to everyone who hasn't received them. You can also manage individual passwords from a brother's detail page.
+                <strong>Password Management (Level 1 only):</strong> A banner on the Directory page shows how many brothers haven't been sent credentials or haven't changed their password yet. Click <strong>View List</strong> to see a detailed table with each brother's email-sent and password-changed status, or click <strong>Send All Default Passwords</strong> to send credentials to everyone who hasn't received them. You can also manage individual passwords from a brother's detail page.
             </div>
         </div>
 
@@ -91,10 +91,10 @@
                 <li><strong>Filter by Status</strong> — use the status dropdown to show only active or inactive members</li>
                 <li><strong>View Details</strong> — click any member card to see their full profile with all info</li>
             </ul>
-            <p><strong>Board members and admins</strong> can also:</p>
+            <p><strong>Board members (Level 1–4)</strong> can also:</p>
             <ul>
                 <li><strong>Edit Member</strong> — click the Edit button on a member's detail page to change any field (username, name, uniqname, major, job, line info, profile picture, active status, etc.). All edits are logged.</li>
-                <li><strong>Delete Member</strong> (Admin only) — permanently remove a member from the Danger Zone section at the bottom of the edit view. This action is logged and cannot be undone.</li>
+                <li><strong>Delete Member</strong> (Level 1 only) — permanently remove a member from the Danger Zone section at the bottom of the edit view. This action is logged and cannot be undone.</li>
             </ul>
         </div>
 
@@ -102,7 +102,7 @@
         <div class="help-section" id="section-recruits">
             <h4><i class="fas fa-user-plus"></i> <a href="/portal/recruits/">Recruits</a></h4>
             <p>All brothers can view the list of people who applied through the public <a href="/apply/">Apply</a> page.</p>
-            <p>If you have the right role (Admin, President, or Director of Recruitment), you can also:</p>
+            <p><strong>Board members with Level 1–3</strong> (Executive, Vice President, or Director of Recruitment) can also:</p>
             <ul>
                 <li><strong>Set Line Number and Lion Name</strong> — fill these in before accepting a recruit</li>
                 <li><strong>Accept / Unaccept</strong> — toggle a recruit's acceptance status (both fields must be filled first)</li>
@@ -117,34 +117,137 @@
         <!-- Board -->
         <div class="help-section" id="section-board">
             <h4><i class="fas fa-crown"></i> <a href="/portal/board/">Board</a></h4>
-            <p>Shows all current officer roles and who holds them, along with site administrators.</p>
-            <p><strong>Assigning board roles</strong> (President or Admin only):</p>
+            <p>Shows all current officer roles, their permission levels, and who holds them. <strong>All brothers can view this page</strong> to see the board structure and permission levels.</p>
+
+            <h5 class="mt-3"><i class="fas fa-layer-group"></i> Permission Levels</h5>
+            <p>Every board role has a <strong>permission level</strong> (1–4) that determines what the role holder can do. Lower numbers mean more access. Members with no board role can view all pages but cannot edit anything.</p>
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Name</th>
+                        <th>Default Roles</th>
+                        <th>Permissions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Executive</td>
+                        <td>Admin, President</td>
+                        <td>
+                            <ul class="mb-0">
+                                <li>Full access to all portal features</li>
+                                <li>Assign and remove board roles and holders</li>
+                                <li>Add and remove custom roles</li>
+                                <li>Change permission levels (except Admin/President)</li>
+                                <li>Manage site administrators</li>
+                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                                <li>Manage recruits (accept, delete, move to brothers)</li>
+                                <li>Edit and delete members in the directory</li>
+                                <li>Manage lion names (add, edit, delete)</li>
+                                <li>Send and reset passwords</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Vice President</td>
+                        <td>Internal VP, External VP</td>
+                        <td>
+                            <ul class="mb-0">
+                                <li>Everything except managing board roles, permission levels, and administrators</li>
+                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                                <li>Manage recruits (accept, delete, move to brothers)</li>
+                                <li>Edit member profiles in the directory</li>
+                                <li>Manage lion names (add, edit, delete)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Director</td>
+                        <td>Director of Recruitment</td>
+                        <td>
+                            <ul class="mb-0">
+                                <li>Everything except board roles, administrators, and lion names</li>
+                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                                <li>Manage recruits (accept, delete, move to brothers)</li>
+                                <li>Edit member profiles in the directory</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Board Member</td>
+                        <td>All other Director positions (Finance, Internal, PR, Education, Philanthropy, External), Administrator</td>
+                        <td>
+                            <ul class="mb-0">
+                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                                <li>Edit member profiles in the directory</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>—</strong></td>
+                        <td>Member (No Role)</td>
+                        <td>All brothers without a board role</td>
+                        <td>
+                            <ul class="mb-0">
+                                <li>View all pages (directory, board, gallery, lion names, recruits, messages, log)</li>
+                                <li>Edit own profile and change own password</li>
+                                <li>Cannot edit any shared content</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5 class="mt-3"><i class="fas fa-user-shield"></i> Assigning Board Roles</h5>
+            <p><strong>Level 1 (Executive) only:</strong></p>
             <ol>
-                <li>Each role is shown as a card with the current holder's name and photo.</li>
-                <li>Use the dropdown on any role to select a new <strong>active brother</strong>, or choose <em>Remove current holder</em> to clear the position.</li>
-                <li>Click <strong>Save Board Roles</strong> to apply all changes at once.</li>
+                <li>Each role is shown as a card with the current holder, permission level badge, and a dropdown to assign a new holder.</li>
+                <li>Use the dropdown to select an <strong>active brother</strong>, or choose <em>Remove current holder</em> to clear the position.</li>
+                <li>Click <strong>Save Board Roles</strong> to apply all holder changes at once.</li>
             </ol>
-            <p><strong>Managing administrators</strong> (Admin only):</p>
+
+            <h5 class="mt-3"><i class="fas fa-sliders-h"></i> Managing Permission Levels</h5>
+            <p><strong>Level 1 (Executive) only:</strong></p>
+            <ul>
+                <li>Each role card shows a <strong>Level dropdown</strong> to change its permission level (1–4).</li>
+                <li><strong>Admin and President</strong> are locked at Level 1 and cannot be changed.</li>
+                <li>Changes take effect immediately — no save button needed for permission levels.</li>
+            </ul>
+
+            <h5 class="mt-3"><i class="fas fa-plus-circle"></i> Adding &amp; Removing Roles</h5>
+            <p><strong>Level 1 (Executive) only:</strong></p>
+            <ul>
+                <li><strong>Add a role</strong> — use the "Add New Role" form below the board grid. Choose a name and permission level.</li>
+                <li><strong>Remove a role</strong> — click the <i class="fas fa-trash-alt"></i> icon on any role card. Admin and President roles cannot be removed.</li>
+            </ul>
+
+            <h5 class="mt-3"><i class="fas fa-shield-alt"></i> Managing Administrators</h5>
+            <p><strong>Level 1 (Executive) only:</strong></p>
             <ul>
                 <li><strong>Add an admin</strong> — select any brother from the dropdown and click <strong>Add Admin</strong>.</li>
                 <li><strong>Remove an admin</strong> — click the <i class="fas fa-times"></i> button on an admin's card. You cannot remove the last admin.</li>
             </ul>
             <div class="help-tip">
                 <i class="fas fa-info-circle"></i>
-                Only active brothers appear in board role dropdowns. Admins can be any brother (including inactive/alumni) since they maintain the site.
+                Admin and President both have Level 1 with exactly equal permissions. Admin is a special role that is always Level 1, cannot be removed from the board, and its permission level cannot be changed.
             </div>
         </div>
 
         <!-- Lion Names -->
         <div class="help-section" id="section-lion-names">
             <h4><i class="fas fa-paw"></i> <a href="/portal/lion-names/">Lion Names</a></h4>
-            <p>Shows all lion names, their meanings, and the brothers who hold each name.</p>
-            <p><strong>Editing meanings</strong> (President or Admin only):</p>
+            <p>Shows all lion names, their meanings, and the brothers who hold each name. All brothers can view this page.</p>
+            <p><strong>Editing meanings</strong> (Level 1–2):</p>
             <ol>
                 <li>Click the <i class="fas fa-pen"></i> icon on a lion name card.</li>
                 <li>Enter or update the meaning and click <strong>Save</strong>.</li>
             </ol>
-            <p><strong>Adding a new lion name</strong> (President or Admin only):</p>
+            <p><strong>Adding a new lion name</strong> (Level 1–2):</p>
             <ol>
                 <li>Enter the name and optional meaning in the form at the top.</li>
                 <li>Click <strong>Add</strong>. The new name will be available for recruits and brothers.</li>
@@ -153,8 +256,8 @@
 
         <!-- Gallery Management -->
         <div class="help-section" id="section-gallery">
-            <h4><i class="fas fa-images"></i> <a href="/portal/gallery/">Gallery Management</a> <span class="help-badge">Board Only</span></h4>
-            <p>Go to <a href="/portal/gallery/">Gallery</a> in the sidebar to manage the public photo gallery.</p>
+            <h4><i class="fas fa-images"></i> <a href="/portal/gallery/">Gallery</a></h4>
+            <p>All brothers can view the gallery. <strong>Board members (Level 1–4)</strong> can manage the public photo gallery — upload, edit, reorder, and delete photos.</p>
             <p><strong>Uploading photos:</strong></p>
             <ol>
                 <li>Drag and drop images onto the upload zone, or click it to browse.</li>
@@ -163,19 +266,25 @@
             </ol>
             <p><strong>Managing photos:</strong></p>
             <ul>
-                <li><strong>Reorder</strong> — drag photos by the grip handle (<i class="fas fa-grip-vertical"></i>) to change their display order on the public gallery.</li>
-                <li><strong>Edit description</strong> — click the description text on any photo to edit it inline. Changes save automatically when you click away or press Enter.</li>
-                <li><strong>Delete</strong> — click the trash icon (<i class="fas fa-trash-alt"></i>) to permanently remove a photo.</li>
+                <li><strong>Reorder</strong> (<i class="fas fa-grip-vertical"></i>) — drag photos by the grip handle to change their display order on the public gallery.</li>
+                <li><strong>Edit description</strong> — click the description field on any photo to edit it inline. Changes save when you click away or press Enter.</li>
+                <li><strong>Delete</strong> (<i class="fas fa-trash-alt"></i>) — permanently removes a photo from the system. This cannot be undone.</li>
             </ul>
-            <p><strong>Homepage carousel:</strong></p>
-            <p>Gallery photos can be used as homepage carousel images instead of static files. Each photo has a toggle switch and a focus slider:</p>
+            <p><strong>Carousel star</strong> (<i class="fas fa-star" style="color:var(--portal-gold)"></i>):</p>
+            <p>Click the star to toggle whether a photo appears in the homepage carousel (hero section on the landing page). Starred photos display a gold star. When a photo is starred, a focus control appears next to it.</p>
+            <p><strong>Focus control</strong> (<i class="fas fa-sliders-h"></i>):</p>
+            <p>Sets the vertical focus point for carousel cropping. Use the slider or type a value directly (0–100%). 0% shows the top, 50% centers, 100% shows the bottom.</p>
+            <p><strong>Visibility toggle</strong> (<i class="fas fa-eye"></i>):</p>
+            <p>Controls whether a photo is shown on the public gallery page. Hidden photos stay in the system and can still be used in the carousel. The four possible states:</p>
             <ul>
-                <li><strong>Carousel toggle</strong> — flip the switch on any photo to add or remove it from the homepage carousel. Enabled photos appear in the hero section on the landing page.</li>
-                <li><strong>Focus slider</strong> — when a photo is in the carousel, use the slider to set the vertical focus point (0%–100%). This controls which part of the image is centered in the carousel crop. 0% shows the top of the image, 50% centers it, 100% shows the bottom.</li>
+                <li><strong>Visible + Starred</strong> — shown on the gallery page <em>and</em> in the homepage carousel.</li>
+                <li><strong>Visible + Unstarred</strong> — shown on the gallery page only.</li>
+                <li><strong>Hidden + Starred</strong> — hidden from the gallery page, but still appears in the homepage carousel. Useful for hero images that shouldn't clutter the gallery.</li>
+                <li><strong>Hidden + Unstarred</strong> — hidden from both the gallery and the carousel. The photo is kept in the system for potential future use.</li>
             </ul>
             <div class="help-tip">
                 <i class="fas fa-info-circle"></i>
-                All changes take effect immediately on the public <a href="/gallery/">Gallery</a> page and the <a href="/">Homepage</a> carousel.
+                All changes take effect immediately on the public <a href="/gallery/">Gallery</a> page and the <a href="/">Homepage</a> carousel. Hidden photos appear dimmed in the management view.
             </div>
         </div>
 
@@ -227,7 +336,7 @@
             <ul>
                 <li><strong>Forgot your password?</strong> Ask a brother with Admin access to reset it in the database.</li>
                 <li><strong>Profile picture not showing?</strong> Make sure you uploaded an image file (PNG, JPG) on the Account page.</li>
-                <li><strong>Can't edit Gallery or change Recruits/Board?</strong> These features are restricted to specific board roles.</li>
+                <li><strong>Can't edit Gallery or change Recruits/Board?</strong> These features are restricted to specific permission levels. Check the <a href="#section-board">Board</a> section for details.</li>
                 <li><strong>Files link</strong> opens an external Google Drive — bookmark it for quick access.</li>
             </ul>
         </div>

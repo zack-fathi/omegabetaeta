@@ -3,21 +3,59 @@
 <div class="container-fluid board-manage">
     <h2 class="portal-heading text-center">Board Management</h2>
 
+    <!-- Permission Levels Legend -->
+    <section class="board-section">
+        <div class="board-section-header">
+            <h4><i class="fas fa-layer-group me-2"></i>Permission Levels</h4>
+        </div>
+        <div class="permission-legend">
+            <div class="permission-legend-item">
+                <span class="permission-badge level-1">1</span>
+                <div>
+                    <strong>Executive</strong>
+                    <p>Full portal access — board roles, gallery, recruits, directory, lion names, passwords, admins</p>
+                </div>
+            </div>
+            <div class="permission-legend-item">
+                <span class="permission-badge level-2">2</span>
+                <div>
+                    <strong>Vice President</strong>
+                    <p>Everything except managing board roles — gallery, recruits, directory, lion names</p>
+                </div>
+            </div>
+            <div class="permission-legend-item">
+                <span class="permission-badge level-3">3</span>
+                <div>
+                    <strong>Director</strong>
+                    <p>Gallery, recruits, directory editing</p>
+                </div>
+            </div>
+            <div class="permission-legend-item">
+                <span class="permission-badge level-4">4</span>
+                <div>
+                    <strong>Board Member</strong>
+                    <p>Gallery and directory editing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Board Roles Section -->
     <section class="board-section">
         <div class="board-section-header">
             <h4><i class="fas fa-crown me-2"></i>Board Roles</h4>
             {% if can_change %}
-            <p class="board-hint">Select a brother for each position, then save.</p>
+            <p class="board-hint">Select a brother for each position, then save. You can also change permission levels.</p>
             {% endif %}
         </div>
 
         <form action="{{ url_for('assign_roles') }}" method="POST" id="rolesForm">
             <div class="board-roles-grid">
                 {% for role in roles %}
-                <div class="board-role-card">
+                <div class="board-role-card" data-role-id="{{ role['role_id'] }}">
                     <div class="board-role-header">
                         <span class="board-role-name">{{ role['role_name'] }}</span>
+                        <span class="permission-badge level-{{ role['permission_level'] }}" title="Permission Level {{ role['permission_level'] }} — {{ permission_labels.get(role['permission_level'], 'Custom') }}">{{ role['permission_level'] }}</span>
                     </div>
                     <div class="board-role-body">
                         {% if role['fullname'] %}
@@ -44,6 +82,30 @@
                             <option value="{{ brother['user_id'] }}">{{ brother['fullname'] }}</option>
                             {% endfor %}
                         </select>
+
+                        {% if role['role_name'] != 'President' %}
+                        <div class="board-role-actions">
+                            <div class="permission-level-control">
+                                <label class="permission-level-label">Level:</label>
+                                <select class="form-select form-select-sm permission-level-select" data-role-id="{{ role['role_id'] }}" data-original="{{ role['permission_level'] }}">
+                                    <option value="1" {% if role['permission_level'] == 1 %}selected{% endif %}>1 — Executive</option>
+                                    <option value="2" {% if role['permission_level'] == 2 %}selected{% endif %}>2 — Vice President</option>
+                                    <option value="3" {% if role['permission_level'] == 3 %}selected{% endif %}>3 — Director</option>
+                                    <option value="4" {% if role['permission_level'] == 4 %}selected{% endif %}>4 — Member</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn-role-remove" onclick="removeRole({{ role['role_id'] }}, this)" title="Remove this role">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        {% else %}
+                        <div class="board-role-actions">
+                            <div class="permission-level-control">
+                                <label class="permission-level-label">Level:</label>
+                                <span class="permission-level-locked">1 — Executive <i class="fas fa-lock fa-xs"></i></span>
+                            </div>
+                        </div>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -58,11 +120,34 @@
         </form>
     </section>
 
+    <!-- Add Role Section (Level 1 only) -->
+    {% if can_change %}
+    <section class="board-section mt-4">
+        <div class="board-section-header">
+            <h4><i class="fas fa-plus-circle me-2"></i>Add New Role</h4>
+            <p class="board-hint">Create a new board position.</p>
+        </div>
+        <div class="add-role-form">
+            <div class="add-role-row">
+                <input type="text" id="newRoleName" class="form-control" placeholder="Role name (e.g. Director of Events)">
+                <select id="newRoleLevel" class="form-select">
+                    <option value="2">Level 2 — Vice President</option>
+                    <option value="3" selected>Level 3 — Director</option>
+                    <option value="4">Level 4 — Member</option>
+                </select>
+                <button class="btn btn-portal btn-portal-sm" onclick="addRole()">
+                    <i class="fas fa-plus me-1"></i>Add Role
+                </button>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
     <!-- Admin Management Section -->
     <section class="board-section mt-4">
         <div class="board-section-header">
-            <h4><i class="fas fa-shield-alt me-2"></i>Site Administrators</h4>
-            {% if is_admin %}
+            <h4><i class="fas fa-shield-alt me-2"></i>Site Administrators <span class="permission-badge level-1">1</span></h4>
+            {% if can_change %}
             <p class="board-hint">Admins have full access to the portal. You can add or remove admins below.</p>
             {% else %}
             <p class="board-hint">Admins have full access to the portal and can manage all settings.</p>
@@ -81,7 +166,7 @@
                         <span class="admin-username">@{{ admin['username'] }}</span>
                     </div>
                 </div>
-                {% if is_admin %}
+                {% if can_change %}
                 <button class="btn-admin-remove" onclick="removeAdmin({{ admin['role_id'] }}, this)" title="Remove admin">
                     <i class="fas fa-times"></i>
                 </button>
@@ -95,7 +180,7 @@
             {% endif %}
         </div>
 
-        {% if is_admin %}
+        {% if can_change %}
         <div class="admin-add-section">
             <div class="admin-add-row">
                 <select id="newAdminSelect" class="form-select admin-add-select">
@@ -117,6 +202,104 @@
 <div id="toast" class="gallery-toast"></div>
 
 <script>
+// ── Permission Level Change ──
+document.querySelectorAll('.permission-level-select').forEach(select => {
+    select.addEventListener('change', function() {
+        const roleId = this.dataset.roleId;
+        const newLevel = this.value;
+        changePermissionLevel(roleId, newLevel, this);
+    });
+});
+
+async function changePermissionLevel(roleId, newLevel, select) {
+    try {
+        const res = await fetch('/portal/board/role/permission/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role_id: parseInt(roleId), permission_level: parseInt(newLevel) })
+        });
+        const data = await res.json();
+        if (data.success) {
+            // Update the badge
+            const card = select.closest('.board-role-card');
+            const badge = card.querySelector('.permission-badge');
+            badge.textContent = newLevel;
+            badge.className = 'permission-badge level-' + newLevel;
+            select.dataset.original = newLevel;
+            showToast('Permission level updated');
+        } else {
+            select.value = select.dataset.original;
+            showToast(data.error || 'Failed to update', true);
+        }
+    } catch (err) {
+        select.value = select.dataset.original;
+        showToast('Network error', true);
+    }
+}
+
+// ── Add Role ──
+async function addRole() {
+    const nameInput = document.getElementById('newRoleName');
+    const levelSelect = document.getElementById('newRoleLevel');
+    const roleName = nameInput.value.trim();
+    const level = levelSelect.value;
+
+    if (!roleName) {
+        showToast('Please enter a role name', true);
+        return;
+    }
+
+    try {
+        const res = await fetch('/portal/board/role/add/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role_name: roleName, permission_level: parseInt(level) })
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Role added — reloading...');
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            showToast(data.error || 'Failed to add role', true);
+        }
+    } catch (err) {
+        showToast('Network error', true);
+    }
+}
+
+// ── Remove Role ──
+function removeRole(roleId, btn) {
+    portalConfirm('Remove this role? This cannot be undone.', function() { _doRemoveRole(roleId, btn); }, {danger: true, confirmText: 'Remove'});
+}
+async function _doRemoveRole(roleId, btn) {
+    const card = btn.closest('.board-role-card');
+    card.style.opacity = '0.5';
+    card.style.pointerEvents = 'none';
+
+    try {
+        const res = await fetch('/portal/board/role/remove/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role_id: roleId })
+        });
+        const data = await res.json();
+        if (data.success) {
+            card.classList.add('fade-out');
+            setTimeout(() => card.remove(), 300);
+            showToast('Role removed');
+        } else {
+            card.style.opacity = '1';
+            card.style.pointerEvents = '';
+            showToast(data.error || 'Failed to remove role', true);
+        }
+    } catch (err) {
+        card.style.opacity = '1';
+        card.style.pointerEvents = '';
+        showToast('Network error', true);
+    }
+}
+
+// ── Admin Management ──
 async function addAdmin() {
     const select = document.getElementById('newAdminSelect');
     const userId = select.value;
@@ -130,7 +313,6 @@ async function addAdmin() {
         });
         const data = await res.json();
         if (data.success) {
-            // Add the card to the list
             const list = document.getElementById('adminList');
             const empty = list.querySelector('.admin-empty');
             if (empty) empty.remove();
@@ -153,9 +335,6 @@ async function addAdmin() {
                 </button>
             `;
             list.appendChild(card);
-
-            // Remove from dropdown
-            const opt = select.querySelector(`option[value="${userId}"]`);
             select.value = '';
             showToast('Admin added successfully');
         } else {
@@ -209,7 +388,5 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
-
-// No special handling needed — CLEAR value is handled server-side
 </script>
 {% endblock %}
