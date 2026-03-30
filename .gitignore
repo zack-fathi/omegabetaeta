@@ -5,7 +5,21 @@ __pycache__/
 
 # C extensions
 *.so
+
+# Service account keys / credentials
 *.json
+!package.json
+!package-lock.json
+
+# Databases
+*.sqlite3
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+
 # Distribution / packaging
 .Python
 build/

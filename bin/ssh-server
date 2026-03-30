@@ -1,12 +1,17 @@
 #!/bin/bash
 # SSH into the OBH production server.
 # Usage: ./bin/ssh-server
+#
+# Set these environment variables (or put them in .env):
+#   OBH_HOST  — the server hostname or IP
+#   OBH_USER  — SSH username (default: ec2-user)
+#   OBH_KEY   — path to SSH private key (default: Jawad.pem)
 
 set -euo pipefail
 
-HOST="ec2-18-119-117-254.us-east-2.compute.amazonaws.com"
-USER="ec2-user"
-KEY="Jawad.pem"
+HOST="${OBH_HOST:?Set OBH_HOST to the server hostname}"
+USER="${OBH_USER:-ec2-user}"
+KEY="${OBH_KEY:-Jawad.pem}"
 
 echo "→ Connecting to $USER@$HOST with key $KEY"
 ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "$USER@$HOST" "$@"

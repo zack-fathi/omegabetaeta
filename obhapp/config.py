@@ -8,8 +8,7 @@ APPLICATION_ROOT = '/'
 
 # Secret key for encrypting cookies
 # In production, set SECRET_KEY env var. Falls back to dev key for local use.
-SECRET_KEY = os.environ.get('SECRET_KEY',
-    b'\xbf\x8d\x9d\xc6\xd9\x0c\xf3\x97}\x85tZ"\x92\xf6\r\xca\xaf\x8f\x14\xf7\xd8V\xd6')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-only-change-me')
 SESSION_COOKIE_NAME = 'login'
 
 # Data directory: on the server, /home/obh/omegabetaeta/var. Locally, var/.
