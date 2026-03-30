@@ -116,39 +116,52 @@
             <small>Fraternity</small>
           </div>
         </a>
-        <nav class="navbar navbar-expand-lg">
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#navbarOffcanvas"
-            aria-controls="navbarOffcanvas"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="offcanvas offcanvas-end offcanvas-lg" tabindex="-1" id="navbarOffcanvas" aria-labelledby="navbarOffcanvasLabel">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="navbarOffcanvasLabel">Menu</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-              <div class="navbar-nav site-nav ms-auto">
-                <a class="nav-link" href="/about/">About</a>
-                <a class="nav-link" href="/brothers/">Brothers</a>
-                <a class="nav-link" href="/gallery/">Gallery</a>
-                <a class="nav-link" href="/calendar/">Calendar</a>
-                <a class="nav-link" href="/contact/">Contact</a>
-                <a class="nav-link" href="/donate/">Donate</a>
-                <a class="nav-link" href="/apply/">Apply</a>
-                <a class="nav-link" href="/portal/">Portal</a>
-              </div>
-            </div>
+        <!-- Desktop nav (hidden on mobile) -->
+        <nav class="d-none d-lg-flex navbar">
+          <div class="navbar-nav site-nav">
+            <a class="nav-link" href="/about/">About</a>
+            <a class="nav-link" href="/brothers/">Brothers</a>
+            <a class="nav-link" href="/gallery/">Gallery</a>
+            <a class="nav-link" href="/calendar/">Calendar</a>
+            <a class="nav-link" href="/contact/">Contact</a>
+            <a class="nav-link" href="/donate/">Donate</a>
+            <a class="nav-link" href="/apply/">Apply</a>
+            <a class="nav-link" href="/portal/">Portal</a>
           </div>
         </nav>
+        <!-- Mobile hamburger (hidden on desktop) -->
+        <button
+          class="navbar-toggler d-lg-none"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#navbarOffcanvas"
+          aria-controls="navbarOffcanvas"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
       </div>
     </header>
+
+    <!-- Mobile offcanvas menu (outside header to avoid stacking context issues) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="navbarOffcanvas" aria-labelledby="navbarOffcanvasLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="navbarOffcanvasLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="navbar-nav site-nav">
+          <a class="nav-link" href="/about/">About</a>
+          <a class="nav-link" href="/brothers/">Brothers</a>
+          <a class="nav-link" href="/gallery/">Gallery</a>
+          <a class="nav-link" href="/calendar/">Calendar</a>
+          <a class="nav-link" href="/contact/">Contact</a>
+          <a class="nav-link" href="/donate/">Donate</a>
+          <a class="nav-link" href="/apply/">Apply</a>
+          <a class="nav-link" href="/portal/">Portal</a>
+        </div>
+      </div>
+    </div>
 
     <div class="main-content-area">{% block content %}{% endblock %}</div>
 
