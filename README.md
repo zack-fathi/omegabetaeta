@@ -1,52 +1,42 @@
-# OBH App
+# Omega Beta Eta — [omegabetaeta.org](https://omegabetaeta.org)
 
-OBH App is a full-stack web application developed for the Omega Beta Eta fraternity. It serves as a comprehensive platform for both public engagement and internal fraternity management, blending modern design with powerful functionality.
+Full-stack web platform for the Omega Beta Eta Arab Fraternity — a public-facing site paired with a members-only portal for internal operations.
 
-## Features
+Built by [Jawad Alsahlani](https://javvad.dev) and Zackery Fathi.
 
-### Public Website
-- **Event Calendar**: Displays fraternity events dynamically, powered by **FullCalendar** and synchronized with Google Calendar.
-- **Photo Gallery**: Showcases fraternity memories through a visually appealing gallery.
-- **Donation Portal**: Enables secure online donations from members and supporters.
+## Public Site
+- **Hero Carousel** — Dynamic image carousel sourced from the admin-managed gallery
+- **Event Calendar** — Live Google Calendar integration via FullCalendar
+- **Photo Gallery** — Lightbox gallery with admin-controlled ordering, captions, and visibility
+- **Brother Profiles** — Individual profile pages with rich Open Graph previews
+- **SEO** — Per-page meta tags, Open Graph / Twitter Cards, dynamic XML sitemap, robots.txt, JSON-LD structured data
+- **Donate & Apply** — Integrated Venmo donations and membership applications with email confirmations
 
-### Member Portal
-Accessible only to fraternity members with role-based permissions:
-- **Recruit Management**: Tracks and manages recruits, supporting transitions to active members.
-- **Member Directory**: Categorizes members by their fraternity line with detailed profiles.
-- **Account Management**: Allows members to update their profiles and manage personal details.
-- **Password Management**: Admins/Presidents can generate and email unique default passwords to brothers. First-time login requires a password change.
-- **Email Notifications**: Automatic confirmation emails for contact messages and applications. Portal message replies are sent via email.
-- **Change Log**: Logs key actions for transparency and accountability.
+## Member Portal
+- **Role-Based Access Control** — Board-managed permission system with granular role assignments
+- **Recruit Pipeline** — Track, manage, and convert recruits to active brothers
+- **Member Directory** — Organized by fraternity line with full profile management
+- **Password Management** — Admin-generated default passwords with forced first-login change
+- **Email Notifications** — Automated confirmations for contact messages, applications, and portal replies
+- **Gallery Management** — Upload, reorder, caption, and toggle visibility of photos
+- **Change Log** — Audit trail of all portal actions
 
-## Technologies Used
-- **Backend**: Python, Flask
-- **Frontend**: HTML, CSS, Bootstrap, JavaScript
-  - Includes **FullCalendar** for interactive event displays.
-- **Database**: SQLite
-- **Hosting**: AWS
-- **Integrations**: Google Calendar API, FullCalendar
+## Tech Stack
+| Layer | Technology |
+|-------|------------|
+| Backend | Python, Flask |
+| Frontend | HTML, CSS, Bootstrap 5, JavaScript |
+| Database | SQLite |
+| Calendar | Google Calendar API, FullCalendar |
+| Hosting | AWS EC2, Nginx, Gunicorn |
+| SEO | Dynamic sitemap, robots.txt, JSON-LD, Open Graph, Twitter Cards |
 
-## Live Demo
-Explore the live web app: [OBH App](http://18.119.117.254/)
+## Live
+[omegabetaeta.org](https://omegabetaeta.org)
 
-## Email Configuration
-Add the following to your `.env` file to enable email functionality:
-```
-EMAIL_ADDRESS=omegabetaeta@umich.edu
-EMAIL_PASSWORD=your-app-password
-EMAIL_SMTP_HOST=smtp.gmail.com
-EMAIL_SMTP_PORT=587
-SITE_URL=https://omegabetaeta.org
-```
-For Google Workspace / Gmail, use an [App Password](https://support.google.com/accounts/answer/185833) for `EMAIL_PASSWORD`.
+## Developers
+- **[Jawad Alsahlani](https://javvad.dev)** — Design, architecture, and full-stack development
+- **Zackery Fathi** — Development and contributions
 
-## Database Migration
-If upgrading an existing database, run:
-```bash
-sqlite3 var/obhapp.sqlite3 < sql/migrate_email_passwords.sql
-```
+[jawadals@umich.edu](mailto:jawadals@umich.edu)
 
-## Developer
-Developed by Jawad Alsahlani and Zackery Fathi.
-
-For inquiries or support, contact: [jawadals@umich.edu](mailto:jawadals@umich.edu).

@@ -221,3 +221,23 @@ def sitemap_xml():
         brothers=brothers,
     )
     return flask.Response(xml, mimetype="application/xml")
+
+
+@obhapp.app.route('/humans.txt')
+def humans_txt():
+    """Serve humans.txt crediting the developers."""
+    lines = [
+        "/* TEAM */",
+        "Developer: Jawad Alsahlani",
+        "Site: https://javvad.dev",
+        "Contact: jawadals@umich.edu",
+        "",
+        "Developer: Zackery Fathi",
+        "",
+        "/* SITE */",
+        "Last update: 2026/03/30",
+        "Language: English",
+        "Standards: HTML5, CSS3",
+        "Software: Python, Flask, SQLite, Bootstrap 5",
+    ]
+    return flask.Response("\n".join(lines), mimetype="text/plain")

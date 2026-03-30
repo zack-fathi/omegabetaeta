@@ -9,6 +9,8 @@
     <meta name="description" content="{% block meta_description %}Omega Beta Eta is an Arab fraternity founded in 2018, fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.{% endblock %}" />
     <meta name="keywords" content="{% block meta_keywords %}Omega Beta Eta, Arab fraternity, OBH, Greek life, Arab culture, brotherhood, leadership{% endblock %}" />
     <meta name="author" content="Jawad Alsahlani" />
+    <link rel="author" href="https://javvad.dev" />
+    <link rel="author" type="text/plain" href="/humans.txt" />
     <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}" />
     <link rel="canonical" href="{{ request.url }}" />
 
@@ -47,7 +49,28 @@
         "https://www.instagram.com/omegabetaeta/",
         "https://www.youtube.com/@OmegaBetaEta"
       ],
-      "creator": {
+      "creator": [
+        {
+          "@type": "Person",
+          "name": "Jawad Alsahlani",
+          "url": "https://javvad.dev",
+          "jobTitle": "Software Engineer",
+          "sameAs": "https://javvad.dev"
+        },
+        {
+          "@type": "Person",
+          "name": "Zackery Fathi"
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Omega Beta Eta",
+      "url": "{{ request.host_url }}",
+      "author": {
         "@type": "Person",
         "name": "Jawad Alsahlani",
         "url": "https://javvad.dev"
@@ -134,7 +157,7 @@
           </a>
         </div>
         <p class="copyright mb-0">&copy; {{ now().year if now is defined else '2026' }} Omega Beta Eta Arab Fraternity Incorporated.</p>
-        <p class="credit mb-0">Built by <a href="https://javvad.dev" target="_blank" rel="noopener">Jawad Alsahlani</a></p>
+        <p class="credit mb-0">Built by <a href="https://javvad.dev" title="Jawad Alsahlani — Software Engineer" target="_blank">Jawad Alsahlani</a></p>
       </div>
     </footer>
 
