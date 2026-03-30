@@ -1,23 +1,33 @@
-"""omegabetaeta development configuration."""
+"""omegabetaeta configuration."""
 
+import os
 import pathlib
 
 # Root of this application, useful if it doesn't occupy an entire domain
 APPLICATION_ROOT = '/'
 
 # Secret key for encrypting cookies
-s = b'\xbf\x8d\x9d\xc6\xd9\x0c\xf3\x97}\x85tZ"'
-k = b'\x92\xf6\r\xca\xaf\x8f\x14\xf7\xd8V\xd6'
-SECRET_KEY = s + k
+# In production, set SECRET_KEY env var. Falls back to dev key for local use.
+SECRET_KEY = os.environ.get('SECRET_KEY',
+    b'\xbf\x8d\x9d\xc6\xd9\x0c\xf3\x97}\x85tZ"\x92\xf6\r\xca\xaf\x8f\x14\xf7\xd8V\xd6')
 SESSION_COOKIE_NAME = 'login'
 
-# File Upload to var/uploads/
+# When deployed on Render with a persistent disk, use that path.
+# Locally, use var/ relative to the project root.
 OBHAPP_ROOT = pathlib.Path(__file__).resolve().parent.parent
-UPLOAD_FOLDER = OBHAPP_ROOT/'var'/'uploads'
+_DISK_PATH = os.environ.get('RENDER_DISK_PATH')
+if _DISK_PATH:
+    _DATA_DIR = pathlib.Path(_DISK_PATH)
+else:
+    _DATA_DIR = OBHAPP_ROOT / 'var'
+
+# File Upload
+UPLOAD_FOLDER = _DATA_DIR / 'uploads'
+UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
-# Database file is var/insta485.sqlite3
-DATABASE_FILENAME = OBHAPP_ROOT/'var'/'obhapp.sqlite3'
+# Database
+DATABASE_FILENAME = _DATA_DIR / 'obhapp.sqlite3'
 
 

@@ -1,8 +1,10 @@
 """Omega Beta Eta package initializer."""
 import flask
 from dotenv import load_dotenv
+import json
 import os
 import sys
+import tempfile
 
 # Load environment variables before anything else
 load_dotenv()
@@ -13,7 +15,7 @@ app = flask.Flask(__name__)  # pylint: disable=invalid-name
 # Read settings from config module (obhapp/config.py)
 app.config.from_object('obhapp.config')
 
-app.debug = True
+app.debug = os.environ.get('FLASK_ENV') != 'production'
 
 
 @app.context_processor
@@ -32,7 +34,17 @@ def inject_user_roles():
 
 
 # Google Calendar integration via service account (calendars stay private)
+# Supports either a file path (local dev) or raw JSON content (Render env var)
 SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
+_SERVICE_ACCOUNT_JSON = os.getenv('GOOGLE_SERVICE_ACCOUNT_JSON')
+
+if _SERVICE_ACCOUNT_JSON and not SERVICE_ACCOUNT_FILE:
+    # Write the JSON from env var to a temp file so google-auth can read it
+    _tmp = tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False)
+    _tmp.write(_SERVICE_ACCOUNT_JSON)
+    _tmp.close()
+    SERVICE_ACCOUNT_FILE = _tmp.name
+
 PORTAL_CALENDAR_ID = os.getenv('PORTAL_CALENDAR_ID')
 PUBLIC_CALENDAR_ID = os.getenv('PUBLIC_CALENDAR_ID')
 
