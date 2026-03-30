@@ -21,6 +21,13 @@ fi
 # Activate the virtual environment
 source env/bin/activate
 
+# stop previous instance if running
+if pgrep -f "gunicorn.*obhapp:app" > /dev/null; then
+    echo "Stopping existing Gunicorn instance..."
+    pkill -f "gunicorn.*obhapp:app"
+    sleep 2
+fi
+
 # Running the application with Gunicorn
 echo "+ gunicorn -w 3 -b 0.0.0.0:8000 obhapp:app"
 gunicorn -w 3 -b 0.0.0.0:8000 obhapp:app
