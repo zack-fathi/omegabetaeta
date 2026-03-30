@@ -49,4 +49,4 @@ sqlite3 var/obhapp.sqlite3 < sql/migrate_email_passwords.sql
 ## Developer
 Developed by Zackery Fathi and Jawad Alsahlani.
 
-For inquiries or support, contact: [zackeryfathi@gmail.com](mailto:zackeryfathi@gmail.com).
+For inquiries or support, contact: [jawadals@umich.edu](mailto:jawadals@umich.edu).
