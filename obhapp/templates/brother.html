@@ -1,4 +1,15 @@
 {% extends 'base.html' %}
+
+{% block title %}{{ brother.fullname }} — Omega Beta Eta{% endblock %}
+{% block meta_description %}{{ brother.fullname }} — {{ brother.line_name }} · #{{ brother.line_num }}{% if brother.lion_name %} · {{ brother.lion_name }}{% endif %}. Brother of Omega Beta Eta Arab Fraternity.{% endblock %}
+{% block og_title %}{{ brother.fullname }} — Omega Beta Eta{% endblock %}
+{% block og_description %}{{ brother.fullname }} — {{ brother.line_name }}{% if brother.lion_name %} · {{ brother.lion_name }}{% endif %}. Brother of Omega Beta Eta Arab Fraternity.{% endblock %}
+{% block og_type %}profile{% endblock %}
+{% block og_image %}{{ request.host_url }}uploads/{{ brother.profile_picture or 'default.jpg' }}{% endblock %}
+{% block twitter_title %}{{ brother.fullname }} — Omega Beta Eta{% endblock %}
+{% block twitter_description %}{{ brother.fullname }} — {{ brother.line_name }}{% if brother.lion_name %} · {{ brother.lion_name }}{% endif %}. Brother of Omega Beta Eta Arab Fraternity.{% endblock %}
+{% block twitter_image %}{{ request.host_url }}uploads/{{ brother.profile_picture or 'default.jpg' }}{% endblock %}
+
 {% block content %}
 <div class="container py-5 brother-detail">
     <div class="brother-profile-card">

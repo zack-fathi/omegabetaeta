@@ -2,7 +2,7 @@ import flask
 import obhapp
 import obhapp.model
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from obhapp.email_utils import send_contact_confirmation_email
 
 logger = logging.getLogger(__name__)
@@ -168,3 +168,56 @@ def show_gallery():
 @obhapp.app.route('/contact_thank_you/')
 def contact_thank_you():
     return flask.render_template("contact_thank_you.html")
+
+
+@obhapp.app.route('/robots.txt')
+def robots_txt():
+    """Serve robots.txt for search engine crawlers."""
+    host = flask.request.host_url.rstrip('/')
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "",
+        "Disallow: /portal/",
+        "Disallow: /login/",
+        "Disallow: /api/",
+        "Disallow: /contact_thank_you/",
+        "",
+        f"Sitemap: {host}/sitemap.xml",
+    ]
+    return flask.Response("\n".join(lines), mimetype="text/plain")
+
+
+@obhapp.app.route('/sitemap.xml')
+def sitemap_xml():
+    """Generate a dynamic XML sitemap."""
+    host = flask.request.host_url.rstrip('/')
+    today = date.today().isoformat()
+
+    # Static pages: (path, changefreq, priority)
+    static_pages = [
+        ('/',          'weekly',  '1.0'),
+        ('/about/',    'monthly', '0.8'),
+        ('/brothers/', 'weekly',  '0.9'),
+        ('/gallery/',  'weekly',  '0.8'),
+        ('/calendar/', 'weekly',  '0.7'),
+        ('/contact/',  'monthly', '0.6'),
+        ('/donate/',   'monthly', '0.5'),
+        ('/apply/',    'monthly', '0.7'),
+    ]
+
+    # Dynamic brother pages
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT username FROM brothers WHERE active = 1 ORDER BY fullname"
+    )
+    brothers = cur.fetchall()
+
+    xml = flask.render_template(
+        "sitemap.xml",
+        host=host,
+        today=today,
+        static_pages=static_pages,
+        brothers=brothers,
+    )
+    return flask.Response(xml, mimetype="application/xml")

@@ -7,24 +7,26 @@
 
     <!-- SEO -->
     <meta name="description" content="{% block meta_description %}Omega Beta Eta is an Arab fraternity founded in 2018, fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.{% endblock %}" />
-    <meta name="keywords" content="Omega Beta Eta, Arab fraternity, OBH, Greek life, Arab culture, brotherhood, leadership" />
+    <meta name="keywords" content="{% block meta_keywords %}Omega Beta Eta, Arab fraternity, OBH, Greek life, Arab culture, brotherhood, leadership{% endblock %}" />
     <meta name="author" content="Jawad Alsahlani" />
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}" />
     <link rel="canonical" href="{{ request.url }}" />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
     <meta property="og:url" content="{{ request.url }}" />
+    <meta property="og:site_name" content="Omega Beta Eta" />
     <meta property="og:title" content="{% block og_title %}Omega Beta Eta — Arab Fraternity{% endblock %}" />
     <meta property="og:description" content="{% block og_description %}Omega Beta Eta is an Arab fraternity fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.{% endblock %}" />
-    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.png', _external=True) }}" />
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/og-image.png', _external=True) }}{% endblock %}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Omega Beta Eta — Arab Fraternity" />
-    <meta name="twitter:description" content="Arab fraternity fostering leadership, academic excellence, cultural pride, and lifelong brotherhood." />
-    <meta name="twitter:image" content="{{ url_for('static', filename='images/og-image.png', _external=True) }}" />
+    <meta name="twitter:title" content="{% block twitter_title %}Omega Beta Eta — Arab Fraternity{% endblock %}" />
+    <meta name="twitter:description" content="{% block twitter_description %}Arab fraternity fostering leadership, academic excellence, cultural pride, and lifelong brotherhood.{% endblock %}" />
+    <meta name="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/og-image.png', _external=True) }}{% endblock %}" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
@@ -131,7 +133,7 @@
             <i class="fab fa-youtube"></i>
           </a>
         </div>
-        <p class="copyright mb-0">&copy; {{ now().year if now is defined else '2024' }} Omega Beta Eta Arab Fraternity Incorporated.</p>
+        <p class="copyright mb-0">&copy; {{ now().year if now is defined else '2026' }} Omega Beta Eta Arab Fraternity Incorporated.</p>
         <p class="credit mb-0">Built by <a href="https://javvad.dev" target="_blank" rel="noopener">Jawad Alsahlani</a></p>
       </div>
     </footer>

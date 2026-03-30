@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {%- for path, changefreq, priority in static_pages %}
+  <url>
+    <loc>{{ host }}{{ path }}</loc>
+    <lastmod>{{ today }}</lastmod>
+    <changefreq>{{ changefreq }}</changefreq>
+    <priority>{{ priority }}</priority>
+  </url>
+  {%- endfor %}
+  {%- for bro in brothers %}
+  <url>
+    <loc>{{ host }}/brothers/{{ bro.username }}/</loc>
+    <lastmod>{{ today }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  {%- endfor %}
+</urlset>
