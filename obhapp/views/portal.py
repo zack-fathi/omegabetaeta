@@ -96,6 +96,12 @@ def forgot_password():
     plain_pw, uname, fullname, email = _set_default_password(connection, bro['user_id'])
     sent = send_default_password_email(email, fullname, uname, plain_pw)
 
+    if sent:
+        connection.execute(
+            "UPDATE brothers SET email_sent = 1 WHERE user_id = ?",
+            (bro['user_id'],)
+        )
+
     connection.execute(
         "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
         (bro['user_id'], "Password reset via forgot password")
