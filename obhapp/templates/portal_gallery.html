@@ -33,7 +33,7 @@
 
   <div id="galleryGrid" class="gallery-manage-grid">
     {% for image in images %}
-    <div class="gallery-manage-item" data-filename="{{ image['filename'] }}">
+    <div class="gallery-manage-item" data-filename="{{ image['filename'] }}" data-carousel="{{ image['carousel'] }}" data-focus="{{ image['carousel_focus'] }}">
       <div class="gallery-item-drag-handle">
         <i class="fas fa-grip-vertical"></i>
       </div>
@@ -51,6 +51,16 @@
         >
         <div class="gallery-item-meta">
           <span class="order-badge">#{{ loop.index }}</span>
+        </div>
+      </div>
+      <div class="gallery-item-carousel-controls">
+        <label class="carousel-toggle" title="Show in homepage carousel">
+          <input type="checkbox" class="carousel-checkbox" data-filename="{{ image['filename'] }}" {% if image['carousel'] %}checked{% endif %}>
+          <span class="carousel-toggle-slider"></span>
+        </label>
+        <div class="carousel-focus-control {% if not image['carousel'] %}hidden{% endif %}">
+          <input type="range" class="carousel-focus-range" min="0" max="100" value="{{ image['carousel_focus'] }}" data-filename="{{ image['filename'] }}" title="Vertical focus: {{ image['carousel_focus'] }}%">
+          <span class="carousel-focus-value">{{ image['carousel_focus'] }}%</span>
         </div>
       </div>
       <div class="gallery-item-actions">
@@ -115,6 +125,23 @@ document.addEventListener('DOMContentLoaded', function() {
       if (e.key === 'Enter') {
         this.blur();
       }
+    });
+  });
+
+  // ── Carousel controls ──
+  document.querySelectorAll('.carousel-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+      toggleCarousel(this.dataset.filename, this.checked, this);
+    });
+  });
+
+  document.querySelectorAll('.carousel-focus-range').forEach(range => {
+    range.addEventListener('input', function() {
+      this.closest('.carousel-focus-control').querySelector('.carousel-focus-value').textContent = this.value + '%';
+      this.title = 'Vertical focus: ' + this.value + '%';
+    });
+    range.addEventListener('change', function() {
+      saveCarouselFocus(this.dataset.filename, this.value);
     });
   });
 });
@@ -227,6 +254,8 @@ function addImageToGrid(filename, description, sortOrder) {
   const item = document.createElement('div');
   item.className = 'gallery-manage-item gallery-item-new';
   item.dataset.filename = filename;
+  item.dataset.carousel = '0';
+  item.dataset.focus = '50';
   item.innerHTML = `
     <div class="gallery-item-drag-handle">
       <i class="fas fa-grip-vertical"></i>
@@ -238,6 +267,16 @@ function addImageToGrid(filename, description, sortOrder) {
       <input type="text" class="gallery-item-desc" value="${escapeHtml(description)}" data-filename="${escapeHtml(filename)}" placeholder="Add description..." spellcheck="false">
       <div class="gallery-item-meta">
         <span class="order-badge">#${count}</span>
+      </div>
+    </div>
+    <div class="gallery-item-carousel-controls">
+      <label class="carousel-toggle" title="Show in homepage carousel">
+        <input type="checkbox" class="carousel-checkbox" data-filename="${escapeHtml(filename)}">
+        <span class="carousel-toggle-slider"></span>
+      </label>
+      <div class="carousel-focus-control hidden">
+        <input type="range" class="carousel-focus-range" min="0" max="100" value="50" data-filename="${escapeHtml(filename)}" title="Vertical focus: 50%">
+        <span class="carousel-focus-value">50%</span>
       </div>
     </div>
     <div class="gallery-item-actions">
@@ -255,6 +294,20 @@ function addImageToGrid(filename, description, sortOrder) {
   });
   descInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') this.blur();
+  });
+
+  // Attach carousel handlers
+  const cb = item.querySelector('.carousel-checkbox');
+  cb.addEventListener('change', function() {
+    toggleCarousel(this.dataset.filename, this.checked, this);
+  });
+  const range = item.querySelector('.carousel-focus-range');
+  range.addEventListener('input', function() {
+    this.closest('.carousel-focus-control').querySelector('.carousel-focus-value').textContent = this.value + '%';
+    this.title = 'Vertical focus: ' + this.value + '%';
+  });
+  range.addEventListener('change', function() {
+    saveCarouselFocus(this.dataset.filename, this.value);
   });
 }
 
@@ -456,6 +509,56 @@ function showToast(message, isError) {
   setTimeout(() => { toast.className = 'gallery-toast'; }, 2500);
 }
 
+// ── Carousel controls ──
+async function toggleCarousel(filename, enabled, checkbox) {
+  const item = checkbox.closest('.gallery-manage-item');
+  const focusControl = item.querySelector('.carousel-focus-control');
+  if (enabled) {
+    focusControl.classList.remove('hidden');
+  } else {
+    focusControl.classList.add('hidden');
+  }
+
+  try {
+    const res = await fetch('/portal/gallery/carousel/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, carousel: enabled })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(enabled ? 'Added to carousel' : 'Removed from carousel');
+    } else {
+      showToast('Failed to update', true);
+      checkbox.checked = !enabled;
+      focusControl.classList.toggle('hidden');
+    }
+  } catch (err) {
+    showToast('Network error', true);
+    checkbox.checked = !enabled;
+    focusControl.classList.toggle('hidden');
+  }
+}
+
+async function saveCarouselFocus(filename, focus) {
+  try {
+    const res = await fetch('/portal/gallery/carousel-focus/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, focus: parseInt(focus) })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Focus point saved');
+    } else {
+      showToast('Failed to save focus', true);
+    }
+  } catch (err) {
+    showToast('Network error', true);
+  }
+}
+
+// ── Helpers ──
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;

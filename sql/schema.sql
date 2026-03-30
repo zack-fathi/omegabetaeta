@@ -47,6 +47,8 @@ CREATE TABLE gallery(
     filename VARCHAR(64) NOT NULL,
     desc VARCHAR(256),
     sort_order INTEGER DEFAULT 0,
+    carousel BIT DEFAULT 0,
+    carousel_focus INTEGER DEFAULT 50,
     PRIMARY KEY(filename)
 );
 

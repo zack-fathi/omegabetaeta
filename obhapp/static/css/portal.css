@@ -1806,6 +1806,111 @@ h1, h2, h3, h4, h5, h6 {
   flex-shrink: 0;
 }
 
+/* ─── Carousel Controls ─── */
+.gallery-item-carousel-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.carousel-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.carousel-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.carousel-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--portal-surface-light);
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.carousel-toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 2px;
+  bottom: 2px;
+  background: var(--portal-text-muted);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.carousel-toggle input:checked + .carousel-toggle-slider {
+  background: var(--portal-gold);
+  border-color: var(--portal-gold);
+}
+
+.carousel-toggle input:checked + .carousel-toggle-slider::before {
+  transform: translateX(16px);
+  background: var(--portal-bg);
+}
+
+.carousel-focus-control {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-focus-control.hidden {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  overflow: hidden;
+}
+
+.carousel-focus-range {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--portal-border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.carousel-focus-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--portal-gold);
+  cursor: pointer;
+  border: none;
+}
+
+.carousel-focus-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--portal-gold);
+  cursor: pointer;
+  border: none;
+}
+
+.carousel-focus-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--portal-text-muted);
+  min-width: 2.5rem;
+  text-align: right;
+}
+
 .btn-gallery-delete {
   background: none;
   border: 1px solid transparent;
@@ -1895,6 +2000,11 @@ h1, h2, h3, h4, h5, h6 {
 
   .gallery-item-desc {
     width: 100%;
+  }
+
+  .gallery-item-carousel-controls {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .gallery-manage-header {

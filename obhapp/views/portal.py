@@ -894,7 +894,7 @@ def gallery_manage():
         flask.flash("You don't have permission to manage the gallery.", "error")
         return flask.redirect(flask.url_for("show_portal"))
     con = obhapp.model.get_db()
-    cur = con.execute("SELECT filename, desc, sort_order FROM gallery ORDER BY sort_order")
+    cur = con.execute("SELECT filename, desc, sort_order, carousel, carousel_focus FROM gallery ORDER BY sort_order")
     images = cur.fetchall()
     return flask.render_template('portal_gallery.html', images=images)
 
@@ -1026,6 +1026,54 @@ def gallery_reorder():
 
     return flask.jsonify(success=True)
 
+
+
+@obhapp.app.route('/portal/gallery/carousel/', methods=['POST'])
+def gallery_carousel_toggle():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    filename = data.get('filename')
+    carousel = data.get('carousel')
+    if not filename or carousel is None:
+        return flask.jsonify(success=False, error="Missing data"), 400
+
+    con = obhapp.model.get_db()
+    con.execute("UPDATE gallery SET carousel = ? WHERE filename = ?", (1 if carousel else 0, filename))
+    con.commit()
+
+    action = "Added to" if carousel else "Removed from"
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"{action} carousel: {filename}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
+
+
+@obhapp.app.route('/portal/gallery/carousel-focus/', methods=['POST'])
+def gallery_carousel_focus():
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not check_gallery_permission():
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    data = flask.request.get_json()
+    filename = data.get('filename')
+    focus = data.get('focus')
+    if not filename or focus is None:
+        return flask.jsonify(success=False, error="Missing data"), 400
+
+    focus = max(0, min(100, int(focus)))
+    con = obhapp.model.get_db()
+    con.execute("UPDATE gallery SET carousel_focus = ? WHERE filename = ?", (focus, filename))
+    con.commit()
+
+    return flask.jsonify(success=True)
 
 
 def get_active_brothers():

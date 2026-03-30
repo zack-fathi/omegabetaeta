@@ -1,6 +1,6 @@
 import flask
 import obhapp
-import os
+import obhapp.model
 import logging
 from datetime import datetime, timedelta
 from obhapp.email_utils import send_contact_confirmation_email
@@ -96,17 +96,13 @@ def uploaded_file(filename):
 @obhapp.app.route('/')
 def show_index():
 
-    # Get the path to the carousel images folder
-    carousel_folder = os.path.join(
-        obhapp.app.static_folder, 'images/carousel_images'
+    # Get carousel images from the gallery database
+    con = obhapp.model.get_db()
+    cur = con.execute(
+        "SELECT filename, carousel_focus FROM gallery "
+        "WHERE carousel = 1 ORDER BY sort_order"
     )
-    
-    # Dynamically list all image files in the folder
-    images = [
-        f'images/carousel_images/{file}'
-        for file in os.listdir(carousel_folder)
-        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))
-    ]
+    images = cur.fetchall()
     
     # Render the template and pass the image list
     return flask.render_template("index.html", images=images)

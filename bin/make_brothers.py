@@ -91,50 +91,50 @@ bros = {
 5:[ 
 "X",
 "Jawad Alsahlani, Muthafar, jawadals",
-"Zackery Fathi, Aklaaf",
-"Mohsen Najar, Furhud",
-"Mohamman Alhameed, Asrul",
-"Ali Haidar, Usayd",
-"Ahmad Sukhon, Baqer",
-"Omar Said, Shibel",
-"Wadih Elaridi, Haidar",
-"Zaid Omari, Sarem",
-"Jaafar Abdallah, Feras",
+"Zackery Fathi, Aklaaf, zfathi",
+"Mohsen Najar, Furhud, mohsenn",
+"Mohamman Alhameed, Asrul, mohamman",
+"Ali Haidar, Usayd, alihaidr",
+"Ahmad Sukhon, Baqer, asukhon",
+"Omar Said, Shibel, saido",
+"Wadih Elaridi, Haidar, welaridi",
+"Zaid Omari, Sarem, zomari",
+"Jaafar Abdallah, Feras, jhaafar",
 ],
 6:[
-"Ali Elhawli, Sarem",
-"Ahmed Elkhatib, Usayd",
-"Adam Abduljabbar, Hamza",
-"Saif Alesawy, Dhergham",
-"Ali Hammoud, Muthafar",
-"Ali Atoui, Feras",
-"Mohamed Najm, Layth",
-"Ibrahim Qamhieh, Asrul",
-"Ali Ghoul, Rebaal",
-"Sajed Nehme, Baqer",
-"Ghassan Shohatee, Furhud",
-"Hisham Irshaid, Haidar",
-"Youssef Cherri, Bassel",
+"Ali Elhawli, Sarem, elhawli",
+"Ahmed Elkhatib, Usayd, aelkhati",
+"Adam Abduljabbar, Hamza, adamjbar",
+"Saif Alesawy, Dhergham, salesawy",
+"Ali Hammoud, Muthafar, alinabil",
+"Ali Atoui, Feras, atouiali",
+"Mohamed Najm, Layth, moenajm",
+"Ibrahim Qamhieh, Asrul, qamhieh",
+"Ali Ghoul, Rebaal, alighoul",
+"Sajed Nehme, Baqer, shnehme",
+"Ghassan Shohatee, Furhud, gsho",
+"Hisham Irshaid, Haidar, hirshaid",
+"Youssef Cherri, Bassel, ycherri",
 ],
 7:[
-"Haroon Sofyan, Sarem",
-"Amer Al-Ebidi, Furhud",
-"Malek Husain, Usayd",
-"Mohammed Alsaidi, Muthafar",
-"Bader Atoui, Feras",
-"Adam Kasham, Bassel",
-"Mohamad-Ali Chahrour, Haidar",
-"Zain Mohamad, Layth",
-"Hamza Alnaib, Shibel",
-"Parth Gautam, Abbas",
+"Haroon Sofyan, Sarem, hrsofyan",
+"Amer Al-Ebidi, Furhud, amerale",
+"Malek Husain, Usayd, malekh",
+"Mohammed Alsaidi, Muthafar, mashaif",
+"Bader Atoui, Feras, batoui",
+"Adam Kasham, Bassel, adkasham",
+"Mohamad-Ali Chahrour, Haidar, mchahrou",
+"Zain Mohamad, Layth, zmohamad",
+"Hamza Alnaib, Shibel, halnaib",
+"Parth Gautam, Abbas, parthg",
 ],
 8:[
-"Nadir Alam, Usayd",
-"Noah Qasim, Aklaaf",
-"Kareem Serhane, Sarem",
-"Hadi Boussi, Asrul",
-"Yousif Ogaily, Feras",
-"Abdullah Ouza, Haidar",
+"Nadir Alam, Usayd, nadira",
+"Noah Qasim, Aklaaf, nzqasim",
+"Kareem Serhane, Sarem, kserhane",
+"Hadi Boussi, Asrul, hadibous",
+"Yousif Ogaily, Feras, yoogaily",
+"Abdullah Ouza, Haidar, abdullao",
 ],
 }
 
@@ -198,12 +198,13 @@ for b in brothers:
         print(f"WARNING: Lion name '{b['lion']}' not found in lion_names table, skipping {b['f']}")
         continue
 
-    desc = (
-        f"Hello, my name is {b['f']} and I am a brother of OBH."
-        f" I crossed {line_to_cross_time(b['l'])} and am part of the "
-        f"{line_int_to_line[str(b['l'])]} as line number {b['ln']}."
-        f" You can contact me at {b['u']}@umich.edu for further questions."
-    )
+    line_name = line_int_to_line[str(b['l'])]
+    cross = line_to_cross_time(b['l'])
+    contact = f" Reach me at {b['u']}@umich.edu." if b['u'] else ""
+    if b['l'] == 0:
+        desc = f"{b['f']} — Fraternal Father of Omega Beta Eta.{contact}"
+    else:
+        desc = f"{b['f']}, {line_name} #{b['ln']}. Crossed {cross}.{contact}"
 
     conn.execute(
         "INSERT INTO brothers(username, password, default_password, password_changed, email_sent, "

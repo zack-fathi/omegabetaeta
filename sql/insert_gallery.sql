@@ -1,3 +1,3 @@
-INSERT INTO gallery(filename, desc) VALUES('OBH_Arab_Unity_Ball.JPG', 'Arab Unity Ball');
-INSERT INTO gallery(filename, desc) VALUES('OBH_OSU-UM_Hangout.JPG', 'OSU-UM Hangout');
-INSERT INTO gallery(filename, desc) VALUES('OBH_Zeta_Line.jpg', 'Zeta Line Members');
+INSERT INTO gallery(filename, desc, sort_order, carousel, carousel_focus) VALUES('OBH_Arab_Unity_Ball.JPG', 'Arab Unity Ball', 1, 1, 50);
+INSERT INTO gallery(filename, desc, sort_order, carousel, carousel_focus) VALUES('OBH_OSU-UM_Hangout.JPG', 'OSU-UM Hangout', 2, 1, 50);
+INSERT INTO gallery(filename, desc, sort_order, carousel, carousel_focus) VALUES('OBH_Zeta_Line.jpg', 'Zeta Line Members', 3, 1, 50);
