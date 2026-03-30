@@ -218,7 +218,7 @@ def edit_profile():
         con.execute(
             "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
-            (user_id, f"Changed account details (new username: {new_username})")
+            (user_id, "Changed account details")
         )
         con.commit()
 
