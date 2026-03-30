@@ -28,6 +28,8 @@ echo "=== 2/6 Create app user ==="
 if ! id "$APP_USER" &>/dev/null; then
   useradd -m -s /bin/bash "$APP_USER"
 fi
+# nginx needs to traverse /home/obh to serve static files and uploads
+chmod 711 /home/$APP_USER
 # Let ec2-user deploy as obh
 echo "ec2-user ALL=($APP_USER) NOPASSWD: ALL" > /etc/sudoers.d/obh-deploy
 
@@ -66,10 +68,39 @@ server {
 }
 NGINX
 
-# Remove the default server block that conflicts on port 80
-if grep -q 'listen.*80' /etc/nginx/nginx.conf; then
-  sed -i '/server {/,/}/d' /etc/nginx/nginx.conf 2>/dev/null || true
-fi
+# Replace nginx.conf with a clean version (no default server block)
+# The default Amazon Linux nginx.conf has a server{} block on port 80
+# that conflicts with our conf.d/ config. Remove it entirely.
+cat > /etc/nginx/nginx.conf <<'MAINCONF'
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log notice;
+pid /run/nginx.pid;
+
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+MAINCONF
 
 nginx -t && systemctl enable nginx && systemctl start nginx
 

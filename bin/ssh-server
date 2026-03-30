@@ -1,9 +1,6 @@
 #!/bin/bash
 # SSH into the OBH production server.
 # Usage: ./bin/ssh-server
-#
-# If your key isn't in ~/.ssh/, set OBH_KEY:
-#   OBH_KEY=~/path/to/key.pem ./bin/ssh-server
 
 set -euo pipefail
 

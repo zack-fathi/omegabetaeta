@@ -353,21 +353,60 @@ http://ec2-18-119-117-254.us-east-2.compute.amazonaws.com
 
 **If you see the OBH website** → Step 7 is done!
 
-**If you see "Welcome to nginx"** (the default nginx page):
-- The default server block is overriding the OBH config
-- Fix it:
+**If you see "Welcome to nginx"** (the default nginx page) **or CSS/images are missing:**
+
+The default nginx.conf has a built-in server block that conflicts with ours. Replace it with a clean version. Run this as ec2-user (copy the ENTIRE block including the `EOF` at the end):
+
 ```bash
-# As ec2-user:
-sudo nano /etc/nginx/nginx.conf
+sudo tee /etc/nginx/nginx.conf > /dev/null << 'EOF'
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log notice;
+pid /run/nginx.pid;
+
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+EOF
 ```
-- Find any `server { ... }` block inside the `http { ... }` block that has `listen 80`
-- Delete that entire server block (the lines from `server {` to its matching `}`)
-- Save and exit nano (Ctrl+O, Enter, Ctrl+X)
-- Test and reload:
+
+Then test and restart nginx:
 ```bash
-sudo nginx -t && sudo systemctl reload nginx
+sudo nginx -t && sudo systemctl restart nginx
 ```
-- Refresh the browser
+
+You should see:
+```
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+Also make sure nginx can read the app files (the home directory needs to be traversable):
+```bash
+sudo chmod 711 /home/obh
+```
+
+Refresh the browser — CSS and images should now load.
 
 **If you see "502 Bad Gateway":**
 - Nginx is running but can't reach gunicorn
