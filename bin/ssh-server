@@ -9,9 +9,9 @@
 
 set -euo pipefail
 
-HOST="${OBH_HOST:?Set OBH_HOST to the server hostname}"
-USER="${OBH_USER:-ec2-user}"
-KEY="${OBH_KEY:-Jawad.pem}"
+HOST="ec2-18-119-117-254.us-east-2.compute.amazonaws.com"
+USER="ec2-user"
+KEY="Jawad.pem"
 
 echo "→ Connecting to $USER@$HOST with key $KEY"
 ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "$USER@$HOST" "$@"
