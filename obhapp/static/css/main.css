@@ -69,7 +69,7 @@ h1, h2, h3, h4, h5, h6 {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 1060;
+  z-index: 1160;
   background: rgba(13, 13, 13, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
