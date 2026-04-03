@@ -659,7 +659,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .directory-card-contacts {
   font-size: 0.72rem;
-  color: rgba(201,168,76,0.6);
+  color: var(--portal-gold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
