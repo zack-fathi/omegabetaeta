@@ -24,19 +24,19 @@
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-id-badge me-1"></i>Uniqname</span>
-                        <span class="detail-value">{{ brother.uniqname or 'N/A' }}</span>
+                        <span class="detail-value">{{ brother.uniqname or '—' }}</span>
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-graduation-cap me-1"></i>Major</span>
-                        <span class="detail-value">{{ brother.major or 'N/A' }}</span>
+                        <span class="detail-value">{{ brother.major or '—' }}</span>
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-briefcase me-1"></i>Job</span>
-                        <span class="detail-value">{{ brother.job or 'N/A' }}</span>
+                        <span class="detail-value">{{ brother.job or '—' }}</span>
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-map-marker-alt me-1"></i>Campus</span>
-                        <span class="detail-value">{{ brother.campus or 'N/A' }}</span>
+                        <span class="detail-value">{{ brother.campus or '—' }}</span>
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-paw me-1"></i>Lion Name</span>
@@ -48,24 +48,56 @@
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-calendar-alt me-1"></i>Cross Time</span>
-                        <span class="detail-value">{{ brother.cross_time or 'N/A' }}</span>
+                        <span class="detail-value">{{ brother.cross_time or '—' }}</span>
                     </div>
                     <div class="member-detail-item">
                         <span class="detail-label"><i class="fas fa-calendar-check me-1"></i>Grad Time</span>
                         <span class="detail-value">{{ brother.grad_time_display }}</span>
                     </div>
-                    {% if brother.contacts and brother.contacts != 'N/A' %}
-                    <div class="member-detail-item">
-                        <span class="detail-label"><i class="fas fa-address-card me-1"></i>Contacts</span>
-                        <span class="detail-value">{{ brother.contacts }}</span>
-                    </div>
-                    {% endif %}
                 </div>
 
-                {% if brother.desc and brother.desc != 'N/A' %}
+                <!-- Contacts List -->
+                {% if contacts %}
+                <div class="member-contacts-section">
+                    <h5><i class="fas fa-address-book me-1"></i>Contacts</h5>
+                    <div class="member-contacts-list">
+                        {% for c in contacts %}
+                        <div class="member-contact-item">
+                            <i class="{{ c.icon }} member-contact-icon"></i>
+                            <div class="member-contact-detail">
+                                <span class="member-contact-type">{{ c.type_label }}{% if c.is_primary %} <i class="fas fa-star" style="color:var(--portal-gold); font-size:0.65rem;" title="Primary"></i>{% endif %}{% if not c.is_public %} <i class="fas fa-lock" style="color:var(--portal-text-muted); font-size:0.6rem;" title="Private"></i>{% endif %}</span>
+                                {% if c.contact_type == 'email' %}
+                                <a href="mailto:{{ c.contact_value }}" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'phone' %}
+                                <a href="tel:{{ c.contact_value }}" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'link' %}
+                                <a href="{{ c.contact_value }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'instagram' %}
+                                <a href="https://instagram.com/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'twitter' %}
+                                <a href="https://x.com/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'linkedin' %}
+                                <a href="{{ c.contact_value if c.contact_value.startswith('http') else 'https://linkedin.com/in/' + c.contact_value }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'snapchat' %}
+                                <a href="https://snapchat.com/add/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'tiktok' %}
+                                <a href="https://tiktok.com/@{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% elif c.contact_type == 'facebook' %}
+                                <a href="{{ c.contact_value if c.contact_value.startswith('http') else 'https://facebook.com/' + c.contact_value }}" target="_blank" rel="noopener noreferrer" class="member-contact-value">{{ c.contact_value }}</a>
+                                {% else %}
+                                <span class="member-contact-value">{{ c.contact_value }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if brother.desc %}
                 <div class="member-about-section">
                     <h5><i class="fas fa-info-circle me-1"></i>About</h5>
-                    <p>{{ brother.desc }}</p>
+                    <p>{{ brother.desc | nl2br }}</p>
                 </div>
                 {% endif %}
             </div>
@@ -126,10 +158,17 @@
     <div id="editMode" style="display:none;">
         <div class="member-profile-card">
             <div class="member-profile-header">
-                <h3><i class="fas fa-pen me-2"></i>Edit: {{ brother.fullname }}</h3>
+                <div class="member-profile-avatar pfp-clickable" onclick="document.getElementById('edit-profile-picture-input').click()" title="Click to change profile picture">
+                    <img id="editPfpPreview" src="/uploads/{{ brother.profile_picture or 'default.jpg' }}" alt="{{ brother.fullname }}">
+                    <div class="pfp-overlay"><i class="fas fa-camera"></i></div>
+                </div>
+                <div class="member-profile-title">
+                    <h3><i class="fas fa-pen me-2"></i>Edit: {{ brother.fullname }}</h3>
+                </div>
             </div>
             <div class="member-profile-body">
                 <form action="/portal/directory/{{ brother.username }}/edit/" method="post" enctype="multipart/form-data">
+                    <input type="file" id="edit-profile-picture-input" name="profile_picture" accept="image/*" style="display:none;" onchange="previewEditPfp(this)">
                     <div class="member-edit-grid">
                         <div class="form-group">
                             <label for="edit-username">Username</label>
@@ -141,28 +180,31 @@
                         </div>
                         <div class="form-group">
                             <label for="edit-uniqname">Uniqname</label>
-                            <input type="text" class="form-control" id="edit-uniqname" name="uniqname" value="{{ brother.uniqname }}">
+                            <input type="text" class="form-control" id="edit-uniqname" name="uniqname" value="{{ brother.uniqname }}" placeholder="e.g. jsmith">
                         </div>
                         <div class="form-group">
                             <label for="edit-major">Major</label>
-                            <input type="text" class="form-control" id="edit-major" name="major" value="{{ brother.major }}">
+                            <input type="text" class="form-control" id="edit-major" name="major" value="{{ brother.major }}" placeholder="e.g. Computer Science">
                         </div>
                         <div class="form-group">
                             <label for="edit-job">Job</label>
-                            <input type="text" class="form-control" id="edit-job" name="job" value="{{ brother.job }}">
+                            <input type="text" class="form-control" id="edit-job" name="job" value="{{ brother.job }}" placeholder="e.g. Software Engineer">
                         </div>
                         <div class="form-group">
                             <label for="edit-campus">Campus</label>
-                            <input type="text" class="form-control" id="edit-campus" name="campus" value="{{ brother.campus }}">
+                            <input type="text" class="form-control" id="edit-campus" name="campus" value="{{ brother.campus }}" placeholder="e.g. Ann Arbor">
                         </div>
                         <div class="form-group">
                             <label for="edit-lion-name">Lion Name</label>
-                            <select class="form-control" id="edit-lion-name" name="lion_name_id" required>
-                                <option value="">Select Lion Name</option>
-                                {% for ln in lion_names %}
-                                <option value="{{ ln.lion_name_id }}" {% if ln.lion_name_id == brother.lion_name_id %}selected{% endif %}>{{ ln.name }}</option>
-                                {% endfor %}
-                            </select>
+                            <div class="custom-select-wrapper">
+                                <select class="form-control" id="edit-lion-name" name="lion_name_id" required>
+                                    <option value="">Select Lion Name</option>
+                                    {% for ln in lion_names %}
+                                    <option value="{{ ln.lion_name_id }}" {% if ln.lion_name_id == brother.lion_name_id %}selected{% endif %}>{{ ln.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <i class="fas fa-chevron-down custom-select-arrow"></i>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="edit-line">Line (number)</label>
@@ -174,32 +216,40 @@
                         </div>
                         <div class="form-group">
                             <label for="edit-cross-time">Cross Time</label>
-                            <input type="text" class="form-control" id="edit-cross-time" name="cross_time" value="{{ brother.cross_time }}">
+                            <input type="text" class="form-control" id="edit-cross-time" name="cross_time" value="{{ brother.cross_time }}" placeholder="e.g. Fall 2023">
                         </div>
                         <div class="form-group">
                             <label for="edit-grad-time">Grad Time</label>
                             <input type="month" class="form-control" id="edit-grad-time" name="grad_time" value="{{ brother.grad_time or '' }}">
                         </div>
                         <div class="form-group">
-                            <label for="edit-contacts">Contacts</label>
-                            <input type="text" class="form-control" id="edit-contacts" name="contacts" value="{{ brother.contacts }}">
+                            <label for="edit-active">Activity Status</label>
+                            <div class="custom-select-wrapper">
+                                <select class="form-control" id="edit-active" name="active">
+                                    <option value="1" {% if brother.active %}selected{% endif %}>Active</option>
+                                    <option value="0" {% if not brother.active %}selected{% endif %}>Inactive</option>
+                                </select>
+                                <i class="fas fa-chevron-down custom-select-arrow"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group mt-3">
                         <label for="edit-desc">Description</label>
-                        <textarea class="form-control auto-resize" id="edit-desc" name="desc" rows="3">{{ brother.desc }}</textarea>
+                        <textarea class="form-control auto-resize" id="edit-desc" name="desc" rows="3" placeholder="A short bio about this member...">{{ brother.desc }}</textarea>
                     </div>
-                    <div class="form-group mt-3">
-                        <label>Profile Picture</label>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="/uploads/{{ brother.profile_picture or 'default.jpg' }}" class="img-thumbnail" style="max-width:60px; border-radius:6px; background:var(--portal-surface-light); border-color:var(--portal-border);">
-                            <input type="file" class="form-control" name="profile_picture" accept="image/*">
-                        </div>
+                    <!-- Contact Editor in Edit Mode -->
+                    <div class="member-profile-card mt-3" style="border:none; background: transparent; padding:0;">
+                        <h5 style="margin-bottom: 12px;"><i class="fas fa-address-book me-1"></i>Contacts</h5>
+                        <p class="portal-form-hint" style="margin-bottom: 12px;">
+                            Mark as <strong>primary</strong> (<i class="fas fa-star" style="color:var(--portal-gold);font-size:0.7rem;"></i>) for directory card, <strong>public</strong> (<i class="fas fa-eye" style="font-size:0.7rem;"></i>) for public page.
+                        </p>
+                        <div id="editContactsList"></div>
+                        <button type="button" class="btn btn-portal-muted btn-sm mt-2" onclick="addEditContact()">
+                            <i class="fas fa-plus me-1"></i>Add Contact
+                        </button>
+                        <div id="editContactsAlert" style="display:none;" class="alert mt-2"></div>
                     </div>
-                    <div class="form-check mt-3">
-                        <input type="checkbox" class="form-check-input" id="edit-active" name="active" value="1" {% if brother.active %}checked{% endif %}>
-                        <label class="form-check-label" for="edit-active">Active Member</label>
-                    </div>
+                    <input type="hidden" id="edit_contacts_json" name="contacts_json" value="">
                     <div class="member-edit-actions mt-4">
                         <button type="button" class="btn btn-portal-muted" onclick="toggleEdit()">Cancel</button>
                         <button type="submit" class="btn btn-portal">Save Changes</button>
@@ -222,6 +272,190 @@
 </div>
 
 <script>
+var CONTACT_TYPES = {{ contact_types | tojson }};
+var existingContacts = {{ contacts | tojson }};
+
+var CONTACT_PLACEHOLDERS = {
+    email: 'example@email.com',
+    phone: '(123) 456-7890',
+    instagram: '@username',
+    twitter: '@username',
+    linkedin: 'https://linkedin.com/in/username',
+    snapchat: '@username',
+    venmo: '@username',
+    discord: 'username#1234',
+    tiktok: '@username',
+    facebook: 'https://facebook.com/username',
+    link: 'https://example.com',
+    other: 'Enter value...'
+};
+
+var CONTACT_VALIDATORS = {
+    email: function(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+    phone: function(v) { return /^[\d\s\-\+\(\)\.]{7,20}$/.test(v); },
+    link: function(v) { return /^https?:\/\/.+/.test(v) || /^[a-zA-Z0-9]/.test(v); }
+};
+
+function contactTypeIcon(type) {
+    for (var i = 0; i < CONTACT_TYPES.length; i++) {
+        if (CONTACT_TYPES[i].value === type) return CONTACT_TYPES[i].icon;
+    }
+    return 'fas fa-address-card';
+}
+
+function escapeAttr(s) {
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(s));
+    return d.innerHTML.replace(/"/g, '&quot;');
+}
+
+function createContactRow(contact, listId) {
+    var div = document.createElement('div');
+    div.className = 'contact-row';
+    var name = 'contact_primary_' + listId;
+
+    var typeSelect = '<select class="form-control form-control-sm contact-type-select" onchange="updateContactIcon(this)">';
+    var typeSelect = '<div class="custom-select-wrapper"><select class="form-control form-control-sm contact-type-select" onchange="updateContactIcon(this); updatePlaceholder(this);">';
+    for (var i = 0; i < CONTACT_TYPES.length; i++) {
+        var ct = CONTACT_TYPES[i];
+        typeSelect += '<option value="' + ct.value + '"' + (contact.contact_type === ct.value ? ' selected' : '') + '>' + ct.label + '</option>';
+    }
+    typeSelect += '</select><i class="fas fa-chevron-down custom-select-arrow"></i></div>';
+
+    var isPrivate = contact.is_public === 0 || contact.is_public === false;
+
+    div.innerHTML =
+        '<div class="contact-row-icon"><i class="' + contactTypeIcon(contact.contact_type) + '"></i></div>' +
+        '<div class="contact-row-type">' + typeSelect + '</div>' +
+        '<div class="contact-row-value"><input type="text" class="form-control form-control-sm" placeholder="' + getPlaceholder(contact.contact_type) + '" value="' + escapeAttr(contact.contact_value || '') + '"></div>' +
+        '<div class="contact-row-options">' +
+            '<label class="contact-toggle" title="Primary"><input type="radio" name="' + name + '" ' + (contact.is_primary ? 'checked' : '') + '><span class="contact-toggle-label"><i class="fas fa-star"></i></span></label>' +
+            '<label class="contact-toggle" title="' + (isPrivate ? 'Private (portal only)' : 'Public (visible on public Brothers page)') + '"><input type="checkbox" class="contact-public-check" ' + (!isPrivate ? 'checked' : '') + ' onchange="updatePrivacyIcon(this)"><span class="contact-toggle-label"><i class="fas ' + (!isPrivate ? 'fa-eye' : 'fa-eye-slash') + '"></i></span></label>' +
+        '</div>' +
+        '<button type="button" class="btn btn-portal-danger btn-sm contact-row-delete" onclick="this.closest(\'.contact-row\').remove()" title="Remove"><i class="fas fa-trash-alt"></i></button>';
+    return div;
+}
+
+function getPlaceholder(type) {
+    return CONTACT_PLACEHOLDERS[type] || 'Enter value...';
+}
+
+function updateContactIcon(selectEl) {
+    var icon = selectEl.closest('.contact-row').querySelector('.contact-row-icon i');
+    icon.className = contactTypeIcon(selectEl.value);
+}
+
+function updatePlaceholder(selectEl) {
+    var input = selectEl.closest('.contact-row').querySelector('.contact-row-value input');
+    input.placeholder = getPlaceholder(selectEl.value);
+}
+
+function updatePrivacyIcon(checkbox) {
+    var label = checkbox.closest('.contact-toggle');
+    var icon = label.querySelector('.contact-toggle-label i');
+    if (checkbox.checked) {
+        label.title = 'Public (visible on public Brothers page)';
+        icon.className = 'fas fa-eye';
+    } else {
+        label.title = 'Private (portal only)';
+        icon.className = 'fas fa-eye-slash';
+    }
+}
+
+function getNextDefaultType() {
+    var usedTypes = {};
+    document.querySelectorAll('#editContactsList .contact-type-select').forEach(function(sel) {
+        usedTypes[sel.value] = true;
+    });
+    for (var i = 0; i < CONTACT_TYPES.length; i++) {
+        if (!usedTypes[CONTACT_TYPES[i].value]) return CONTACT_TYPES[i].value;
+    }
+    return 'other';
+}
+
+function addEditContact(data) {
+    var defaultType = data ? data.contact_type : getNextDefaultType();
+    var contact = data || {contact_type: defaultType, contact_value: '', is_primary: false, is_public: false};
+    document.getElementById('editContactsList').appendChild(createContactRow(contact, 'edit'));
+}
+
+function collectEditContacts() {
+    var rows = document.querySelectorAll('#editContactsList .contact-row');
+    var contacts = [];
+    rows.forEach(function(row) {
+        var type = row.querySelector('.contact-type-select').value;
+        var value = row.querySelector('.contact-row-value input').value.trim();
+        var isPrimary = row.querySelector('input[type="radio"]').checked;
+        var isPublic = row.querySelector('.contact-public-check').checked;
+        if (value) {
+            if (type === 'link' && !/^https?:\/\//i.test(value)) {
+                value = 'https://' + value;
+            }
+            if (type === 'linkedin' && !/^https?:\/\//i.test(value)) {
+                value = 'https://' + value;
+            }
+            if (type === 'facebook' && !/^https?:\/\//i.test(value)) {
+                value = 'https://' + value;
+            }
+            contacts.push({contact_type: type, contact_value: value, is_primary: isPrimary, is_public: isPublic});
+        }
+    });
+    return contacts;
+}
+
+function validateEditContacts() {
+    var rows = document.querySelectorAll('#editContactsList .contact-row');
+    var valid = true;
+    rows.forEach(function(row) {
+        var type = row.querySelector('.contact-type-select').value;
+        var input = row.querySelector('.contact-row-value input');
+        var value = input.value.trim();
+        if (!value) { input.classList.remove('is-invalid'); return; }
+        var validator = CONTACT_VALIDATORS[type];
+        if (validator && !validator(value)) {
+            input.classList.add('is-invalid');
+            valid = false;
+        } else {
+            input.classList.remove('is-invalid');
+        }
+    });
+    return valid;
+}
+
+function previewEditPfp(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('editPfpPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Submit contacts with the edit form
+var editForm = document.querySelector('#editMode form');
+if (editForm) {
+    editForm.addEventListener('submit', function(e) {
+        if (!validateEditContacts()) {
+            e.preventDefault();
+            var alertEl = document.getElementById('editContactsAlert');
+            alertEl.style.display = '';
+            alertEl.className = 'alert alert-danger mt-2';
+            alertEl.textContent = 'Please fix invalid contacts before saving.';
+            setTimeout(function() { alertEl.style.display = 'none'; }, 4000);
+            return;
+        }
+        document.getElementById('edit_contacts_json').value = JSON.stringify(collectEditContacts());
+    });
+}
+
+// Init edit contacts
+if (existingContacts.length === 0) {
+    addEditContact();
+} else {
+    existingContacts.forEach(function(c) { addEditContact(c); });
+}
+
 function toggleEdit() {
     var view = document.getElementById('viewMode');
     var edit = document.getElementById('editMode');

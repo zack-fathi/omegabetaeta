@@ -70,31 +70,42 @@
             <ul>
                 <li><strong>Username</strong> — your login name</li>
                 <li><strong>Full Name</strong> — displayed across the site</li>
-                <li><strong>Profile Picture</strong> — upload a photo of yourself</li>
+                <li><strong>Profile Picture</strong> — click your current profile picture at the top to upload a new one. Hover over it to see a clear preview.</li>
                 <li><strong>Major</strong> — your field of study</li>
                 <li><strong>Job</strong> — your current job or internship</li>
                 <li><strong>Description</strong> — a short bio shown on your profile page</li>
-                <li><strong>Contacts</strong> — how people can reach you (e.g. Instagram, phone, email)</li>
                 <li><strong>Grad Time</strong> — your expected graduation month/year</li>
-                <li><strong>Active</strong> — whether you're currently active</li>
+                <li><strong>Activity Status</strong> — choose Active or Inactive from the dropdown</li>
             </ul>
-            <p>Click <strong>Update Profile</strong> to save. Your photo and name appear on the public <a href="/brothers/">Brothers</a> page and in the portal <a href="/portal/directory/">Directory</a>.</p>
+
+            <h5 class="mt-3"><i class="fas fa-address-book"></i> Managing Your Contacts</h5>
+            <p>Below the profile fields is a <strong>Contacts</strong> section where you can manage your contact info.</p>
+            <ul>
+                <li><strong>Add Contact</strong> — click to add a new contact entry. Choose a type (Email, Phone, Instagram, LinkedIn, etc.) and enter the value.</li>
+                <li><strong>Primary</strong> (<i class="fas fa-star" style="color:var(--portal-gold);font-size:0.75rem;"></i>) — mark one contact as primary. This is the contact shown on your directory card.</li>
+                <li><strong>Public vs Private</strong> (<i class="fas fa-eye" style="font-size:0.75rem;"></i> / <i class="fas fa-eye-slash" style="font-size:0.75rem;"></i>) — public contacts appear on the public <a href="/brothers/">Brothers</a> page. Private contacts are portal-only.</li>
+                <li><strong>Delete</strong> — click the trash icon to remove a contact.</li>
+            </ul>
+            <div class="help-tip">
+                <i class="fas fa-info-circle"></i>
+                The <strong>Update Profile</strong> button is grayed out until you make a change.
+            </div>
         </div>
 
         <!-- Directory -->
         <div class="help-section" id="section-directory">
             <h4><i class="fas fa-address-book"></i> <a href="/portal/directory/">Directory</a></h4>
-            <p>Browse all brothers organized by line. Each card shows profile picture, name, lion name, line number, ID, uniqname, contact info, and active/inactive status (green/red dot).</p>
+            <p>Browse all brothers organized by line. Each card shows profile picture, name, lion name, and primary contact info. Active/inactive status is shown with a green/red dot.</p>
             <ul>
                 <li><strong>Search</strong> — type in the search bar to filter by name, lion name, uniqname, contacts, line number, or member ID</li>
                 <li><strong>Filter by Line</strong> — use the line dropdown to show only members from a specific line</li>
                 <li><strong>Filter by Status</strong> — use the status dropdown to show only active or inactive members</li>
-                <li><strong>Contact Details</strong> — each card shows contact info (e.g. Instagram, phone, email) when available. Click a card to see all details including a full contacts field.</li>
+                <li><strong>Contact Details</strong> — each card shows the brother's <strong>primary contact</strong> (the one they've marked with a star). Click a card to see all contacts with clickable links for email, phone, social media, etc.</li>
                 <li><strong>View Details</strong> — click any member card to see their full profile with all info</li>
             </ul>
             <p><strong>Board members (Level 1–4)</strong> can also:</p>
             <ul>
-                <li><strong>Edit Member</strong> — click the Edit button on a member's detail page to change any field (username, name, uniqname, major, job, line info, profile picture, active status, etc.). All edits are logged.</li>
+                <li><strong>Edit Member</strong> — click the Edit button on a member's detail page to change any field. All edits are logged.</li>
                 <li><strong>Delete Member</strong> (Level 1 only) — permanently remove a member from the Danger Zone section at the bottom of the edit view. This action is logged and cannot be undone.</li>
             </ul>
         </div>
@@ -122,87 +133,77 @@
 
             <h5 class="mt-3"><i class="fas fa-layer-group"></i> Permission Levels</h5>
             <p>Every board role has a <strong>permission level</strong> (1–4) that determines what the role holder can do. Lower numbers mean more access. Members with no board role can view all pages but cannot edit anything.</p>
-            <table class="portal-table">
-                <thead>
-                    <tr>
-                        <th>Level</th>
-                        <th>Name</th>
-                        <th>Default Roles</th>
-                        <th>Permissions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>1</strong></td>
-                        <td>Executive</td>
-                        <td>Admin, President</td>
-                        <td>
-                            <ul class="mb-0">
-                                <li>Full access to all portal features</li>
-                                <li>Assign and remove board roles and holders</li>
-                                <li>Add and remove custom roles</li>
-                                <li>Change permission levels (except Admin/President)</li>
-                                <li>Manage site administrators</li>
-                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
-                                <li>Manage recruits (accept, delete, move to brothers)</li>
-                                <li>Edit and delete members in the directory</li>
-                                <li>Manage lion names (add, edit, delete)</li>
-                                <li>Send and reset passwords</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>2</strong></td>
-                        <td>Vice President</td>
-                        <td>Internal VP, External VP</td>
-                        <td>
-                            <ul class="mb-0">
-                                <li>Everything except managing board roles, permission levels, and administrators</li>
-                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
-                                <li>Manage recruits (accept, delete, move to brothers)</li>
-                                <li>Edit member profiles in the directory</li>
-                                <li>Manage lion names (add, edit, delete)</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>3</strong></td>
-                        <td>Director</td>
-                        <td>Director of Recruitment</td>
-                        <td>
-                            <ul class="mb-0">
-                                <li>Everything except board roles, administrators, and lion names</li>
-                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
-                                <li>Manage recruits (accept, delete, move to brothers)</li>
-                                <li>Edit member profiles in the directory</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>4</strong></td>
-                        <td>Board Member</td>
-                        <td>All other Director positions (Finance, Internal, PR, Education, Philanthropy, External), Administrator</td>
-                        <td>
-                            <ul class="mb-0">
-                                <li>Manage gallery (upload, delete, reorder, carousel)</li>
-                                <li>Edit member profiles in the directory</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>—</strong></td>
-                        <td>Member (No Role)</td>
-                        <td>All brothers without a board role</td>
-                        <td>
-                            <ul class="mb-0">
-                                <li>View all pages (directory, board, gallery, lion names, recruits, messages, log)</li>
-                                <li>Edit own profile and change own password</li>
-                                <li>Cannot edit any shared content</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="help-perm-cards">
+                <div class="help-perm-card">
+                    <div class="help-perm-card-header">
+                        <span class="help-perm-level level-1">1</span>
+                        <span class="help-perm-name">Executive</span>
+                        <span class="help-perm-roles">Admin, President</span>
+                    </div>
+                    <ul>
+                        <li>Full access to all portal features</li>
+                        <li>Assign and remove board roles and holders</li>
+                        <li>Add and remove custom roles</li>
+                        <li>Change permission levels (except Admin/President)</li>
+                        <li>Manage site administrators</li>
+                        <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                        <li>Manage recruits (accept, delete, move to brothers)</li>
+                        <li>Edit and delete members in the directory</li>
+                        <li>Manage lion names (add, edit, delete)</li>
+                        <li>Send and reset passwords</li>
+                    </ul>
+                </div>
+                <div class="help-perm-card">
+                    <div class="help-perm-card-header">
+                        <span class="help-perm-level level-2">2</span>
+                        <span class="help-perm-name">Vice President</span>
+                        <span class="help-perm-roles">Internal VP, External VP</span>
+                    </div>
+                    <ul>
+                        <li>Everything except managing board roles, permission levels, and administrators</li>
+                        <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                        <li>Manage recruits (accept, delete, move to brothers)</li>
+                        <li>Edit member profiles in the directory</li>
+                        <li>Manage lion names (add, edit, delete)</li>
+                    </ul>
+                </div>
+                <div class="help-perm-card">
+                    <div class="help-perm-card-header">
+                        <span class="help-perm-level level-3">3</span>
+                        <span class="help-perm-name">Director</span>
+                        <span class="help-perm-roles">Director of Recruitment</span>
+                    </div>
+                    <ul>
+                        <li>Everything except board roles, administrators, and lion names</li>
+                        <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                        <li>Manage recruits (accept, delete, move to brothers)</li>
+                        <li>Edit member profiles in the directory</li>
+                    </ul>
+                </div>
+                <div class="help-perm-card">
+                    <div class="help-perm-card-header">
+                        <span class="help-perm-level level-4">4</span>
+                        <span class="help-perm-name">Board Member</span>
+                        <span class="help-perm-roles">All other Director positions (Finance, Internal, PR, Education, Philanthropy, External), Administrator</span>
+                    </div>
+                    <ul>
+                        <li>Manage gallery (upload, delete, reorder, carousel)</li>
+                        <li>Edit member profiles in the directory</li>
+                    </ul>
+                </div>
+                <div class="help-perm-card">
+                    <div class="help-perm-card-header">
+                        <span class="help-perm-level muted">—</span>
+                        <span class="help-perm-name">Member (No Role)</span>
+                        <span class="help-perm-roles">All brothers without a board role</span>
+                    </div>
+                    <ul>
+                        <li>View all pages (directory, board, gallery, lion names, recruits, messages, log)</li>
+                        <li>Edit own profile and change own password</li>
+                        <li>Cannot edit any shared content</li>
+                    </ul>
+                </div>
+            </div>
 
             <h5 class="mt-3"><i class="fas fa-user-shield"></i> Assigning Board Roles</h5>
             <p><strong>Level 1 (Executive) only:</strong></p>
@@ -271,21 +272,12 @@
                 <li><strong>Edit description</strong> — click the description field on any photo to edit it inline. Changes save when you click away or press Enter.</li>
                 <li><strong>Delete</strong> (<i class="fas fa-trash-alt"></i>) — permanently removes a photo from the system. This cannot be undone.</li>
             </ul>
-            <p><strong>Carousel star</strong> (<i class="fas fa-star" style="color:var(--portal-gold)"></i>):</p>
-            <p>Click the star to toggle whether a photo appears in the homepage carousel (hero section on the landing page). Starred photos display a gold star. When a photo is starred, a focus control appears next to it.</p>
-            <p><strong>Focus control</strong> (<i class="fas fa-sliders-h"></i>):</p>
-            <p>Sets the vertical focus point for carousel cropping. Use the slider or type a value directly (0–100%). 0% shows the top, 50% centers, 100% shows the bottom.</p>
-            <p><strong>Visibility toggle</strong> (<i class="fas fa-eye"></i>):</p>
-            <p>Controls whether a photo is shown on the public gallery page. Hidden photos stay in the system and can still be used in the carousel. The four possible states:</p>
-            <ul>
-                <li><strong>Visible + Starred</strong> — shown on the gallery page <em>and</em> in the homepage carousel.</li>
-                <li><strong>Visible + Unstarred</strong> — shown on the gallery page only.</li>
-                <li><strong>Hidden + Starred</strong> — hidden from the gallery page, but still appears in the homepage carousel. Useful for hero images that shouldn't clutter the gallery.</li>
-                <li><strong>Hidden + Unstarred</strong> — hidden from both the gallery and the carousel. The photo is kept in the system for potential future use.</li>
-            </ul>
+            <p><strong>Carousel star</strong> (<i class="fas fa-star" style="color:var(--portal-gold)"></i>) — toggle whether a photo appears in the homepage carousel.</p>
+            <p><strong>Focus control</strong> (<i class="fas fa-sliders-h"></i>) — sets the vertical focus point for carousel cropping (0–100%).</p>
+            <p><strong>Visibility toggle</strong> (<i class="fas fa-eye"></i>) — controls whether a photo is shown on the public gallery page. Hidden photos can still be used in the carousel.</p>
             <div class="help-tip">
                 <i class="fas fa-info-circle"></i>
-                All changes take effect immediately on the public <a href="/gallery/">Gallery</a> page and the <a href="/">Homepage</a> carousel. Hidden photos appear dimmed in the management view.
+                All changes take effect immediately on the public <a href="/gallery/">Gallery</a> page and the <a href="/">Homepage</a> carousel.
             </div>
         </div>
 
@@ -300,10 +292,8 @@
             <h4><i class="fas fa-envelope"></i> <a href="/portal/messages/">Messages</a></h4>
             <p>All brothers can view messages submitted through the public <a href="/contact/">Contact</a> page — including the sender's name, email, subject, and message.</p>
             <ul>
-                <li><strong>Reply</strong> — click the Reply button on any message to open the reply form. Type your response and click Send Reply. The reply is emailed to the sender and added to the conversation in the portal.</li>
-                <li><strong>Multiple replies</strong> — you can reply to the same message multiple times. All replies are shown below the original message in chronological order.</li>
-                <li><strong>No page reload</strong> — after sending a reply, a green confirmation appears and the reply is added instantly without refreshing the page.</li>
-                <li><strong>Separate emails</strong> — each reply is sent as its own email (not chained). The original subject and message are included in the body so the recipient has full context. When they reply back, it goes straight to the organization inbox.</li>
+                <li><strong>Reply</strong> — click the Reply button on any message to send a response. The reply is emailed to the sender and saved in the portal.</li>
+                <li><strong>Multiple replies</strong> — you can reply to the same message multiple times. All replies are shown below the original message.</li>
             </ul>
         </div>
 
@@ -311,24 +301,16 @@
         <div class="help-section">
             <h4><i class="fas fa-globe"></i> Public Website Pages</h4>
             <p>These pages are visible to everyone (no login required):</p>
-            <table class="portal-table">
-                <thead>
-                    <tr>
-                        <th>Page</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><a href="/">Home</a></td><td>Landing page with carousel (sourced from gallery) and welcome message</td></tr>
-                    <tr><td><a href="/about/">About</a></td><td>Chapter history, mission, and values</td></tr>
-                    <tr><td><a href="/brothers/">Brothers</a></td><td>Active brothers with photos and bios</td></tr>
-                    <tr><td><a href="/gallery/">Gallery</a></td><td>Photo gallery (uploaded from the portal)</td></tr>
-                    <tr><td><a href="/calendar/">Calendar</a></td><td>Public events calendar</td></tr>
-                    <tr><td><a href="/contact/">Contact</a></td><td>Contact form (messages go to portal)</td></tr>
-                    <tr><td><a href="/donate/">Donate</a></td><td>Donation info and Venmo QR</td></tr>
-                    <tr><td><a href="/apply/">Apply</a></td><td>Recruitment application form</td></tr>
-                </tbody>
-            </table>
+            <div class="help-info-list">
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/">Home</a></span><span class="help-info-item-desc">Landing page with carousel (sourced from gallery) and welcome message</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/about/">About</a></span><span class="help-info-item-desc">Chapter history, mission, and values</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/brothers/">Brothers</a></span><span class="help-info-item-desc">Active brothers with photos and bios</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/gallery/">Gallery</a></span><span class="help-info-item-desc">Photo gallery (uploaded from the portal)</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/calendar/">Calendar</a></span><span class="help-info-item-desc">Public events calendar</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/contact/">Contact</a></span><span class="help-info-item-desc">Contact form (messages go to portal)</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/donate/">Donate</a></span><span class="help-info-item-desc">Donation info and Venmo QR</span></div>
+                <div class="help-info-item"><span class="help-info-item-label"><a href="/apply/">Apply</a></span><span class="help-info-item-desc">Recruitment application form</span></div>
+            </div>
         </div>
 
         <!-- Tips -->
@@ -349,23 +331,16 @@
             <h4><i class="fas fa-calendar-alt"></i> Calendar Setup <span class="help-badge">Maintainers</span></h4>
             <p>The site uses two Google Calendars — one for public events and one for internal events. Both feed into the portal calendar; only the public one appears on the front-facing website. <strong>The calendars do not need to be public</strong> — access is handled through a service account.</p>
 
-            <table class="portal-table">
-                <thead>
-                    <tr><th>Calendar</th><th>Shown On</th><th>Use For</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Public Calendar</strong></td>
-                        <td>Public <a href="/calendar/">Calendar</a> page <em>and</em> Portal</td>
-                        <td>Rush events, socials, community events — anything the public should see</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Portal Calendar</strong></td>
-                        <td>Portal only</td>
-                        <td>Board meetings, chapter meetings, internal deadlines</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="help-info-list">
+                <div class="help-info-item">
+                    <span class="help-info-item-label">Public Calendar</span>
+                    <span class="help-info-item-desc">Shown on the public <a href="/calendar/">Calendar</a> page <em>and</em> Portal. Use for rush events, socials, community events — anything the public should see.</span>
+                </div>
+                <div class="help-info-item">
+                    <span class="help-info-item-label">Portal Calendar</span>
+                    <span class="help-info-item-desc">Shown in the Portal only. Use for board meetings, chapter meetings, internal deadlines.</span>
+                </div>
+            </div>
 
             <p><strong>Quick links to manage calendars in Google Calendar:</strong></p>
             <ul>

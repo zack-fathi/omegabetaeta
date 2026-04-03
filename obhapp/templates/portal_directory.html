@@ -81,8 +81,8 @@
                         <span class="directory-card-name">{{ brother['fullname'] }}</span>
                         <span class="directory-card-detail">#{{ brother['line_num'] }} · {{ brother['lion_name'] or '—' }}</span>
                         <span class="directory-card-detail directory-card-sub">ID: {{ brother['user_id'] }} · {{ brother['uniqname'] or '—' }}</span>
-                        {% if brother['contacts'] and brother['contacts'] != 'N/A' %}
-                        <span class="directory-card-detail directory-card-contacts"><i class="fas fa-address-card" style="font-size:0.7rem; opacity:0.5; margin-right:2px;"></i>{{ brother['contacts'] }}</span>
+                        {% if brother['primary_contact'] %}
+                        <span class="directory-card-detail directory-card-contacts"><i class="{{ brother['primary_contact']['icon'] }}" style="font-size:0.7rem; opacity:0.6; margin-right:3px;"></i>{{ brother['primary_contact']['contact_value'] }}</span>
                         {% endif %}
                     </div>
                 </div>

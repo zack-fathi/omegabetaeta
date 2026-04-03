@@ -9,16 +9,16 @@ CREATE TABLE lion_names(
 CREATE TABLE brothers(
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   username VARCHAR(20) NOT NULL UNIQUE,
-  uniqname VARCHAR(20) DEFAULT "N/A",
+  uniqname VARCHAR(20) DEFAULT "",
   fullname VARCHAR(40) NOT NULL,
   profile_picture VARCHAR(64) DEFAULT "default.jpg",
   password VARCHAR(128) DEFAULT "password",
-  major VARCHAR(40) DEFAULT "N/A",
-  job VARCHAR(40) DEFAULT "N/A",
-  desc VARCHAR(256) DEFAULT "N/A",
-  campus VARCHAR(40) DEFAULT "N/A",
-  contacts VARCHAR(64) DEFAULT "N/A",
-  cross_time VARCHAR(40) DEFAULT "N/A",
+  major VARCHAR(40) DEFAULT "",
+  job VARCHAR(40) DEFAULT "",
+  desc VARCHAR(256) DEFAULT "",
+  campus VARCHAR(40) DEFAULT "",
+  contacts VARCHAR(64) DEFAULT "",
+  cross_time VARCHAR(40) DEFAULT "",
   grad_time DATE DEFAULT NULL,
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
@@ -68,6 +68,17 @@ CREATE TABLE roles (
     permission_level INTEGER DEFAULT 4,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES brothers(user_id) ON UPDATE SET NULL ON DELETE SET NULL
+);
+
+CREATE TABLE brother_contacts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    contact_type TEXT NOT NULL DEFAULT 'other',
+    contact_value TEXT NOT NULL,
+    is_primary BIT DEFAULT 0,
+    is_public BIT DEFAULT 0,
+    sort_order INTEGER DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES brothers(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE messages (

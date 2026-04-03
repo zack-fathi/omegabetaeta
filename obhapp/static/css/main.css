@@ -655,6 +655,62 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0;
 }
 
+.brother-about-section a {
+  color: var(--obh-gold);
+}
+.brother-about-section a:hover {
+  color: var(--obh-gold-light, #dfc06a);
+}
+
+/* ─── Brother Contacts Display (Public Page) ─── */
+.brother-contacts-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--obh-border);
+}
+.brother-contacts-section h5 {
+  color: var(--obh-gold);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+.brother-contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.brother-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--obh-border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+.brother-contact-item:hover {
+  border-color: rgba(201, 168, 76, 0.25);
+}
+.brother-contact-icon {
+  color: var(--obh-gold);
+  font-size: 1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.brother-contact-value {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.8);
+  word-break: break-all;
+}
+a.brother-contact-value {
+  color: var(--obh-gold);
+  text-decoration: none;
+}
+a.brother-contact-value:hover {
+  text-decoration: underline;
+}
+
 /* ─── Forms ─── */
 .obh-form-container {
   min-height: 70vh;

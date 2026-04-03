@@ -3,13 +3,14 @@ from datetime import datetime
 import obhapp
 from obhapp.utils import line_int_to_line
 from obhapp.email_utils import send_application_confirmation_email
+from obhapp.views.portal import get_contacts_for_user, get_primary_contact, CONTACT_TYPE_MAP
 
 
 @obhapp.app.route('/brothers/')
 def show_brothers():
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT b.fullname, b.username, b.line, b.line_num, ln.name AS lion_name, "
+        "SELECT b.user_id, b.fullname, b.username, b.line, b.line_num, ln.name AS lion_name, "
         "b.uniqname, b.profile_picture "
         "FROM brothers b "
         "LEFT JOIN lion_names ln ON b.lion_name_id = ln.lion_name_id "
@@ -26,7 +27,7 @@ def show_brothers():
 def show_brother(name):
     con = obhapp.model.get_db()
     cur = con.execute(
-        "SELECT b.fullname, b.uniqname, b.profile_picture, b.major, b.desc, "
+        "SELECT b.user_id, b.fullname, b.uniqname, b.profile_picture, b.major, b.desc, "
         "b.campus, b.contacts, b.cross_time, b.grad_time, b.line, b.line_num, "
         "ln.name AS lion_name "
         "FROM brothers b "
@@ -39,7 +40,13 @@ def show_brother(name):
         flask.abort(404)
     bro["line_name"] = line_int_to_line[str(bro["line"])]
     bro['grad_time'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
-    return flask.render_template("brother.html", brother=bro)
+
+    # Get public contacts only
+    all_contacts = get_contacts_for_user(con, bro['user_id'])
+    public_contacts = [c for c in all_contacts if c.get('is_public')]
+    primary_contact = get_primary_contact(public_contacts)
+
+    return flask.render_template("brother.html", brother=bro, contacts=public_contacts, primary_contact=primary_contact)
 
 @obhapp.app.route('/apply/')
 def show_apply():

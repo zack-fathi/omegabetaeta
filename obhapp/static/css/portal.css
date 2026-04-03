@@ -806,6 +806,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .member-edit-grid .form-group label,
 .member-profile-body > .form-group label,
+.member-profile-body > form > .form-group label,
 .member-profile-body > .form-check label {
   font-size: 0.75rem;
   color: var(--portal-gold);
@@ -1523,6 +1524,149 @@ h1, h2, h3, h4, h5, h6 {
 
 .help-section .portal-table {
   margin-top: 0.75rem;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.help-section .portal-table thead th {
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.help-section .portal-table tbody td {
+  min-width: 120px;
+}
+
+.help-section .portal-table tbody td ul {
+  padding-left: 1rem;
+  margin-bottom: 0;
+}
+
+/* ─── Help Permission Cards (replaces table on all sizes) ─── */
+.help-perm-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 0.75rem;
+}
+.help-perm-card {
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.help-perm-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.help-perm-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--portal-red);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.help-perm-level.level-1 {
+  background: rgba(201, 168, 76, 0.2);
+  color: var(--portal-gold);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+}
+.help-perm-level.level-2 {
+  background: rgba(100, 149, 237, 0.15);
+  color: #6495ED;
+  border: 1px solid rgba(100, 149, 237, 0.35);
+}
+.help-perm-level.level-3 {
+  background: rgba(75, 192, 120, 0.15);
+  color: #4BC078;
+  border: 1px solid rgba(75, 192, 120, 0.35);
+}
+.help-perm-level.level-4 {
+  background: rgba(180, 180, 180, 0.12);
+  color: var(--portal-text-muted);
+  border: 1px solid rgba(180, 180, 180, 0.3);
+}
+.help-perm-level.muted {
+  background: var(--portal-surface-light);
+  color: var(--portal-text-muted);
+}
+.help-perm-name {
+  font-weight: 600;
+  color: var(--portal-gold);
+  font-size: 0.95rem;
+}
+.help-perm-roles {
+  font-size: 0.82rem;
+  color: var(--portal-text-muted);
+}
+.help-perm-card ul {
+  padding-left: 1.1rem;
+  margin: 0;
+}
+.help-perm-card li {
+  font-size: 0.85rem;
+  color: var(--portal-text-muted);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+.help-perm-card li strong,
+.help-perm-card li em,
+.help-perm-card li code {
+  display: inline;
+  line-height: inherit;
+}
+.help-info-item-desc strong,
+.help-info-item-desc em,
+.help-info-item-desc code {
+  display: inline;
+  line-height: inherit;
+}
+
+/* ─── Help Info List (replaces simple 2-col tables) ─── */
+.help-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+.help-info-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  align-items: baseline;
+}
+.help-info-item-label {
+  font-weight: 600;
+  color: var(--portal-text);
+  white-space: nowrap;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+.help-info-item-label a {
+  color: var(--portal-gold);
+}
+.help-info-item-desc {
+  color: var(--portal-text-muted);
+  font-size: 0.88rem;
+}
+@media (max-width: 480px) {
+  .help-info-item {
+    flex-direction: column;
+    gap: 2px;
+  }
 }
 
 .help-section[id] {
@@ -2791,4 +2935,285 @@ textarea.auto-resize {
   overflow: hidden;
   resize: vertical;
   min-height: 3.5rem;
+}
+
+/* ─── Form Hint (visible on dark bg) ─── */
+.portal-form-hint {
+  color: var(--portal-text-muted);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Override Bootstrap text-muted for dark theme */
+.text-muted,
+.form-text.text-muted {
+  color: var(--portal-text-muted) !important;
+}
+
+/* ─── Custom Select Wrapper (dropdown arrow) ─── */
+.custom-select-wrapper {
+  position: relative;
+}
+.custom-select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem;
+}
+.custom-select-arrow {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--portal-text-muted);
+  font-size: 0.65rem;
+  pointer-events: none;
+}
+
+/* ─── Profile Picture Clickable ─── */
+.pfp-clickable {
+  cursor: pointer;
+  position: relative;
+}
+.pfp-clickable img {
+  opacity: 0.85;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+.pfp-clickable:hover img {
+  border-color: transparent !important;
+  border-style: solid !important;
+  opacity: 1;
+}
+.pfp-clickable .pfp-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.3rem;
+  pointer-events: none;
+  border: 1.5px dashed var(--portal-gold) !important;
+}
+.pfp-clickable:hover .pfp-overlay {
+  opacity: 0;
+}
+
+/* ─── Account Layout (profile left, contacts right) ─── */
+.account-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.contacts-side-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: var(--portal-gold);
+  margin-bottom: 8px;
+}
+
+@media (max-width: 900px) {
+  .account-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Disabled Update Button ─── */
+.btn-portal-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+.btn-portal-disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── Contact Validation ─── */
+.contact-row-value input.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+}
+
+/* ─── Hyperlink Color (gold theme) ─── */
+.help-section a,
+.help-tip a,
+.member-about-section a,
+.brother-about-section a,
+.member-profile-body a:not(.btn):not(.member-contact-value),
+.portal-main a:not(.btn):not(.link-no-style):not(.sidebar-link):not(.sidebar-back-link):not(.profile-badge):not(.directory-card-link):not(.member-contact-value):not(.nav-link) {
+  color: var(--portal-gold);
+}
+.help-section a:hover,
+.help-tip a:hover,
+.member-about-section a:hover,
+.brother-about-section a:hover {
+  color: var(--portal-gold-light);
+}
+
+/* ─── Contact Editor ─── */
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.contact-row:hover {
+  border-color: rgba(201, 168, 76, 0.25);
+}
+.contact-row-icon {
+  width: 32px;
+  text-align: center;
+  color: var(--portal-gold);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.contact-row-type {
+  flex: 0 0 130px;
+}
+.contact-row-type select {
+  font-size: 0.82rem;
+}
+.contact-row-value {
+  flex: 1;
+  min-width: 0;
+}
+.contact-row-value input {
+  font-size: 0.82rem;
+}
+.contact-row-options {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.contact-toggle {
+  cursor: pointer;
+  margin: 0;
+}
+.contact-toggle input {
+  display: none;
+}
+.contact-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--portal-surface-light);
+  color: var(--portal-text-muted);
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.contact-toggle input:checked + .contact-toggle-label {
+  background: rgba(201, 168, 76, 0.15);
+  color: var(--portal-gold);
+  border-color: rgba(201, 168, 76, 0.3);
+}
+.contact-toggle:hover .contact-toggle-label {
+  background: var(--portal-surface-light);
+  border-color: rgba(201, 168, 76, 0.2);
+}
+.contact-row-delete {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  border-radius: 6px;
+}
+
+/* ─── Contact Display (Portal Member Detail) ─── */
+.member-contacts-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--portal-border);
+}
+.member-contacts-section h5 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  margin-bottom: 14px;
+  color: var(--portal-text);
+}
+.member-contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.member-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--portal-surface);
+  border: 1px solid var(--portal-border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+.member-contact-item:hover {
+  border-color: rgba(201, 168, 76, 0.2);
+}
+.member-contact-icon {
+  color: var(--portal-gold);
+  font-size: 1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.member-contact-detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.member-contact-type {
+  font-size: 0.7rem;
+  color: var(--portal-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.member-contact-value {
+  font-size: 0.9rem;
+  color: var(--portal-text);
+  word-break: break-all;
+}
+a.member-contact-value {
+  color: var(--portal-gold);
+  text-decoration: none;
+}
+a.member-contact-value:hover {
+  text-decoration: underline;
+}
+
+/* ─── Responsive Contact Editor ─── */
+@media (max-width: 640px) {
+  .contact-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .contact-row-icon {
+    width: 24px;
+  }
+  .contact-row-type {
+    flex: 1 1 100px;
+  }
+  .contact-row-value {
+    flex: 1 1 100%;
+    order: 5;
+  }
 }

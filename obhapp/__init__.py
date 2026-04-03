@@ -100,6 +100,25 @@ def inject_calendar_config():
     }
 
 
+import re as _re
+import markupsafe as _markupsafe
+
+@app.template_filter('nl2br')
+def nl2br_filter(s):
+    """Convert newlines to <br> tags and auto-link URLs."""
+    if not s or s == 'N/A':
+        return s
+    s = str(_markupsafe.escape(s))
+    # Auto-link URLs
+    s = _re.sub(
+        r'(https?://[^\s<]+)',
+        r'<a href="\1" target="_blank" rel="noopener noreferrer">\1</a>',
+        s
+    )
+    s = s.replace('\n', '<br>')
+    return _markupsafe.Markup(s)
+
+
 # Ignore coding style violations for these imports
 import obhapp.views  # noqa: E402  pylint: disable=wrong-import-position
 import obhapp.model  # noqa: E402  pylint: disable=wrong-import-position

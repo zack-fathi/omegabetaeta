@@ -1,4 +1,5 @@
 import uuid
+import json
 import hashlib
 import pathlib
 import secrets
@@ -89,7 +90,7 @@ def forgot_password():
         flask.flash('User does not exist.', 'error')
         return flask.redirect(flask.url_for('show_login'))
 
-    if not bro['uniqname'] or bro['uniqname'] == 'N/A' or bro['uniqname'] == '':
+    if not bro['uniqname'] or bro['uniqname'] == '':
         flask.flash('No email (uniqname) associated with this account. Contact an admin.', 'error')
         return flask.redirect(flask.url_for('show_login'))
 
@@ -188,17 +189,13 @@ def edit_profile():
         major = flask.request.form['major']
         job = flask.request.form['job']
         desc = flask.request.form['desc']
-        contacts = flask.request.form['contacts']
+        contacts = flask.request.form.get('contacts', '')
         grad_time = flask.request.form['grad_time']
         active = flask.request.form.get('active', 0)
 
         file = flask.request.files.get("profile_picture")
-        print(flask.request.files)
-        print(file)
-        print(flask.request.form['existing_profile_picture'])
-        if file:
+        if file and file.filename:
             filename = file.filename
-            print("img: ",filename)
             stem = uuid.uuid4().hex
             suffix = pathlib.Path(filename).suffix.lower()
             uuid_basename = f"{stem}{suffix}"
@@ -214,7 +211,33 @@ def edit_profile():
             WHERE user_id = ?
         ''', (new_username, fullname, uuid_basename, major, job, desc, contacts, grad_time, active, user_id))
 
-        # TODO: Need to see if this is the correct way to update the change log
+        # Save contacts from the unified form
+        contacts_json = flask.request.form.get('contacts_json', '[]')
+        try:
+            contact_list = json.loads(contacts_json)
+        except (json.JSONDecodeError, TypeError):
+            contact_list = []
+
+        # Delete existing and re-insert
+        con.execute("DELETE FROM brother_contacts WHERE user_id = ?", (user_id,))
+        has_primary = False
+        for i, c in enumerate(contact_list):
+            val = c.get('contact_value', '').strip()
+            if not val:
+                continue
+            if c.get('contact_type') not in CONTACT_TYPE_MAP:
+                continue
+            val = _normalize_contact_value(c['contact_type'], val)
+            is_primary = 1 if (c.get('is_primary') and not has_primary) else 0
+            if is_primary:
+                has_primary = True
+            is_public = 1 if c.get('is_public', False) else 0
+            con.execute(
+                "INSERT INTO brother_contacts (user_id, contact_type, contact_value, is_primary, is_public, sort_order) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (user_id, c['contact_type'], val, is_primary, is_public, i)
+            )
+
         con.execute(
             "INSERT INTO change_log(user_id, desc) "
             "VALUES(?, ?); ",
@@ -231,7 +254,8 @@ def edit_profile():
     # Fetch the user's current information
     cur = con.execute('SELECT * FROM brothers WHERE user_id = ?', (user_id,))
     brother = cur.fetchone()
-    context = {"brother": brother}
+    contacts = get_contacts_for_user(con, user_id)
+    context = {"brother": brother, "contacts": contacts, "contact_types": CONTACT_TYPES}
 
     return flask.render_template('portal_account.html', **context)
 
@@ -307,7 +331,7 @@ def _set_default_password(con, user_id):
         (user_id,)
     )
     bro = cur.fetchone()
-    email = f"{bro['uniqname']}@umich.edu" if bro['uniqname'] and bro['uniqname'] != 'N/A' else None
+    email = f"{bro['uniqname']}@umich.edu" if bro['uniqname'] else None
     return plain_pw, bro['username'], bro['fullname'], email
 
 
@@ -382,7 +406,7 @@ def send_all_passwords():
 
     cur = con.execute(
         "SELECT user_id, fullname, uniqname, username FROM brothers "
-        "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+        "WHERE email_sent = 0 AND uniqname IS NOT NULL AND uniqname != ''"
     )
     unsent_brothers = cur.fetchall()
 
@@ -429,7 +453,7 @@ def get_unsent_brothers():
     cur = con.execute(
         "SELECT user_id, fullname, username, uniqname, email_sent, password_changed FROM brothers "
         "WHERE (email_sent = 0 OR password_changed = 0) "
-        "AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+        "AND uniqname IS NOT NULL AND uniqname != ''"
     )
     brothers = [dict(row) for row in cur.fetchall()]
     return flask.jsonify(success=True, brothers=brothers, count=len(brothers))
@@ -448,13 +472,30 @@ def show_portal_directory():
     )
     brothers = cur.fetchall()
 
+    # Load primary contacts for all brothers
+    all_contacts_cur = con.execute(
+        "SELECT user_id, contact_type, contact_value, is_primary, sort_order "
+        "FROM brother_contacts ORDER BY sort_order ASC, id ASC"
+    )
+    all_contacts = {}
+    for row in all_contacts_cur.fetchall():
+        uid = row['user_id']
+        if uid not in all_contacts:
+            all_contacts[uid] = []
+        ct = CONTACT_TYPE_MAP.get(row['contact_type'], CONTACT_TYPE_MAP['other'])
+        all_contacts[uid].append({**dict(row), 'icon': ct['icon'], 'type_label': ct['label']})
+
     # Build line groups
     line_dict = {}
     if brothers:
         last_line = brothers[-1]["line"]
         for i in range(int(last_line) + 1):
             line_name = line_int_to_line[str(i)]
-            line_dict[line_name] = [dict(brother) for brother in brothers if brother["line"] == i]
+            members = [dict(brother) for brother in brothers if brother["line"] == i]
+            for m in members:
+                user_contacts = all_contacts.get(m['user_id'], [])
+                m['primary_contact'] = get_primary_contact(user_contacts)
+            line_dict[line_name] = members
 
     # Check permissions
     can_edit = has_permission(4)
@@ -466,7 +507,7 @@ def show_portal_directory():
         cur = con.execute(
             "SELECT COUNT(*) as cnt FROM brothers "
             "WHERE (email_sent = 0 OR password_changed = 0) "
-            "AND uniqname IS NOT NULL AND uniqname != 'N/A' AND uniqname != ''"
+            "AND uniqname IS NOT NULL AND uniqname != ''"
         )
         unsent_count = cur.fetchone()["cnt"]
 
@@ -498,18 +539,24 @@ def show_directory_brother(name):
         return flask.redirect(flask.url_for("show_portal_directory"))
     bro = dict(bro)
     bro["line_name"] = line_int_to_line[str(bro["line"])]
-    bro['grad_time_display'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else 'N/A'
+    bro['grad_time_display'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else '—'
 
     # Get all lion names for dropdown
     cur = con.execute("SELECT lion_name_id, name FROM lion_names ORDER BY name")
     lion_names = cur.fetchall()
+
+    # Get contacts
+    contacts = get_contacts_for_user(con, bro['user_id'])
+    primary_contact = get_primary_contact(contacts)
 
     # Check permissions
     can_edit = has_permission(4)
     can_manage_passwords = has_permission(1)
 
     return flask.render_template("portal_brother.html", brother=bro, can_edit=can_edit,
-                                 can_manage_passwords=can_manage_passwords, lion_names=lion_names)
+                                 can_manage_passwords=can_manage_passwords, lion_names=lion_names,
+                                 contacts=contacts, primary_contact=primary_contact,
+                                 contact_types=CONTACT_TYPES)
 
 @obhapp.app.route('/portal/directory/<name>/edit/', methods=['POST'])
 def edit_member(name):
@@ -535,7 +582,7 @@ def edit_member(name):
     major = flask.request.form['major']
     job = flask.request.form['job']
     desc = flask.request.form['desc']
-    contacts = flask.request.form['contacts']
+    contacts = flask.request.form.get('contacts', '')
     campus = flask.request.form['campus']
     cross_time = flask.request.form['cross_time']
     grad_time = flask.request.form['grad_time']
@@ -561,6 +608,32 @@ def edit_member(name):
         WHERE user_id = ?
     ''', (new_username, fullname, uniqname, uuid_basename, major, job, desc, contacts,
           campus, cross_time, grad_time, line, line_num, lion_name_id, active, bro['user_id']))
+
+    # Save contacts from the edit form
+    contacts_json = flask.request.form.get('contacts_json', '[]')
+    try:
+        contact_list = json.loads(contacts_json)
+    except (json.JSONDecodeError, TypeError):
+        contact_list = []
+
+    con.execute("DELETE FROM brother_contacts WHERE user_id = ?", (bro['user_id'],))
+    has_primary = False
+    for i, c in enumerate(contact_list):
+        val = c.get('contact_value', '').strip()
+        if not val:
+            continue
+        if c.get('contact_type') not in CONTACT_TYPE_MAP:
+            continue
+        val = _normalize_contact_value(c['contact_type'], val)
+        is_primary = 1 if (c.get('is_primary') and not has_primary) else 0
+        if is_primary:
+            has_primary = True
+        is_public = 1 if c.get('is_public', False) else 0
+        con.execute(
+            "INSERT INTO brother_contacts (user_id, contact_type, contact_value, is_primary, is_public, sort_order) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (bro['user_id'], c['contact_type'], val, is_primary, is_public, i)
+        )
 
     con.execute(
         "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
@@ -1645,3 +1718,122 @@ def show_portal_help():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("show_login"))
     return flask.render_template("portal_help.html")
+
+
+# ─── Contact Type Definitions ───
+CONTACT_TYPES = [
+    {'value': 'email', 'label': 'Email', 'icon': 'fas fa-envelope'},
+    {'value': 'phone', 'label': 'Phone', 'icon': 'fas fa-phone'},
+    {'value': 'instagram', 'label': 'Instagram', 'icon': 'fab fa-instagram'},
+    {'value': 'twitter', 'label': 'X (Twitter)', 'icon': 'fab fa-x-twitter'},
+    {'value': 'linkedin', 'label': 'LinkedIn', 'icon': 'fab fa-linkedin'},
+    {'value': 'snapchat', 'label': 'Snapchat', 'icon': 'fab fa-snapchat'},
+    {'value': 'venmo', 'label': 'Venmo', 'icon': 'fas fa-dollar-sign'},
+    {'value': 'discord', 'label': 'Discord', 'icon': 'fab fa-discord'},
+    {'value': 'tiktok', 'label': 'TikTok', 'icon': 'fab fa-tiktok'},
+    {'value': 'facebook', 'label': 'Facebook', 'icon': 'fab fa-facebook'},
+    {'value': 'link', 'label': 'Link', 'icon': 'fas fa-link'},
+    {'value': 'other', 'label': 'Other', 'icon': 'fas fa-address-card'},
+]
+
+CONTACT_TYPE_MAP = {ct['value']: ct for ct in CONTACT_TYPES}
+
+# Types that should have https:// prepended if missing
+_URL_CONTACT_TYPES = {'link', 'linkedin', 'facebook'}
+
+
+def _normalize_contact_value(contact_type, value):
+    """Normalize a contact value (e.g. auto-add https:// to URL types)."""
+    if contact_type in _URL_CONTACT_TYPES and value and not value.startswith(('http://', 'https://')):
+        value = 'https://' + value
+    return value
+
+
+def get_contacts_for_user(con, user_id):
+    """Fetch all contacts for a user, ordered by sort_order."""
+    cur = con.execute(
+        "SELECT id, contact_type, contact_value, is_primary, is_public, sort_order "
+        "FROM brother_contacts WHERE user_id = ? ORDER BY sort_order ASC, id ASC",
+        (user_id,)
+    )
+    contacts = [dict(row) for row in cur.fetchall()]
+    for c in contacts:
+        ct = CONTACT_TYPE_MAP.get(c['contact_type'], CONTACT_TYPE_MAP['other'])
+        c['icon'] = ct['icon']
+        c['type_label'] = ct['label']
+    return contacts
+
+
+def get_primary_contact(contacts):
+    """Get the primary contact from a list, or the first one."""
+    for c in contacts:
+        if c.get('is_primary'):
+            return c
+    return contacts[0] if contacts else None
+
+
+@obhapp.app.route('/portal/contacts/save/', methods=['POST'])
+def save_contacts():
+    """Save contacts for the logged-in user (from account page)."""
+    if 'user_id' not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    user_id = flask.session['user_id']
+    return _save_contacts_for_user(user_id)
+
+
+@obhapp.app.route('/portal/directory/<name>/contacts/save/', methods=['POST'])
+def save_member_contacts(name):
+    """Save contacts for a member (from directory edit, requires permission)."""
+    if 'user_id' not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(4):
+        return flask.jsonify(success=False, error="No permission"), 403
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT user_id FROM brothers WHERE username = ?", (name,))
+    bro = cur.fetchone()
+    if not bro:
+        return flask.jsonify(success=False, error="Member not found"), 404
+    return _save_contacts_for_user(bro['user_id'])
+
+
+def _save_contacts_for_user(user_id):
+    """Replace all contacts for a user with the submitted data."""
+    data = flask.request.get_json()
+    contacts = data.get('contacts', [])
+
+    con = obhapp.model.get_db()
+
+    # Validate
+    for c in contacts:
+        if not c.get('contact_value', '').strip():
+            continue
+        if c.get('contact_type') not in CONTACT_TYPE_MAP:
+            return flask.jsonify(success=False, error=f"Invalid contact type: {c.get('contact_type')}"), 400
+
+    # Delete existing and re-insert
+    con.execute("DELETE FROM brother_contacts WHERE user_id = ?", (user_id,))
+
+    # Ensure at most one primary
+    has_primary = False
+    for i, c in enumerate(contacts):
+        val = c.get('contact_value', '').strip()
+        if not val:
+            continue
+        val = _normalize_contact_value(c['contact_type'], val)
+        is_primary = 1 if (c.get('is_primary') and not has_primary) else 0
+        if is_primary:
+            has_primary = True
+        is_public = 1 if c.get('is_public', False) else 0
+        con.execute(
+            "INSERT INTO brother_contacts (user_id, contact_type, contact_value, is_primary, is_public, sort_order) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (user_id, c['contact_type'], val, is_primary, is_public, i)
+        )
+
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session['user_id'], f"Updated contacts for user {user_id}")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
