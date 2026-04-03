@@ -1,0 +1,78 @@
+{# Shared brother edit form fields
+   Required: brother (dict or object)
+   Optional: is_admin_edit (bool, default false) — shows extra fields for admin editing
+             lion_names (list) — needed when is_admin_edit is true
+             field_class (str) — extra class for inputs, e.g. 'profile-field' for change tracking #}
+{% set fc = ' ' + field_class if field_class else '' %}
+<div class="member-edit-grid">
+    <div class="form-group">
+        <label for="{{ 'edit-' if is_admin_edit else '' }}username">Username</label>
+        <input type="text" class="form-control{{ fc }}" id="{{ 'edit-' if is_admin_edit else '' }}username" name="username" value="{{ brother['username'] if brother is mapping else brother.username }}" required>
+    </div>
+    <div class="form-group">
+        <label for="{{ 'edit-' if is_admin_edit else '' }}fullname">Full Name</label>
+        <input type="text" class="form-control{{ fc }}" id="{{ 'edit-' if is_admin_edit else '' }}fullname" name="fullname" value="{{ brother['fullname'] if brother is mapping else brother.fullname }}" required>
+    </div>
+    {% if is_admin_edit %}
+    <div class="form-group">
+        <label for="edit-uniqname">Uniqname</label>
+        <input type="text" class="form-control" id="edit-uniqname" name="uniqname" value="{{ brother['uniqname'] if brother is mapping else brother.uniqname }}" placeholder="e.g. jsmith">
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="{{ 'edit-' if is_admin_edit else '' }}major">Major</label>
+        <input type="text" class="form-control{{ fc }}" id="{{ 'edit-' if is_admin_edit else '' }}major" name="major" value="{{ brother['major'] if brother is mapping else brother.major }}" placeholder="e.g. Computer Science">
+    </div>
+    <div class="form-group">
+        <label for="{{ 'edit-' if is_admin_edit else '' }}job">Job</label>
+        <input type="text" class="form-control{{ fc }}" id="{{ 'edit-' if is_admin_edit else '' }}job" name="job" value="{{ brother['job'] if brother is mapping else brother.job }}" placeholder="e.g. Software Engineer">
+    </div>
+    {% if is_admin_edit %}
+    <div class="form-group">
+        <label for="edit-campus">Campus</label>
+        <input type="text" class="form-control" id="edit-campus" name="campus" value="{{ brother['campus'] if brother is mapping else brother.campus }}" placeholder="e.g. Ann Arbor">
+    </div>
+    <div class="form-group">
+        <label for="edit-lion-name">Lion Name</label>
+        <div class="custom-select-wrapper">
+            <select class="form-control" id="edit-lion-name" name="lion_name_id" required>
+                <option value="">Select Lion Name</option>
+                {% for ln in lion_names %}
+                <option value="{{ ln.lion_name_id }}" {% if ln.lion_name_id == (brother['lion_name_id'] if brother is mapping else brother.lion_name_id) %}selected{% endif %}>{{ ln.name }}</option>
+                {% endfor %}
+            </select>
+            <i class="fas fa-chevron-down custom-select-arrow"></i>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="edit-line">Line (number)</label>
+        <input type="number" class="form-control" id="edit-line" name="line" value="{{ brother['line'] if brother is mapping else brother.line }}" required>
+    </div>
+    <div class="form-group">
+        <label for="edit-line-num">Line Number</label>
+        <input type="number" class="form-control" id="edit-line-num" name="line_num" value="{{ brother['line_num'] if brother is mapping else brother.line_num }}" required>
+    </div>
+    <div class="form-group">
+        <label for="edit-cross-time">Cross Time</label>
+        <input type="text" class="form-control date-field" id="edit-cross-time" name="cross_time" value="{{ brother['cross_time'] if brother is mapping else brother.cross_time }}" placeholder="e.g. 2023-04" pattern="\d{4}-(0[1-9]|1[0-2])">
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="{{ 'edit-' if is_admin_edit else '' }}grad_time">Grad Time</label>
+        <input type="text" class="form-control{{ fc }} date-field" id="{{ 'edit-' if is_admin_edit else '' }}grad_time" name="grad_time" value="{{ brother['grad_time'] if brother is mapping else (brother.grad_time or '') }}" placeholder="e.g. 2025-04" pattern="\d{4}-(0[1-9]|1[0-2])">
+    </div>
+    <div class="form-group">
+        <label for="{{ 'edit-' if is_admin_edit else '' }}active">Activity Status</label>
+        <div class="custom-select-wrapper">
+            <select class="form-control{{ fc }}" id="{{ 'edit-' if is_admin_edit else '' }}active" name="active">
+                <option value="1" {% if (brother['active'] if brother is mapping else brother.active) %}selected{% endif %}>Active</option>
+                <option value="0" {% if not (brother['active'] if brother is mapping else brother.active) %}selected{% endif %}>Inactive</option>
+            </select>
+            <i class="fas fa-chevron-down custom-select-arrow"></i>
+        </div>
+    </div>
+</div>
+<div class="form-group mt-3">
+    <label for="{{ 'edit-' if is_admin_edit else '' }}desc">Description</label>
+    <textarea class="form-control auto-resize{{ fc }}" id="{{ 'edit-' if is_admin_edit else '' }}desc" name="desc" rows="3" placeholder="A short bio about {{ 'this member' if is_admin_edit else 'yourself' }}...">{{ brother['desc'] if brother is mapping else brother.desc }}</textarea>
+</div>

@@ -1,0 +1,52 @@
+{# Shared brother detail view fields
+   Required: brother
+   Optional: is_portal (bool, default false) — controls which fields show and class names #}
+{% set item_class = 'member-detail-item' if is_portal else 'brother-detail-item' %}
+{% set label_class = 'detail-label' if is_portal else 'bro-label' %}
+{% set value_class = 'detail-value' if is_portal else 'bro-value' %}
+{% if is_portal %}
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-user me-1"></i>Username</span>
+    <span class="{{ value_class }}">{{ brother.username }}</span>
+</div>
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-id-badge me-1"></i>Uniqname</span>
+    <span class="{{ value_class }}">{{ brother.uniqname or '—' }}</span>
+</div>
+{% endif %}
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-graduation-cap me-1"></i>Major</span>
+    <span class="{{ value_class }}">{{ brother.major or '—' }}</span>
+</div>
+{% if is_portal %}
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-briefcase me-1"></i>Job</span>
+    <span class="{{ value_class }}">{{ brother.job or '—' }}</span>
+</div>
+{% endif %}
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-map-marker-alt me-1"></i>Campus</span>
+    <span class="{{ value_class }}">{{ brother.campus or '—' }}</span>
+</div>
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-paw me-1"></i>Lion Name</span>
+    <span class="{{ value_class }}">{{ brother.lion_name or '—' }}</span>
+</div>
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-hashtag me-1"></i>Line / Line #</span>
+    <span class="{{ value_class }}">{{ brother.line_name }} · #{{ brother.line_num }}</span>
+</div>
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-calendar-alt me-1"></i>Cross Time</span>
+    <span class="{{ value_class }}">{{ brother.cross_time or '—' }}</span>
+</div>
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-calendar-check me-1"></i>{{ 'Grad Time' if is_portal else 'Graduation' }}</span>
+    <span class="{{ value_class }}">{{ brother.grad_time_display if is_portal else (brother.grad_time or '—') }}</span>
+</div>
+{% if not is_portal and brother.contacts %}
+<div class="{{ item_class }}">
+    <span class="{{ label_class }}"><i class="fas fa-address-card me-1"></i>Contacts (legacy)</span>
+    <span class="{{ value_class }}">{{ brother.contacts }}</span>
+</div>
+{% endif %}

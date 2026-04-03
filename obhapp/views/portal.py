@@ -1,5 +1,6 @@
 import uuid
 import json
+import re
 import hashlib
 import pathlib
 import secrets
@@ -192,6 +193,11 @@ def edit_profile():
         contacts = flask.request.form.get('contacts', '')
         grad_time = flask.request.form['grad_time']
         active = flask.request.form.get('active', 0)
+
+        # Validate date field (yyyy-mm)
+        if grad_time and not re.match(r'^\d{4}-(0[1-9]|1[0-2])$', grad_time):
+            flask.flash('Grad time must be in yyyy-mm format (e.g. 2025-04).', 'error')
+            return flask.redirect(flask.url_for('edit_profile'))
 
         file = flask.request.files.get("profile_picture")
         if file and file.filename:
@@ -539,7 +545,7 @@ def show_directory_brother(name):
         return flask.redirect(flask.url_for("show_portal_directory"))
     bro = dict(bro)
     bro["line_name"] = line_int_to_line[str(bro["line"])]
-    bro['grad_time_display'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro['grad_time'] else '—'
+    bro['grad_time_display'] = datetime.strptime(bro['grad_time'], '%Y-%m').strftime('%B %Y') if bro.get('grad_time') and re.match(r'^\d{4}-(0[1-9]|1[0-2])$', bro['grad_time']) else (bro.get('grad_time') or '—')
 
     # Get all lion names for dropdown
     cur = con.execute("SELECT lion_name_id, name FROM lion_names ORDER BY name")
@@ -586,6 +592,16 @@ def edit_member(name):
     campus = flask.request.form['campus']
     cross_time = flask.request.form['cross_time']
     grad_time = flask.request.form['grad_time']
+
+    # Validate date fields (yyyy-mm)
+    date_re = re.compile(r'^\d{4}-(0[1-9]|1[0-2])$')
+    if cross_time and not date_re.match(cross_time):
+        flask.flash('Cross time must be in yyyy-mm format (e.g. 2023-04).', 'error')
+        return flask.redirect(flask.url_for('show_directory_brother', name=name))
+    if grad_time and not date_re.match(grad_time):
+        flask.flash('Grad time must be in yyyy-mm format (e.g. 2025-04).', 'error')
+        return flask.redirect(flask.url_for('show_directory_brother', name=name))
+
     line = flask.request.form['line']
     line_num = flask.request.form['line_num']
     lion_name_id = flask.request.form['lion_name_id']

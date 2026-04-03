@@ -25,36 +25,9 @@
 
         <div class="brother-profile-body">
             <div class="brother-detail-grid">
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-graduation-cap me-1"></i>Major</span>
-                    <span class="bro-value">{{ brother.major }}</span>
-                </div>
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-calendar-check me-1"></i>Graduation</span>
-                    <span class="bro-value">{{ brother.grad_time }}</span>
-                </div>
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-paw me-1"></i>Lion Name</span>
-                    <span class="bro-value">{{ brother.lion_name }}</span>
-                </div>
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-hashtag me-1"></i>Line / Line #</span>
-                    <span class="bro-value">{{ brother.line_name }} · #{{ brother.line_num }}</span>
-                </div>
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-calendar-alt me-1"></i>Cross Time</span>
-                    <span class="bro-value">{{ brother.cross_time }}</span>
-                </div>
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-map-marker-alt me-1"></i>Campus</span>
-                    <span class="bro-value">{{ brother.campus }}</span>
-                </div>
-                {% if brother.contacts %}
-                <div class="brother-detail-item">
-                    <span class="bro-label"><i class="fas fa-address-card me-1"></i>Contacts (legacy)</span>
-                    <span class="bro-value">{{ brother.contacts }}</span>
-                </div>
-                {% endif %}
+                {% with is_portal=false %}
+                {% include '_brother_view_fields.html' %}
+                {% endwith %}
             </div>
 
             <!-- Contacts List -->
@@ -62,32 +35,9 @@
             <div class="brother-contacts-section">
                 <h5><i class="fas fa-address-book me-1"></i>Contact</h5>
                 <div class="brother-contacts-list">
-                    {% for c in contacts %}
-                    <div class="brother-contact-item">
-                        <i class="{{ c.icon }} brother-contact-icon"></i>
-                        {% if c.contact_type == 'email' %}
-                        <a href="mailto:{{ c.contact_value }}" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'phone' %}
-                        <a href="tel:{{ c.contact_value }}" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'link' %}
-                        <a href="{{ c.contact_value }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'instagram' %}
-                        <a href="https://instagram.com/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'twitter' %}
-                        <a href="https://x.com/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'linkedin' %}
-                        <a href="{{ c.contact_value if c.contact_value.startswith('http') else 'https://linkedin.com/in/' + c.contact_value }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'snapchat' %}
-                        <a href="https://snapchat.com/add/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'tiktok' %}
-                        <a href="https://tiktok.com/@{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% elif c.contact_type == 'facebook' %}
-                        <a href="{{ c.contact_value if c.contact_value.startswith('http') else 'https://facebook.com/' + c.contact_value }}" target="_blank" rel="noopener noreferrer" class="brother-contact-value">{{ c.contact_value }}</a>
-                        {% else %}
-                        <span class="brother-contact-value">{{ c.contact_value }}</span>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
+                    {% with is_portal=false %}
+                    {% include '_contacts_display.html' %}
+                    {% endwith %}
                 </div>
             </div>
             {% endif %}

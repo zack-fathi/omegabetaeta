@@ -1,0 +1,36 @@
+{# Shared contacts display partial
+   Required: contacts (list of contact dicts)
+   Optional: is_portal (bool, default false) — controls class prefix and extra detail #}
+{% for c in contacts %}
+<div class="{{ 'member' if is_portal else 'brother' }}-contact-item">
+    <i class="{{ c.icon }} {{ 'member' if is_portal else 'brother' }}-contact-icon"></i>
+    {% if is_portal %}
+    <div class="member-contact-detail">
+        <span class="member-contact-type">{{ c.type_label }}{% if c.is_primary %} <i class="fas fa-star" style="color:var(--portal-gold); font-size:0.65rem;" title="Primary"></i>{% endif %}{% if not c.is_public %} <i class="fas fa-lock" style="color:var(--portal-text-muted); font-size:0.6rem;" title="Private"></i>{% endif %}</span>
+    {% endif %}
+    {% if c.contact_type == 'email' %}
+    <a href="mailto:{{ c.contact_value }}" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'phone' %}
+    <a href="tel:{{ c.contact_value }}" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'link' %}
+    <a href="{{ c.contact_value }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'instagram' %}
+    <a href="https://instagram.com/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'twitter' %}
+    <a href="https://x.com/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'linkedin' %}
+    <a href="{{ c.contact_value if c.contact_value.startswith('http') else 'https://linkedin.com/in/' + c.contact_value }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'snapchat' %}
+    <a href="https://snapchat.com/add/{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'tiktok' %}
+    <a href="https://tiktok.com/@{{ c.contact_value.lstrip('@') }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% elif c.contact_type == 'facebook' %}
+    <a href="{{ c.contact_value if c.contact_value.startswith('http') else 'https://facebook.com/' + c.contact_value }}" target="_blank" rel="noopener noreferrer" class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</a>
+    {% else %}
+    <span class="{{ 'member' if is_portal else 'brother' }}-contact-value">{{ c.contact_value }}</span>
+    {% endif %}
+    {% if is_portal %}
+    </div>
+    {% endif %}
+</div>
+{% endfor %}

@@ -835,6 +835,11 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.88rem;
 }
 
+.member-edit-grid .form-control::placeholder,
+.member-profile-body .form-control::placeholder {
+  color: #555;
+}
+
 .member-edit-grid .form-control:focus,
 .member-profile-body .form-control:focus {
   border-color: var(--portal-gold);
@@ -1747,17 +1752,27 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(201, 168, 76, 0.08);
   border: 1px solid rgba(201, 168, 76, 0.2);
   border-radius: 6px;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1rem 0.75rem 2.25rem;
   margin-top: 0.75rem;
   font-size: 0.85rem;
   color: var(--portal-gold);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  position: relative;
+  line-height: 1.6;
 }
 
-.help-tip i {
+.help-tip > i:first-child {
+  position: absolute;
+  left: 0.85rem;
+  top: 0.85rem;
   font-size: 0.9rem;
+}
+
+.help-tip strong,
+.help-tip a,
+.help-tip em,
+.help-tip code {
+  display: inline;
+  line-height: inherit;
 }
 
 .help-badge {

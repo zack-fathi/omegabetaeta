@@ -1,0 +1,300 @@
+{# Shared contacts editor JavaScript
+   Required template variables:
+     contacts_list_id  - DOM id of the contacts container (e.g. 'contactsList' or 'editContactsList')
+     contacts_json_id  - DOM id of the hidden input for JSON
+     radio_name        - name attribute for primary radio buttons
+     alert_id          - DOM id of the alert div
+   Optional:
+     on_change         - JS expression to call when contacts change (e.g. 'markDirty()') #}
+
+var CONTACT_TYPES = {{ contact_types | tojson }};
+var existingContacts = {{ contacts | tojson }};
+
+var CONTACT_PLACEHOLDERS = {
+    email: 'example@email.com',
+    phone: '(123) 456-7890',
+    instagram: '@username',
+    twitter: '@username',
+    linkedin: 'https://linkedin.com/in/username',
+    snapchat: '@username',
+    venmo: '@username',
+    discord: 'username#1234',
+    tiktok: '@username',
+    facebook: 'https://facebook.com/username',
+    link: 'https://example.com',
+    other: 'Enter value...'
+};
+
+var CONTACT_VALIDATORS = {
+    email: function(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+    phone: function(v) { return /^[\d\s\-\+\(\)\.]{7,20}$/.test(v); },
+    link: function(v) { return /^https?:\/\/.+/.test(v) || /^[a-zA-Z0-9]/.test(v); }
+};
+
+function contactTypeIcon(type) {
+    for (var i = 0; i < CONTACT_TYPES.length; i++) {
+        if (CONTACT_TYPES[i].value === type) return CONTACT_TYPES[i].icon;
+    }
+    return 'fas fa-address-card';
+}
+
+function getPlaceholder(type) {
+    return CONTACT_PLACEHOLDERS[type] || 'Enter value...';
+}
+
+function escapeAttr(s) {
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(s));
+    return d.innerHTML.replace(/"/g, '&quot;');
+}
+
+function getNextDefaultType(listId) {
+    var usedTypes = {};
+    document.querySelectorAll('#' + listId + ' .contact-type-select').forEach(function(sel) {
+        usedTypes[sel.value] = true;
+    });
+    for (var i = 0; i < CONTACT_TYPES.length; i++) {
+        if (!usedTypes[CONTACT_TYPES[i].value]) return CONTACT_TYPES[i].value;
+    }
+    return 'other';
+}
+
+function createContactRow(contact, radioName, onChange) {
+    var div = document.createElement('div');
+    div.className = 'contact-row';
+
+    var onChangeAttr = onChange ? ' onchange="' + onChange + '"' : '';
+    var onInputAttr = onChange ? ' oninput="' + onChange + '"' : '';
+
+    var typeSelect = '<div class="custom-select-wrapper"><select class="form-control form-control-sm contact-type-select" onchange="updateContactIcon(this); updatePlaceholder(this);' + (onChange || '') + '">';
+    for (var i = 0; i < CONTACT_TYPES.length; i++) {
+        var ct = CONTACT_TYPES[i];
+        typeSelect += '<option value="' + ct.value + '"' + (contact.contact_type === ct.value ? ' selected' : '') + '>' + ct.label + '</option>';
+    }
+    typeSelect += '</select><i class="fas fa-chevron-down custom-select-arrow"></i></div>';
+
+    var isPrivate = contact.is_public === 0 || contact.is_public === false;
+    var deleteOnChange = onChange ? onChange : '';
+
+    div.innerHTML =
+        '<div class="contact-row-drag" title="Drag to reorder"><i class="fas fa-grip-vertical"></i></div>' +
+        '<div class="contact-row-icon"><i class="' + contactTypeIcon(contact.contact_type) + '"></i></div>' +
+        '<div class="contact-row-type">' + typeSelect + '</div>' +
+        '<div class="contact-row-value"><input type="text" class="form-control form-control-sm" placeholder="' + getPlaceholder(contact.contact_type) + '" value="' + escapeAttr(contact.contact_value || '') + '"' + onInputAttr + '></div>' +
+        '<div class="contact-row-options">' +
+            '<label class="contact-toggle" title="Primary (shown on directory card)"><input type="radio" name="' + radioName + '" ' + (contact.is_primary ? 'checked' : '') + onChangeAttr + '><span class="contact-toggle-label"><i class="fas fa-star"></i></span></label>' +
+            '<label class="contact-toggle" title="' + (isPrivate ? 'Private (portal only)' : 'Public (visible on public Brothers page)') + '"><input type="checkbox" class="contact-public-check" ' + (!isPrivate ? 'checked' : '') + ' onchange="updatePrivacyIcon(this);' + (onChange || '') + '"><span class="contact-toggle-label"><i class="fas ' + (!isPrivate ? 'fa-eye' : 'fa-eye-slash') + '"></i></span></label>' +
+        '</div>' +
+        '<button type="button" class="btn btn-portal-danger btn-sm contact-row-delete" onclick="this.closest(\'.contact-row\').remove();' + deleteOnChange + '" title="Remove"><i class="fas fa-trash-alt"></i></button>';
+    return div;
+}
+
+function updateContactIcon(selectEl) {
+    var icon = selectEl.closest('.contact-row').querySelector('.contact-row-icon i');
+    icon.className = contactTypeIcon(selectEl.value);
+}
+
+function updatePlaceholder(selectEl) {
+    var input = selectEl.closest('.contact-row').querySelector('.contact-row-value input');
+    input.placeholder = getPlaceholder(selectEl.value);
+}
+
+function updatePrivacyIcon(checkbox) {
+    var label = checkbox.closest('.contact-toggle');
+    var icon = label.querySelector('.contact-toggle-label i');
+    if (checkbox.checked) {
+        label.title = 'Public (visible on public Brothers page)';
+        icon.className = 'fas fa-eye';
+    } else {
+        label.title = 'Private (portal only)';
+        icon.className = 'fas fa-eye-slash';
+    }
+}
+
+function collectContactsFrom(listId) {
+    var rows = document.querySelectorAll('#' + listId + ' .contact-row');
+    var contacts = [];
+    rows.forEach(function(row) {
+        var type = row.querySelector('.contact-type-select').value;
+        var value = row.querySelector('.contact-row-value input').value.trim();
+        var isPrimary = row.querySelector('input[type="radio"]').checked;
+        var isPublic = row.querySelector('.contact-public-check').checked;
+        if (value) {
+            if ((type === 'link' || type === 'linkedin' || type === 'facebook') && !/^https?:\/\//i.test(value)) {
+                value = 'https://' + value;
+            }
+            contacts.push({contact_type: type, contact_value: value, is_primary: isPrimary, is_public: isPublic});
+        }
+    });
+    return contacts;
+}
+
+function validateContactsIn(listId) {
+    var rows = document.querySelectorAll('#' + listId + ' .contact-row');
+    var valid = true;
+    rows.forEach(function(row) {
+        var type = row.querySelector('.contact-type-select').value;
+        var input = row.querySelector('.contact-row-value input');
+        var value = input.value.trim();
+        if (!value) { input.classList.remove('is-invalid'); return; }
+        var validator = CONTACT_VALIDATORS[type];
+        if (validator && !validator(value)) {
+            input.classList.add('is-invalid');
+            valid = false;
+        } else {
+            input.classList.remove('is-invalid');
+        }
+    });
+    return valid;
+}
+
+/* ─── Phone number auto-formatting ─── */
+function formatPhoneNumber(value) {
+    var digits = value.replace(/\D/g, '');
+    if (digits.length > 10) digits = digits.substring(0, 10);
+    if (digits.length === 0) return '';
+    if (digits.length <= 3) return '(' + digits;
+    if (digits.length <= 6) return '(' + digits.substring(0, 3) + ') ' + digits.substring(3);
+    return '(' + digits.substring(0, 3) + ') ' + digits.substring(3, 6) + '-' + digits.substring(6);
+}
+
+function handlePhoneInput(e) {
+    var input = e.target;
+    var row = input.closest('.contact-row');
+    if (!row) return;
+    var typeSelect = row.querySelector('.contact-type-select');
+    if (!typeSelect || typeSelect.value !== 'phone') return;
+
+    var cursorPos = input.selectionStart;
+    var oldVal = input.value;
+    var oldDigitsBefore = oldVal.substring(0, cursorPos).replace(/\D/g, '').length;
+
+    var formatted = formatPhoneNumber(oldVal);
+    input.value = formatted;
+
+    var digitCount = 0;
+    var newPos = 0;
+    for (var i = 0; i < formatted.length; i++) {
+        if (/\d/.test(formatted[i])) digitCount++;
+        if (digitCount === oldDigitsBefore) { newPos = i + 1; break; }
+    }
+    if (digitCount < oldDigitsBefore) newPos = formatted.length;
+    input.setSelectionRange(newPos, newPos);
+}
+
+function handlePhonePaste(e) {
+    var input = e.target;
+    var row = input.closest('.contact-row');
+    if (!row) return;
+    var typeSelect = row.querySelector('.contact-type-select');
+    if (!typeSelect || typeSelect.value !== 'phone') return;
+
+    e.preventDefault();
+    var pasted = (e.clipboardData || window.clipboardData).getData('text');
+    input.value = formatPhoneNumber(pasted);
+}
+
+/* ─── Contact drag-and-drop reorder ─── */
+function initContactSortable(listId, onChange) {
+    var list = document.getElementById(listId);
+    var dragItem = null;
+
+    list.addEventListener('dragstart', function(e) {
+        var item = e.target.closest('.contact-row');
+        if (!item) return;
+        dragItem = item;
+        dragItem.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+
+    list.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (!dragItem) return;
+        var afterEl = getContactAfterElement(list, e.clientY);
+        if (afterEl) list.insertBefore(dragItem, afterEl);
+        else list.appendChild(dragItem);
+    });
+
+    list.addEventListener('dragend', function() {
+        if (dragItem) {
+            dragItem.classList.remove('dragging');
+            dragItem = null;
+            if (onChange) onChange();
+        }
+    });
+
+    list.addEventListener('mousedown', function(e) {
+        var handle = e.target.closest('.contact-row-drag');
+        if (!handle) return;
+        handle.closest('.contact-row').setAttribute('draggable', 'true');
+    });
+    list.addEventListener('dragend', function(e) {
+        var row = e.target.closest('.contact-row');
+        if (row) row.setAttribute('draggable', 'false');
+    });
+
+    // Touch support
+    var touchItem = null;
+    list.addEventListener('touchstart', function(e) {
+        var handle = e.target.closest('.contact-row-drag');
+        if (!handle) return;
+        touchItem = handle.closest('.contact-row');
+        touchItem.classList.add('dragging');
+    }, { passive: true });
+    list.addEventListener('touchmove', function(e) {
+        if (!touchItem) return;
+        e.preventDefault();
+        var y = e.touches[0].clientY;
+        var afterEl = getContactAfterElement(list, y);
+        if (afterEl) list.insertBefore(touchItem, afterEl);
+        else list.appendChild(touchItem);
+    }, { passive: false });
+    list.addEventListener('touchend', function() {
+        if (touchItem) {
+            touchItem.classList.remove('dragging');
+            touchItem = null;
+            if (onChange) onChange();
+        }
+    });
+
+    // Phone formatting
+    list.addEventListener('input', function(e) {
+        if (e.target.matches('.contact-row-value input')) handlePhoneInput(e);
+    });
+    list.addEventListener('paste', function(e) {
+        if (e.target.matches('.contact-row-value input')) handlePhonePaste(e);
+    });
+}
+
+function getContactAfterElement(container, y) {
+    var elements = Array.from(container.querySelectorAll('.contact-row:not(.dragging)'));
+    var closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+    elements.forEach(function(child) {
+        var box = child.getBoundingClientRect();
+        var offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            closest = { offset: offset, element: child };
+        }
+    });
+    return closest.element;
+}
+
+function initContactEditor(listId, radioName, onChange) {
+    // Format existing phone contacts on load
+    document.querySelectorAll('#' + listId + ' .contact-row').forEach(function(row) {
+        var typeSelect = row.querySelector('.contact-type-select');
+        var input = row.querySelector('.contact-row-value input');
+        if (typeSelect && typeSelect.value === 'phone' && input && input.value) {
+            input.value = formatPhoneNumber(input.value);
+        }
+    });
+    initContactSortable(listId, onChange);
+}
+
+function addContactTo(listId, radioName, data, onChange) {
+    var defaultType = data ? data.contact_type : getNextDefaultType(listId);
+    var contact = data || {contact_type: defaultType, contact_value: '', is_primary: false, is_public: false};
+    var onChangeStr = onChange ? onChange + '()' : null;
+    document.getElementById(listId).appendChild(createContactRow(contact, radioName, onChangeStr));
+}

@@ -1211,4 +1211,11 @@ a.brother-contact-value:hover {
   .gallery-page { padding: 2rem 0.75rem 3rem; }
   .lightbox-prev { left: 0.5rem; }
   .lightbox-next { right: 0.5rem; }
+  .brother-profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .brother-detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
