@@ -34,10 +34,16 @@
                 <label for="message" class="form-label">Message</label>
                 <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
             </div>
+            {% if config.RECAPTCHA_SITE_KEY %}
+            <div class="mb-3">
+                <div class="g-recaptcha" data-sitekey="{{ config.RECAPTCHA_SITE_KEY }}"></div>
+            </div>
+            {% endif %}
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-obh w-100" id="contactSubmitBtn">Send Message</button>
             </div>
         </form>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script>
         document.querySelector('form[action="/contact/"]').addEventListener('submit', function(e) {
             var btn = document.getElementById('contactSubmitBtn');

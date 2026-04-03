@@ -1420,7 +1420,8 @@ def show_messages():
     for msg in messages:
         msg['replies'] = replies_by_msg.get(msg['id'], [])
 
-    return flask.render_template('portal_messages.html', messages=messages)
+    can_delete = has_permission(1)
+    return flask.render_template('portal_messages.html', messages=messages, can_delete=can_delete)
 
 
 @obhapp.app.route('/portal/messages/<int:message_id>/reply/', methods=['POST'])
@@ -1471,6 +1472,30 @@ def reply_to_message(message_id):
             "replied_at": "just now"
         }
     )
+
+@obhapp.app.route('/portal/messages/<int:message_id>/delete/', methods=['POST'])
+def delete_message(message_id):
+    """Delete a contact message. Requires board level 1 permission."""
+    if "user_id" not in flask.session:
+        return flask.jsonify(success=False, error="Not logged in"), 401
+    if not has_permission(1):
+        return flask.jsonify(success=False, error="No permission"), 403
+
+    con = obhapp.model.get_db()
+    cur = con.execute("SELECT * FROM messages WHERE id = ?", (message_id,))
+    msg = cur.fetchone()
+    if not msg:
+        return flask.jsonify(success=False, error="Message not found"), 404
+
+    con.execute("DELETE FROM messages WHERE id = ?", (message_id,))
+    con.execute(
+        "INSERT INTO change_log(user_id, desc) VALUES(?, ?)",
+        (flask.session["user_id"], f"Deleted message from {msg['name']} (subject: {msg['subject']})")
+    )
+    con.commit()
+
+    return flask.jsonify(success=True)
+
 
 @obhapp.app.route('/portal/lion-names/')
 def show_lion_names():

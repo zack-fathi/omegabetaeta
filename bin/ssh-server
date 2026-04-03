@@ -23,4 +23,5 @@ USER="${OBH_USER:-ec2-user}"
 KEY="${OBH_KEY:?Please set OBH_KEY in .env}"
 
 echo "→ Connecting to $USER@$HOST with key $KEY"
+echo "  💡 Once connected, switch to the obh user:  sudo -u obh -i"
 ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "$USER@$HOST" "$@"

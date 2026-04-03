@@ -2,6 +2,7 @@ import flask
 import obhapp
 import obhapp.model
 import logging
+import requests
 from datetime import datetime, timedelta, date
 from obhapp.email_utils import send_contact_confirmation_email
 
@@ -126,6 +127,23 @@ def show_contact():
         if not name or not email or not message:
             flask.flash('Please fill out all required fields.', 'danger')
             return flask.redirect(flask.url_for('show_contact'))
+
+        # Verify reCAPTCHA
+        recaptcha_secret = obhapp.app.config.get('RECAPTCHA_SECRET_KEY')
+        if recaptcha_secret:
+            recaptcha_response = flask.request.form.get('g-recaptcha-response', '')
+            try:
+                rv = requests.post('https://www.google.com/recaptcha/api/siteverify', data={
+                    'secret': recaptcha_secret,
+                    'response': recaptcha_response,
+                    'remoteip': flask.request.remote_addr,
+                }, timeout=5)
+                result = rv.json()
+            except Exception:
+                result = {'success': False}
+            if not result.get('success'):
+                flask.flash('Please complete the CAPTCHA.', 'danger')
+                return flask.redirect(flask.url_for('show_contact'))
 
         # Save the message to the database
         con = obhapp.model.get_db()

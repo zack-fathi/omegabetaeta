@@ -24,4 +24,8 @@ MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 # Database
 DATABASE_FILENAME = _DATA_DIR / 'obhapp.sqlite3'
 
+# reCAPTCHA
+RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY', '')
+RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+
 

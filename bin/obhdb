@@ -45,6 +45,7 @@ case $1 in
     sqlite3 var/${APP}.sqlite3 < sql/insert_gallery.sql
     cp sql/uploads/* var/uploads/
     python3 bin/make_brothers.py
+    python bin/inject_test.py
     sqlite3 var/${APP}.sqlite3 < sql/board.sql
     ;;
 
