@@ -20,7 +20,7 @@ app.debug = os.environ.get('FLASK_ENV') != 'production'
 
 @app.context_processor
 def inject_user_roles():
-    """Return the user roles for the current session."""
+    """Return the user roles and permission level for the current session."""
     if "user_id" in flask.session:
         user_id = flask.session["user_id"]
         con = obhapp.model.get_db()
@@ -29,8 +29,14 @@ def inject_user_roles():
             (user_id,)
         )
         user_roles = {row["role_name"] for row in cur.fetchall()}
-        return {"user_roles": user_roles}
-    return {"user_roles": set()}
+        perm_cur = con.execute(
+            "SELECT MIN(permission_level) as min_level FROM roles WHERE user_id = ?",
+            (user_id,)
+        )
+        perm_row = perm_cur.fetchone()
+        user_perm_level = perm_row["min_level"] if perm_row and perm_row["min_level"] is not None else 99
+        return {"user_roles": user_roles, "user_perm_level": user_perm_level}
+    return {"user_roles": set(), "user_perm_level": 99}
 
 
 # Google Calendar integration via service account (calendars stay private)

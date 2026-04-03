@@ -119,9 +119,11 @@
           <li class="nav-item">
             <a class="nav-link sidebar-link" href="/portal/directory/">Directory</a>
           </li>
+          {% if user_perm_level <= 2 %}
           <li class="nav-item">
             <a class="nav-link sidebar-link" href="/portal/log/">Log</a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link sidebar-link" href="/portal/board/">Board</a>
           </li>

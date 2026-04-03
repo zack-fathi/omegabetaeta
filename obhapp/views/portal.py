@@ -699,6 +699,8 @@ def delete_member(name):
 def show_portal_log():
     if "user_id" not in flask.session:
         return flask.redirect(flask.url_for("show_login"))
+    if not has_permission(2):
+        flask.abort(403)
     con = obhapp.model.get_db()
     cur = con.execute(
         "SELECT c.id, c.user_id, c.change_time, c.desc, "
