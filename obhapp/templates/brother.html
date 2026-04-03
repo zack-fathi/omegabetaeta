@@ -27,7 +27,7 @@
             <div class="brother-detail-grid">
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-graduation-cap me-1"></i>Major</span>
-                    <span class="bro-value">{{ brother.major or 'N/A' }}</span>
+                    <span class="bro-value">{{ brother.major }}</span>
                 </div>
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-calendar-check me-1"></i>Graduation</span>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-paw me-1"></i>Lion Name</span>
-                    <span class="bro-value">{{ brother.lion_name or 'N/A' }}</span>
+                    <span class="bro-value">{{ brother.lion_name }}</span>
                 </div>
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-hashtag me-1"></i>Line / Line #</span>
@@ -43,13 +43,13 @@
                 </div>
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-calendar-alt me-1"></i>Cross Time</span>
-                    <span class="bro-value">{{ brother.cross_time or 'N/A' }}</span>
+                    <span class="bro-value">{{ brother.cross_time }}</span>
                 </div>
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-map-marker-alt me-1"></i>Campus</span>
-                    <span class="bro-value">{{ brother.campus or 'N/A' }}</span>
+                    <span class="bro-value">{{ brother.campus }}</span>
                 </div>
-                {% if brother.contacts and brother.contacts != 'N/A' %}
+                {% if brother.contacts %}
                 <div class="brother-detail-item">
                     <span class="bro-label"><i class="fas fa-address-card me-1"></i>Contacts (legacy)</span>
                     <span class="bro-value">{{ brother.contacts }}</span>
@@ -92,7 +92,7 @@
             </div>
             {% endif %}
 
-            {% if brother.desc and brother.desc != 'N/A' %}
+            {% if brother.desc %}
             <div class="brother-about-section">
                 <h5><i class="fas fa-info-circle me-1"></i>About</h5>
                 <p>{{ brother.desc | nl2br }}</p>

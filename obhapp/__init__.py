@@ -106,7 +106,7 @@ import markupsafe as _markupsafe
 @app.template_filter('nl2br')
 def nl2br_filter(s):
     """Convert newlines to <br> tags and auto-link URLs."""
-    if not s or s == 'N/A':
+    if not s:
         return s
     s = str(_markupsafe.escape(s))
     # Auto-link URLs
