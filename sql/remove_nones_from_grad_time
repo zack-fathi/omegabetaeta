@@ -1,0 +1,1 @@
+UPDATE brothers SET grad_time = NULL WHERE grad_time IS 'None';
