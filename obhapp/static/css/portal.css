@@ -665,6 +665,15 @@ h1, h2, h3, h4, h5, h6 {
   text-overflow: ellipsis;
   max-width: 200px;
 }
+.directory-contact-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease;
+}
+.directory-contact-link:hover {
+  text-decoration-color: var(--portal-gold);
+}
 
 .directory-no-results {
   text-align: center;
@@ -1621,13 +1630,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 .help-perm-card li strong,
 .help-perm-card li em,
-.help-perm-card li code {
+.help-perm-card li code,
+.help-perm-card li a {
   display: inline;
   line-height: inherit;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+}
+.help-perm-card li a {
+  color: var(--portal-gold);
 }
 .help-info-item-desc strong,
 .help-info-item-desc em,
-.help-info-item-desc code {
+.help-info-item-desc code,
+.help-info-item-desc a {
   display: inline;
   line-height: inherit;
 }
@@ -3137,6 +3155,61 @@ textarea.auto-resize {
   justify-content: center;
   font-size: 0.7rem;
   border-radius: 6px;
+}
+.contact-row-drag {
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+  color: var(--portal-text-muted);
+  font-size: 0.8rem;
+  cursor: grab;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  touch-action: none;
+}
+.contact-row-drag:hover {
+  opacity: 1;
+  color: var(--portal-gold);
+}
+.contact-row-drag:active {
+  cursor: grabbing;
+}
+.contact-row.dragging {
+  opacity: 0.4;
+  border-color: var(--portal-gold);
+  box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.3);
+}
+
+/* ─── Contact Row Mobile ─── */
+@media (max-width: 600px) {
+  .contact-row {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px;
+  }
+  .contact-row-drag {
+    order: -1;
+    width: 20px;
+  }
+  .contact-row-icon {
+    width: 24px;
+    font-size: 0.8rem;
+  }
+  .contact-row-type {
+    flex: 1 1 100px;
+    min-width: 0;
+  }
+  .contact-row-value {
+    flex: 1 1 100%;
+    order: 5;
+  }
+  .contact-row-options {
+    gap: 4px;
+  }
+  .contact-row-delete {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 /* ─── Contact Display (Portal Member Detail) ─── */

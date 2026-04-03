@@ -82,7 +82,31 @@
                         <span class="directory-card-detail">#{{ brother['line_num'] }} · {{ brother['lion_name'] or '—' }}</span>
                         <span class="directory-card-detail directory-card-sub">ID: {{ brother['user_id'] }} · {{ brother['uniqname'] or '—' }}</span>
                         {% if brother['primary_contact'] %}
-                        <span class="directory-card-detail directory-card-contacts"><i class="{{ brother['primary_contact']['icon'] }}" style="font-size:0.7rem; opacity:0.6; margin-right:3px;"></i>{{ brother['primary_contact']['contact_value'] }}</span>
+                        {% set pc = brother['primary_contact'] %}
+                        <span class="directory-card-detail directory-card-contacts">
+                            <i class="{{ pc['icon'] }}" style="font-size:0.7rem; opacity:0.6; margin-right:3px;"></i>
+                            {% if pc['contact_type'] == 'email' %}
+                            <span class="directory-contact-link" data-href="mailto:{{ pc['contact_value'] }}" onclick="event.preventDefault(); event.stopPropagation(); window.location.href=this.dataset.href;">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'phone' %}
+                            <span class="directory-contact-link" data-href="tel:{{ pc['contact_value'] }}" onclick="event.preventDefault(); event.stopPropagation(); window.location.href=this.dataset.href;">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'instagram' %}
+                            <span class="directory-contact-link" data-href="https://instagram.com/{{ pc['contact_value'].lstrip('@') }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'twitter' %}
+                            <span class="directory-contact-link" data-href="https://x.com/{{ pc['contact_value'].lstrip('@') }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'linkedin' %}
+                            <span class="directory-contact-link" data-href="{{ pc['contact_value'] if pc['contact_value'].startswith('http') else 'https://linkedin.com/in/' + pc['contact_value'] }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'snapchat' %}
+                            <span class="directory-contact-link" data-href="https://snapchat.com/add/{{ pc['contact_value'].lstrip('@') }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'tiktok' %}
+                            <span class="directory-contact-link" data-href="https://tiktok.com/@{{ pc['contact_value'].lstrip('@') }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'facebook' %}
+                            <span class="directory-contact-link" data-href="{{ pc['contact_value'] if pc['contact_value'].startswith('http') else 'https://facebook.com/' + pc['contact_value'] }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% elif pc['contact_type'] == 'link' %}
+                            <span class="directory-contact-link" data-href="{{ pc['contact_value'] }}" onclick="event.preventDefault(); event.stopPropagation(); window.open(this.dataset.href, '_blank');">{{ pc['contact_value'] }}</span>
+                            {% else %}
+                            {{ pc['contact_value'] }}
+                            {% endif %}
+                        </span>
                         {% endif %}
                     </div>
                 </div>
