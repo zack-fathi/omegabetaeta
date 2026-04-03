@@ -19,7 +19,7 @@ CREATE TABLE brothers(
   campus VARCHAR(40) DEFAULT "",
   contacts VARCHAR(64) DEFAULT "",
   cross_time VARCHAR(40) DEFAULT "",
-  grad_time DATE DEFAULT NULL,
+  grad_time DATE DEFAULT "",
   line INTEGER NOT NULL,
   line_num INTEGER NOT NULL,
   lion_name_id INTEGER,
